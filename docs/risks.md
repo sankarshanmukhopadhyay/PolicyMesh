@@ -28,3 +28,7 @@ Mitigation: explicit policy and “inference budget”; retention/minimization d
 - Token revocation and rotation
 - Quarantine + approval/rejection workflow
 - Append-only audit log for decisions
+
+## Crosswalk note
+
+For a capability-to-risk-to-control mapping against selected external standards families, see [`docs/risk-crosswalk.md`](./risk-crosswalk.md).

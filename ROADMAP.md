@@ -124,6 +124,12 @@ _Last updated: 2026-03-09_
 - Additional signature algorithm support
 - Explicit deprecation lifecycle
 
+### 5.4 Risk Crosswalk & Assurance Mapping
+**Status:** 🟡 Partial
+- Capability-to-risk-to-control mapping documented
+- Selected standards-family references for operator legibility
+- Machine-readable evidence and deeper control mapping remain future work
+
 ---
 
 ## 6. Ecosystem & Interoperability

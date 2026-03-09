@@ -16,6 +16,7 @@ Links is a small-footprint system for producing **verifiable, inspectable claim 
 - Next increment plan: [`docs/NEXT_INCREMENT_PLAN.md`](./docs/NEXT_INCREMENT_PLAN.md)
 - Policy governance: [`docs/policy-governance.md`](./docs/policy-governance.md)
 - Production deployment guidance: [`docs/deploy/production-hardened.md`](./docs/deploy/production-hardened.md)
+- Governance risk crosswalk: [`docs/risk-crosswalk.md`](./docs/risk-crosswalk.md)
 - Upstream snapshot notes: [`upstream/UPSTREAM_SNAPSHOT.md`](./upstream/UPSTREAM_SNAPSHOT.md)
 
 ## Install
@@ -70,6 +71,7 @@ Approvals re-check current village policy before ingestion.
 
 - [`docs/ethics.md`](./docs/ethics.md)
 - [`docs/risks.md`](./docs/risks.md)
+- [`docs/risk-crosswalk.md`](./docs/risk-crosswalk.md)
 
 ## Policy feed and reconciliation
 
