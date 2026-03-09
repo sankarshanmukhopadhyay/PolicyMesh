@@ -15,7 +15,8 @@ Links is a small-footprint system for producing **verifiable, inspectable claim 
 - Roadmap: [`ROADMAP.md`](./ROADMAP.md)
 - Next increment plan: [`docs/NEXT_INCREMENT_PLAN.md`](./docs/NEXT_INCREMENT_PLAN.md)
 - Policy governance: [`docs/policy-governance.md`](./docs/policy-governance.md)
-
+- Production deployment guidance: [`docs/deploy/production-hardened.md`](./docs/deploy/production-hardened.md)
+- Upstream snapshot notes: [`upstream/UPSTREAM_SNAPSHOT.md`](./upstream/UPSTREAM_SNAPSHOT.md)
 
 ## Install
 
@@ -67,10 +68,8 @@ Approvals re-check current village policy before ingestion.
 
 ## Documentation
 
-- `docs/ethics.md`
-- `docs/risks.md`
-- ``
-
+- [`docs/ethics.md`](./docs/ethics.md)
+- [`docs/risks.md`](./docs/risks.md)
 
 ## Policy feed and reconciliation
 
@@ -96,7 +95,6 @@ links policy drift http://127.0.0.1:8080 ops
 
 Reconciliation rule: select the most recent update by `(created_at, policy_hash)`.
 
-
 ### M-of-N signer quorum for policy updates
 
 Villages can require a signer quorum for policy updates:
@@ -120,32 +118,52 @@ links policy sign-add artifacts/policy_update.s1.json keys/policy/bob.key artifa
 ```
 
 Verify:
+
 ```bash
 links policy verify artifacts/policy_update.s2.json
 ```
 
-### Governance upgrades (policy evolution)
+### Governance capability status
 
-- Quorum models: **M-of-N**, **weighted signers**, and **role-based quorum sets**
-- Policy lifecycle: proposal → approval → activation (with activation time/height)
-- Policy versioning and deterministic rollback by prior policy hash
-- Signed policy feed manifests + pagination for large histories
-- Trust anchor registry (register / rotate / revoke) as signed artifacts
+#### Implemented governance capabilities
 
+- M-of-N signer quorum for policy updates
+- policy diff tooling and machine-readable change summaries
+- policy version identifiers and deterministic rollback by prior policy hash
+- policy feed pull/apply flow and drift detection CLI
+- trust anchor register / rotate / revoke primitives
+
+#### Partially implemented or still hardening
+
+- weighted signer and role-based quorum models
+- richer policy lifecycle semantics across proposal, approval, and activation
+- signed feed manifests, large-history pagination, and multi-node reconciliation hardening
+- transparency and audit signing workflows for production operations
+
+#### Next priorities
+
+- end-to-end reconciliation artifacts for conflicts and forks
+- storage abstraction with an optional SQLite backend
+- scheduled drift automation and operator playbooks
+- stronger production deployment templates and observability guidance
 
 ## Operations
 
 ### TLS and exposure
+
 Links is designed to run **behind a TLS terminator** (Nginx/Envoy/Cloud LB). The built-in server is suitable for dev and controlled environments.
 
 - Binding to non-loopback interfaces will emit a warning in the CLI.
 - Terminate TLS at the edge and forward to Links over a private network.
 
 ### Authentication tokens
+
 If village membership/auth is enabled, use `Authorization: Bearer <token>` for management operations.
 
 ### Rate limiting
+
 Links enforces a basic **in-memory per-village rate limit** using the village policy field `rate_limit_per_min`. For production, enforce rate limiting at the gateway as well.
 
 ### Quarantine workflow
+
 Quarantine approvals **re-check the current village policy** before ingestion. If the policy no longer allows the bundle (predicate/window/issuer constraints), the bundle remains quarantined.

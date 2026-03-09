@@ -1,73 +1,67 @@
-# Next Increment Plan — Operational Hardening + Governance Readiness
+# Next Increment Plan — Policy Convergence and Operational Durability
 
-This plan converts the current repo into something that can be deployed with fewer foot-guns, and sets up the follow-on work for pull-based, signed policy reconciliation.
+This document describes the next coherent increment for Links.
+It is forward-looking only and avoids duplicating already-shipped work.
 
-This plan is derived from the attached evaluation notes and is intended to be applied as a single cohesive increment.
+## Objective
 
-
-## Status
-**Completed:** v0.11.0 baseline shipped (2026-02-27)
-
-This plan is now treated as “done” for the hardening items it covered. Remaining work has been moved into the next increment below.
+Close the gap between a working local governance substrate and a more durable multi-node operating model.
 
 ---
-## Next Increment (draft) — Pull-based Reconciliation + Storage Abstraction
 
-This increment focuses on closing the gap between “signed feeds exist” and “nodes can safely converge”:
+## Priority 1: Reconciliation hardening
 
-### 1) Pull-based policy reconciliation (end-to-end)
-- Implement:
-  - `GET /villages/{id}/policy/latest`
-  - `GET /villages/{id}/policy/updates?since=...` (paged)
-- Add `links policy pull --apply` with deterministic reconciliation rules
-- Produce fork/conflict report artifacts suitable for audit
+Strengthen the pull-based policy path so that nodes can converge more safely and operators can understand disagreements.
 
-### 2) Storage abstraction + optional SQLite backend
-- Introduce a pluggable storage interface (JSONL default)
-- Optional SQLite backend behind a feature flag
-- Atomic policy apply transaction boundary (apply + audit + indexes)
+### Target outcomes
+- Harden `links policy pull --apply` behavior for repeatable convergence.
+- Produce explicit conflict and fork report artifacts suitable for audit and debugging.
+- Make feed pagination and history traversal easier to operate at larger history depths.
+- Clarify deterministic tie-break and replay behavior in docs and examples.
 
-### 3) Observability automation
-- Scheduled drift checks (cron-friendly command + example)
-- Signed transparency log checkpoints (periodic snapshot)
+---
 
+## Priority 2: Storage abstraction
 
-## Confirmation checkpoint (before you merge)
+Reduce the operational fragility of a filesystem-only posture without breaking the small-footprint default.
 
-Please confirm these scope decisions:
-- [x] We prioritized **operational hardening** (packaging, safe persistence, rate limiting, quarantine re-check, path sanitization, TLS posture).
-- [x] We shipped a governance substrate baseline separately (v0.11.0); **full pull-based reconciliation** remains the next increment.
-- [x] We use **POSIX file locking** for JSONL (Linux/macOS), with a note to migrate to SQLite later if needed.
+### Target outcomes
+- Introduce a storage abstraction boundary that preserves the current default backend.
+- Add an optional SQLite backend.
+- Define atomic apply semantics across policy state, audit records, and derived indexes.
+- Keep migration and rollback simple for operators.
 
-## Scope — what changes in this increment
+---
 
-### A. Packaging & install correctness
-- Fix `pyproject.toml` to ensure `links` is installable and the CLI entrypoint works.
-- Ensure declared dependencies include FastAPI/Uvicorn/Pydantic/Typer/NaCl/Requests.
+## Priority 3: Drift and transparency automation
 
-### B. Persistence safety under concurrency
-- Add a tiny file-lock utility for JSONL append operations.
-- Use locked append for:
-  - flattened claims index
-  - audit log
-  - village members + revocations + policy history
+Move from manual inspection toward routine operational checks.
 
-### C. Quarantine approval safety
-- Quarantine approve must **re-check current village policy** before allowing ingestion.
-- Reject or keep in quarantine if policy no longer allows it.
+### Target outcomes
+- Add cron-friendly drift automation examples.
+- Improve webhook and alerting guidance.
+- Strengthen transparency snapshot and checkpoint handling.
+- Document expected operator responses for drift, mismatch, and anchor events.
 
-### D. Security hygiene
-- Sanitize `village_id` to prevent path traversal (`^[a-zA-Z0-9_-]+$`).
-- Add basic in-memory rate limiting middleware using village policy `rate_limit_per_min`.
-- Improve TLS posture: warn when binding to non-loopback; document “run behind TLS terminator” expectation.
+---
 
-### E. Documentation cleanup
-- Ensure README contains **no internal project-management terms** (phases/baseline/etc).
-- Add operational notes for TLS, tokens, rate limiting, and quarantine.
+## Priority 4: Production deployment guidance
 
-## Follow-on increment (planned, not implemented here)
-- Make policy updates fully pull-based:
-  - `GET /villages/{id}/policy/latest`
-  - `GET /villages/{id}/policy/updates?since=…`
-  - `links policy pull --apply` reconciliation rules
+Push deployment docs from “good guidance” toward “repeatable operator playbook.”
 
+### Target outcomes
+- Expand production examples for reverse proxy, tokens, and logging.
+- Clarify scale limits of the in-memory safety mechanisms.
+- Add concrete deployment patterns for single-node and small federated environments.
+- Align operational docs with shipped versus planned capabilities.
+
+---
+
+## Explicit non-goals for this increment
+
+These items are valuable, but they should not be mixed into the same commit train unless needed for implementation:
+
+- broad repository layout refactors
+- wholesale vendoring from upstream
+- speculative standards alignment work that does not improve current operation
+- large SDK surface expansion unrelated to reconciliation or storage

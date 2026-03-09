@@ -1,124 +1,127 @@
 # Links Roadmap
 
-This document captures the intended direction of the Links project.  
+This document captures the intended direction of the Links project.
 It is intentionally schedule-free. Items move forward based on architectural readiness, contributor bandwidth, and operational priority.
 
 ## Status legend
-- ✅ Completed (baseline shipped)
-- 🟡 Partial (scaffolded; needs hardening)
-- 🔜 Planned (not implemented yet)
+- ✅ Shipped
+- 🟡 Partial
+- 🔜 Planned
 
-_Last updated: 2026-02-27 (v0.11.0 baseline)_
-
+_Last updated: 2026-03-09_
 
 ---
 
 ## 1. Governance & Policy Evolution
 
 ### 1.1 Quorum Governance Enhancements
-**Status:** ✅ Completed (v0.11.0)
-- Support weighted quorum (e.g., weighted signers instead of simple M-of-N)
-- Support role-based quorum sets (e.g., at least one “core” + one “external” signer)
-- Add explicit quorum metadata into policy update artifacts for audit clarity
+**Status:** 🟡 Partial
+- Weighted quorum support beyond simple M-of-N acceptance
+- Role-based quorum sets (for example, at least one “core” plus one “external” signer)
+- Explicit quorum metadata in policy update artifacts for audit clarity
 
 ### 1.2 Policy Diff & Review
-**Status:** ✅ Completed (v0.11.0)
-- Add structured policy diff tooling
-- Provide machine-readable policy change summaries
-- Add “proposal → approval → activation” lifecycle states
+**Status:** 🟡 Partial
+- Structured policy diff tooling
+- Machine-readable policy change summaries
+- Lifecycle semantics across proposal, approval, and activation
 
 ### 1.3 Policy Rollback & Versioning
-**Status:** ✅ Completed (v0.11.0)
+**Status:** 🟡 Partial
 - First-class policy version identifiers
 - Deterministic rollback to prior policy hash
-- Explicit “activation height” or activation timestamp semantics
+- Explicit activation time or activation height semantics across operator workflows
 
 ---
 
 ## 2. Distributed Policy Substrate
 
 ### 2.1 Pull Model Hardening
-**Status:** 🟡 Partial (v0.11.0 baseline: signed manifests + pagination hooks; needs full pull reconciliation rules)
+**Status:** 🟡 Partial
 - Signed policy feed manifests
 - Feed integrity metadata (Merkle root or hash chain)
 - Pagination and large-history optimization
+- Stronger end-to-end pull reconciliation rules
 
 ### 2.2 Federation & Multi-Node Reconciliation
-**Status:** 🟡 Partial (v0.11.0 baseline: conflict/fork detection; gossip propagation planned)
+**Status:** 🟡 Partial
 - Cross-node reconciliation conflict detection
 - Explicit fork detection reporting
-- Optional gossip-based propagation
+- Durable reconciliation artifacts suitable for audit
+- Optional gossip-style propagation
 
 ### 2.3 Trust Anchors
-**Status:** 🟡 Partial (v0.11.0 baseline: registry + rotate/revoke primitives; operational playbooks planned)
+**Status:** 🟡 Partial
 - Village-level trust anchor registry
 - Anchor rotation procedures
 - Explicit anchor revocation workflow
+- Operator playbooks for rotation, rollover, and incident handling
 
 ---
 
 ## 3. Assurance & Observability
 
 ### 3.1 Policy Audit Trails
-**Status:** 🟡 Partial (v0.11.0 baseline: JSON/CSV export + digest; event taxonomy and signing hardening planned)
+**Status:** 🟡 Partial
 - Structured audit export (JSON/CSV)
 - Policy change event classification
-- Audit digest signing
+- Audit digest generation and signing hardening
 
 ### 3.2 Drift Monitoring
-**Status:** 🟡 Partial (v0.11.0 baseline: CLI drift check + severity + webhook hook; periodic automation planned)
-- Periodic automated drift checks
-- Drift severity classification
+**Status:** 🟡 Partial
+- Drift check CLI and severity classification
 - Alert hooks (webhook or CLI-based triggers)
+- Periodic automated drift checks and cron-ready operator examples
 
 ### 3.3 Governance Transparency
-**Status:** 🟡 Partial (v0.11.0 baseline: transparency log + snapshots; read-only public mode hardening planned)
-- Read-only public policy endpoint option
-- Signed policy transparency log
+**Status:** 🟡 Partial
+- Signed transparency log support
 - Reproducible policy history snapshots
+- Read-only public policy endpoint hardening
 
 ---
 
 ## 4. Operational Hardening
 
 ### 4.1 Storage Layer Evolution
-**Status:** 🔜 Planned (SQLite backend + abstraction + atomic transactions)
+**Status:** 🔜 Planned
 - Optional SQLite backend
 - Pluggable storage abstraction layer
 - Atomic policy apply transactions
 
 ### 4.2 Deployment Profiles
-**Status:** 🟡 Partial (v0.11.0 baseline docs + container-ready example; production templates planned)
-- “Single-node dev” profile
-- “Production hardened” profile
+**Status:** 🟡 Partial
+- Single-node development profile
+- Production-hardened profile guidance
 - Container-ready configuration examples
+- More explicit production templates and operator runbooks
 
 ### 4.3 Performance & Limits
-**Status:** 🟡 Partial (v0.11.0 baseline: rate limiting + streaming patterns + load script; full harness planned)
-- Configurable rate limit strategies
-- Memory-safe streaming for large claim sets
-- Load testing harness
+**Status:** 🟡 Partial
+- Configurable rate-limit strategies
+- Memory-safe handling patterns for larger claim sets
+- Load testing harness and clearer performance baselines
 
 ---
 
 ## 5. Security & Risk Controls
 
 ### 5.1 Advanced Signature Controls
-**Status:** 🔜 Planned (HSM/hardware signing, enforced rotation, expiry)
+**Status:** 🔜 Planned
 - Hardware-backed signing integration
 - Key rotation enforcement
 - Expiring policy updates
 
 ### 5.2 Abuse & Misuse Controls
-**Status:** 🟡 Partial (v0.11.0 baseline: quotas + replay protection + signed denials best-effort; hardening planned)
+**Status:** 🟡 Partial
 - Village-level submission quotas
 - Replay protection improvements
-- Signed denial / rejection artifacts
+- Signed denial or rejection artifacts
 
 ### 5.3 Cryptographic Agility
-**Status:** 🟡 Partial (v0.11.0 baseline: alg field + guardrails; broader algo support + deprecation lifecycle planned)
-- Algorithm negotiation field
-- Support for additional signature algorithms
+**Status:** 🟡 Partial
+- Algorithm metadata and guardrails
+- Additional signature algorithm support
 - Explicit deprecation lifecycle
 
 ---
@@ -126,18 +129,19 @@ _Last updated: 2026-02-27 (v0.11.0 baseline)_
 ## 6. Ecosystem & Interoperability
 
 ### 6.1 External Registry Integration
-**Status:** 🟡 Partial (v0.11.0 baseline: import/export CLI; bridging patterns planned)
+**Status:** 🟡 Partial
 - Import/export trust registry artifacts
 - Registry-to-village bridging patterns
 
 ### 6.2 Standardization Alignment
-**Status:** 🔜 Planned (schema refinement, JSON-LD optional contexts, conformance suite)
-- Schema refinement for policy update artifact
-- JSON-LD or canonical context support (optional)
-- Conformance test suite for policy governance
+**Status:** 🔜 Planned
+- Schema refinement for policy update artifacts
+- Optional JSON-LD or canonical context support
+- Conformance coverage for policy governance
 
 ### 6.3 Tooling & SDK
-**Status:** 🟡 Partial (v0.11.0 baseline: Python SDK + minimal client + example; dedicated integration repo planned)
+**Status:** 🟡 Partial
 - Python SDK wrapper
 - Minimal HTTP client library
-- Example integration repo
+- Example integration materials
+- Clearer separation between stable and experimental SDK surfaces
