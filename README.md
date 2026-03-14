@@ -149,14 +149,14 @@ links policy verify artifacts/policy_update.s2.json
 
 - weighted signer and role-based quorum models
 - richer policy lifecycle semantics across proposal, approval, and activation
-- signed feed manifests, large-history pagination, and multi-node reconciliation hardening
+- signed feed manifests with policy-pinned trust evaluation and deep-history parent-chain recovery
 - transparency and audit signing workflows for production operations
 
 #### Next priorities
 
 - weighted or role-based quorum operationalization beyond the current artifact model
-- larger-fleet federation workflows and richer replay handling
-- stronger audit signing and transparency publication pipelines
+- transparency publication over HTTP and stronger checkpoint exchange workflows
+- machine-readable capability declarations and operator acceptance criteria for federation pilots
 - broader SDK stabilization and ecosystem integration work
 
 ## Operations

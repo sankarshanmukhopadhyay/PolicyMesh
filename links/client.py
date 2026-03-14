@@ -27,6 +27,11 @@ class LinksClient:
         r.raise_for_status()
         return r.json()
 
+    def policy_update_by_hash(self, village_id: str, policy_hash: str) -> Dict[str, Any]:
+        r = requests.get(f"{self.base_url}/villages/{village_id}/policy/by_hash/{policy_hash}", headers=self._headers(), timeout=self.timeout)
+        r.raise_for_status()
+        return r.json()
+
     def transparency_log(self, village_id: str, limit: int = 500) -> Iterable[Dict[str, Any]]:
         r = requests.get(f"{self.base_url}/villages/{village_id}/transparency/policy_log", headers=self._headers(), params={"limit": limit}, timeout=self.timeout, stream=True)
         r.raise_for_status()

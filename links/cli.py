@@ -12,7 +12,7 @@ from nacl.signing import SigningKey
 from links.server import create_app
 from links.policy_updates import VillagePolicyUpdate, verify_update_any, add_signature, sign_update_legacy, build_update, compute_policy_hash
 from links.policy_diff import diff_policies
-from links.policy_feed import PolicyFeedManifest, verify_manifest
+from links.policy_feed import PolicyFeedManifest, fill_history_gaps, verify_manifest_against_policy
 from links.reconcile import reconcile, write_reconciliation_report
 from links.trust_anchors import TrustAnchorEntry, add_anchor_signature, verify_anchor_entry_any
 from links.policy_feed import signer_allowed
@@ -150,27 +150,48 @@ def policy_pull(url: str, village_id: str, apply: bool = True, since: str = None
             typer.echo(f"Invalid signature material for update policy_hash={u.policy_hash}")
             raise typer.Exit(code=1)
 
-    manifest_ok = None
-    manifest_msg = None
-    if manifest:
-        try:
-            m = PolicyFeedManifest.model_validate(manifest)
-            if m.signature:
-                manifest_ok, manifest_msg = verify_manifest(m)
-            else:
-                manifest_ok, manifest_msg = True, "unsigned manifest accepted for development use"
-        except Exception as exc:
-            manifest_ok, manifest_msg = False, f"manifest validation failed: {exc}"
-        if manifest_ok is False:
-            typer.echo(f"Manifest validation failed: {manifest_msg}")
-            raise typer.Exit(code=1)
-
     local_updates = []
     try:
         from links.policy_feed import list_policy_updates
         local_updates = list_policy_updates(Path("data"), village_id)
     except Exception:
         local_updates = []
+
+    current_policy = {}
+    if load_village:
+        try:
+            v = load_village(Path("data"), village_id)
+            current_policy = v.policy.model_dump()
+        except Exception:
+            current_policy = {}
+
+    manifest_ok = None
+    manifest_msg = None
+    if manifest:
+        try:
+            m = PolicyFeedManifest.model_validate(manifest)
+            manifest_ok, manifest_msg = verify_manifest_against_policy(current_policy, m)
+        except Exception as exc:
+            manifest_ok, manifest_msg = False, f"manifest validation failed: {exc}"
+        if manifest_ok is False:
+            typer.echo(f"Manifest validation failed: {manifest_msg}")
+            raise typer.Exit(code=1)
+
+    local_hashes = {u.policy_hash for u in local_updates}
+    def _fetch_update_by_hash(policy_hash: str):
+        try:
+            resp = requests.get(f"{base}/villages/{village_id}/policy/by_hash/{policy_hash}", headers=headers, timeout=30)
+            if resp.status_code != 200:
+                return None
+            return VillagePolicyUpdate.model_validate(resp.json())
+        except Exception:
+            return None
+
+    updates, fetched_parent_hashes, unresolved_parent_hashes = fill_history_gaps(
+        updates,
+        known_policy_hashes=local_hashes,
+        fetch_update_by_hash=_fetch_update_by_hash,
+    )
 
     report = reconcile(local_updates, updates, village_id=village_id)
     chosen_hash = report.selected_head
@@ -201,14 +222,12 @@ def policy_pull(url: str, village_id: str, apply: bool = True, since: str = None
     write_reconciliation_report(report, rec_out)
     typer.echo(f"Wrote {rec_out}")
 
+    if fetched_parent_hashes:
+        typer.echo(f"Recovered parent chain updates: {len(fetched_parent_hashes)}")
+    if unresolved_parent_hashes:
+        typer.echo(f"Warning: unresolved parent hashes remain: {', '.join(unresolved_parent_hashes[:10])}")
+
     if apply and apply_policy_update:
-        current_policy = {}
-        if load_village:
-            try:
-                v = load_village(Path('data'), village_id)
-                current_policy = v.policy.model_dump()
-            except Exception:
-                current_policy = {}
         ok, msg = signer_allowed(current_policy, chosen)
         if not ok:
             typer.echo(f"Refusing to apply update: {msg}")

@@ -61,6 +61,9 @@ class VillagePolicy(BaseModel):
     policy_quorum: dict = Field(default_factory=dict, description="Quorum config: {model: m_of_n|weighted|role_based, threshold_m, threshold_weight, role_requirements[]}")
     policy_signer_weights: dict[str, float] = Field(default_factory=dict, description="Key-hash -> weight for weighted quorum")
     policy_signer_roles: dict[str, list[str]] = Field(default_factory=dict, description="Key-hash -> roles for role-based quorum")
+    trusted_manifest_signer_allowlist: list[str] = Field(default_factory=list, description="Trusted policy feed manifest signer key hashes.")
+    require_manifest_signature: bool = Field(default=False, description="If true, remote policy manifests must be signed during pull operations.")
+    require_trusted_manifest_signer: bool = Field(default=False, description="If true, remote policy manifests must be signed by a key in trusted_manifest_signer_allowlist.")
     require_quorum_metadata: bool = Field(default=False, description="If true, policy update artifacts must include quorum metadata.")
     require_issuer_allowlist: bool = False
 

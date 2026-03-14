@@ -104,6 +104,14 @@ def _policy_allowlist(policy: dict) -> list[str]:
     return list(policy.get("policy_signer_allowlist", []) or [])
 
 
+def manifest_trust_policy(policy: dict) -> dict:
+    return {
+        "trusted_signer_key_hashes": list(policy.get("trusted_manifest_signer_allowlist", []) or []),
+        "require_signature": bool(policy.get("require_manifest_signature", False)),
+        "require_trusted_signer": bool(policy.get("require_trusted_manifest_signer", False)),
+    }
+
+
 def evaluate_policy_quorum(policy: dict, u: VillagePolicyUpdate) -> tuple[bool, str]:
     """Enforce policy signature rules with optional quorum models.
 
@@ -231,6 +239,81 @@ def verify_manifest(m: PolicyFeedManifest, trusted_signer_key_hashes: Optional[L
         return False, "manifest signature invalid"
 
     return True, "ok"
+
+
+def verify_manifest_against_policy(policy: dict, m: PolicyFeedManifest) -> tuple[bool, str]:
+    trust = manifest_trust_policy(policy)
+    trusted = trust["trusted_signer_key_hashes"]
+    require_signature = trust["require_signature"]
+    require_trusted = trust["require_trusted_signer"]
+
+    if not (m.signer_public_key and m.signature):
+        if require_signature or require_trusted:
+            return False, "unsigned manifest rejected by policy"
+        return True, "unsigned manifest accepted for development use"
+
+    signer_hash = hashlib.sha256(base64.b64decode(m.signer_public_key)).hexdigest()
+    ok, msg = verify_manifest(m)
+    if not ok:
+        return False, msg
+    if require_trusted and trusted and signer_hash not in set(trusted):
+        return False, "manifest signer not trusted"
+    if trusted and signer_hash in set(trusted):
+        return True, f"manifest signature verified by trusted signer {signer_hash}"
+    return True, f"manifest signature verified by unpinned signer {signer_hash}"
+
+
+def get_policy_update_by_hash(villages_root: Path, village_id: str, policy_hash: str) -> Optional[VillagePolicyUpdate]:
+    for u in iter_policy_updates(villages_root, village_id):
+        if u.policy_hash == policy_hash:
+            return u
+    return None
+
+
+def fill_history_gaps(
+    initial_updates: List[VillagePolicyUpdate],
+    known_policy_hashes: Optional[set[str]] = None,
+    fetch_update_by_hash=None,
+    max_fetch: int = 500,
+) -> tuple[List[VillagePolicyUpdate], List[str], List[str]]:
+    """Resolve parent-chain gaps by fetching missing ancestors one by one.
+
+    Returns (combined_updates, fetched_hashes, unresolved_parent_hashes).
+    """
+    updates_by_hash = {u.policy_hash: u for u in initial_updates}
+    known = set(known_policy_hashes or set()) | set(updates_by_hash.keys())
+    fetched: List[str] = []
+    unresolved: List[str] = []
+
+    pending = [u.previous_policy_hash for u in updates_by_hash.values() if u.previous_policy_hash and u.previous_policy_hash not in known]
+    seen_pending: set[str] = set()
+
+    while pending and len(fetched) < max_fetch:
+        wanted = pending.pop(0)
+        if not wanted or wanted in known or wanted in seen_pending:
+            continue
+        seen_pending.add(wanted)
+        if fetch_update_by_hash is None:
+            unresolved.append(wanted)
+            continue
+        fetched_update = fetch_update_by_hash(wanted)
+        if fetched_update is None:
+            unresolved.append(wanted)
+            continue
+        updates_by_hash[fetched_update.policy_hash] = fetched_update
+        known.add(fetched_update.policy_hash)
+        fetched.append(fetched_update.policy_hash)
+        prev = fetched_update.previous_policy_hash
+        if prev and prev not in known:
+            pending.append(prev)
+
+    while pending:
+        wanted = pending.pop(0)
+        if wanted and wanted not in known and wanted not in unresolved:
+            unresolved.append(wanted)
+
+    combined = sorted(updates_by_hash.values(), key=lambda u: (u.created_at, u.policy_hash))
+    return combined, fetched, unresolved
 
 
 def build_policy_feed_manifest(villages_root: Path, village_id: str) -> PolicyFeedManifest:
