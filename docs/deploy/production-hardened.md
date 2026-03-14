@@ -1,8 +1,8 @@
 # Production hardened profile (guidance)
 
 ## TLS & ingress
-Links should be deployed **behind a TLS terminator** such as Nginx, Envoy, or an API gateway.
-Run the Links process on loopback or a private network interface.
+PolicyMesh should be deployed **behind a TLS terminator** such as Nginx, Envoy, or an API gateway.
+Run the PolicyMesh process on loopback or a private network interface.
 
 ## Auth
 - Use bearer tokens for management endpoints.

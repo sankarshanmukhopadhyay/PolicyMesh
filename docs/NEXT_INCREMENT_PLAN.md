@@ -4,7 +4,7 @@ The prior increment delivered policy-pinned manifest trust, fail-closed pull con
 
 ## Objective
 
-Extend Links from a federation-capable pull substrate toward a more legible and more exchangeable operator posture.
+Extend PolicyMesh from a federation-capable pull substrate toward a more legible and more exchangeable operator posture.
 
 ---
 

@@ -1,8 +1,8 @@
-# Contributing to Links
+# Contributing to PolicyMesh
 
 Thank you for contributing.
 
-![github-banner](https://github.com/Inky-Tech-Pty-Ltd/Links/blob/main/images/Links%20GitHub%20Banner.jpg)
+![github-banner](https://github.com/Inky-Tech-Pty-Ltd/PolicyMesh/blob/main/images/PolicyMesh%20GitHub%20Banner.jpg)
 
 ### How to contribute:
 1. Fork or create a feature branch from `main`:

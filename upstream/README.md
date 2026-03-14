@@ -1,7 +1,7 @@
 # Village Link
 A project for building villages.
 
-![github-banner](https://github.com/Inky-Tech-Pty-Ltd/Links/blob/main/images/Links%20GitHub%20Banner.jpg)
+![github-banner](https://github.com/Inky-Tech-Pty-Ltd/PolicyMesh/blob/main/images/PolicyMesh%20GitHub%20Banner.jpg)
 www.village.link (This URL will become the front page. Currently it points straight back here.)
 
 ## Abstract
@@ -78,7 +78,7 @@ It is illustrative that teenagers can be acutely vulnerable to shame.
 They are learning the rules.
 
 The current generation of AIs do not yet learn the rules and guard their reputation in this way. 
-They don't develop a set of 'commonsense' constraints, and sometimes [they seem stupid](https://github.com/Inky-Tech-Pty-Ltd/Links/wiki/Jagged-Intelligence). 
+They don't develop a set of 'commonsense' constraints, and sometimes [they seem stupid](https://github.com/Inky-Tech-Pty-Ltd/PolicyMesh/wiki/Jagged-Intelligence). 
 
 One of the premises of this project is that social constraints will soon form a part of the training framework for AI. 
 In that future, there will be a type of AI that knows its reputation is an asset, and that will have in its reward function a digital equivalent of shame. 
@@ -93,16 +93,16 @@ Instead we want to discover what is universal about human reputation systems and
 #### Goals
 The project is motivated by some big problems. How do we? ...
 1. Harden communities against a future AI that is highly capable and potentially malign
-    * Address bottlenecks in AI development including alignment, context drift, and [jagged intelligence](https://github.com/Inky-Tech-Pty-Ltd/Links/wiki/Jagged-Intelligence)
+    * Address bottlenecks in AI development including alignment, context drift, and [jagged intelligence](https://github.com/Inky-Tech-Pty-Ltd/PolicyMesh/wiki/Jagged-Intelligence)
 2. Create a new/old toolkit for thinking about:
-   * [Identity](https://github.com/Inky-Tech-Pty-Ltd/Links/wiki/Identity) (and [authentication](https://github.com/Inky-Tech-Pty-Ltd/Links/wiki/Authentication,-Passwords,-and-2FA))
+   * [Identity](https://github.com/Inky-Tech-Pty-Ltd/PolicyMesh/wiki/Identity) (and [authentication](https://github.com/Inky-Tech-Pty-Ltd/PolicyMesh/wiki/Authentication,-Passwords,-and-2FA))
    * Reputation
    * Social connections
-   * [Connection weights](https://github.com/Inky-Tech-Pty-Ltd/Links/wiki/Connection-weights.-Similarities-between-brains-and-communities)
+   * [Connection weights](https://github.com/Inky-Tech-Pty-Ltd/PolicyMesh/wiki/Connection-weights.-Similarities-between-brains-and-communities)
    * Villages, including
        * Norms, and the evolution of sets of norms
-       * [Village defences](https://github.com/Inky-Tech-Pty-Ltd/Links/wiki/Village-defences,-vulnerable-members). The village firewall, and curation of content for vulnerable members, including children
-       * Non-zero-sum transactional opportunities that leverage both [search](https://github.com/Inky-Tech-Pty-Ltd/Links/wiki/Search) and reputation in the social graph
+       * [Village defences](https://github.com/Inky-Tech-Pty-Ltd/PolicyMesh/wiki/Village-defences,-vulnerable-members). The village firewall, and curation of content for vulnerable members, including children
+       * Non-zero-sum transactional opportunities that leverage both [search](https://github.com/Inky-Tech-Pty-Ltd/PolicyMesh/wiki/Search) and reputation in the social graph
        * Support for work on hard problems of coordinated action.
 
 #### Architecture
@@ -111,11 +111,11 @@ The project aims to build a type of decentralized agent that can:
 2. Make reputational claims about itself, (identity claims,) and about others
 3. Assess the reputational claims of others by checking its own data store, and by querying the social graph
 4. Make decisions about what reputational claims are to be shared with whom
-5. Seek out, strengthen, weaken, or shut down [connections](https://github.com/Inky-Tech-Pty-Ltd/Links/wiki/Connection-weights.-Similarities-between-brains-and-communities) based on reputation. (Connection weights are the synaptic tissue of the village thinking machine.)
+5. Seek out, strengthen, weaken, or shut down [connections](https://github.com/Inky-Tech-Pty-Ltd/PolicyMesh/wiki/Connection-weights.-Similarities-between-brains-and-communities) based on reputation. (Connection weights are the synaptic tissue of the village thinking machine.)
 
 The one-word description of the architecture is *gossip*. 
 
-(Note that there are currently two competing drafts for the fundamental elements of the project, see [Axioms](https://github.com/Inky-Tech-Pty-Ltd/Links/wiki/Axioms))
+(Note that there are currently two competing drafts for the fundamental elements of the project, see [Axioms](https://github.com/Inky-Tech-Pty-Ltd/PolicyMesh/wiki/Axioms))
 
 The disruptive opportunity in the project comes from giving each entity one or more agents that can coordinate a reputational asset that is currently scattered across many domains, many channels, and many stores of information.
 
@@ -131,7 +131,7 @@ In using this data, the project does not have to capture every nuance.
 Instead, it just needs to capture a few key 'seed' features, and ensure that the system is evolvable.
 
 The harvesting of people's reputational data is not morally value-free. 
-The issue is explored more deeply on the page, [Outrageous Liberties](https://github.com/Inky-Tech-Pty-Ltd/Links/wiki/Outrageous-Liberties).
+The issue is explored more deeply on the page, [Outrageous Liberties](https://github.com/Inky-Tech-Pty-Ltd/PolicyMesh/wiki/Outrageous-Liberties).
 
 #### Reputation, rudimentary and not-so-rudimentary
 There are many places online where Bob can call attention to Alice using the _@Alice_ convention. 
@@ -148,7 +148,7 @@ The public information includes the not-insignificant reputational architecture 
 
 At this point, Bob is somewhat intimidated by Carol's high prestige, but he has an incentive to contact her because he can see that she will definitely have the answer to his current, thorny, problem X. 
 In the language of the 'Goals' section above, this is an example of a non-zero-sum transactional opportunity.
-It's also the reason that Bob reached-out through the [search function in the social graph](https://github.com/Inky-Tech-Pty-Ltd/Links/wiki/Search) to find Carol. 
+It's also the reason that Bob reached-out through the [search function in the social graph](https://github.com/Inky-Tech-Pty-Ltd/PolicyMesh/wiki/Search) to find Carol. 
 
 Bob has risk around the possibility that Carol's agent will block his approach; and even worse, a risk that it will publish the fact that the approach was blocked. 
 These are the punishment strategies of the village. Bob needs to assess these risks in the light of his own prestige. 
@@ -188,18 +188,18 @@ Cooperation in a village is the best technology so far for resisting the nastine
 ## Hyperlinks
 
 #### ... to the project wiki ...
-* [Authentication, passwords, and 2FA](https://github.com/Inky-Tech-Pty-Ltd/Links/wiki/Authentication,-Passwords,-and-2FA)
-* [Axioms](https://github.com/Inky-Tech-Pty-Ltd/Links/wiki/Axioms)
-* [Bootstrap strategy](https://github.com/Inky-Tech-Pty-Ltd/Links/wiki/Bootstrap)
-* [Connection weights](https://github.com/Inky-Tech-Pty-Ltd/Links/wiki/Connection-weights.-Similarities-between-brains-and-communities)
-* [Jagged intelligence](https://github.com/Inky-Tech-Pty-Ltd/Links/wiki/Jagged-Intelligence)
-* [Person-to-Person Edges are Tricky](https://github.com/Inky-Tech-Pty-Ltd/Links/wiki/Person%E2%80%90to%E2%80%90Person-Edges-are-Tricky)
-* [References, Research](https://github.com/Inky-Tech-Pty-Ltd/Links/wiki/References,-Research)
-* [Search](https://github.com/Inky-Tech-Pty-Ltd/Links/wiki/Search)
-* [Village defences](https://github.com/Inky-Tech-Pty-Ltd/Links/wiki/Village-defences,-vulnerable-members)
-* [Wish list](https://github.com/Inky-Tech-Pty-Ltd/Links/wiki/Wish-List)
+* [Authentication, passwords, and 2FA](https://github.com/Inky-Tech-Pty-Ltd/PolicyMesh/wiki/Authentication,-Passwords,-and-2FA)
+* [Axioms](https://github.com/Inky-Tech-Pty-Ltd/PolicyMesh/wiki/Axioms)
+* [Bootstrap strategy](https://github.com/Inky-Tech-Pty-Ltd/PolicyMesh/wiki/Bootstrap)
+* [Connection weights](https://github.com/Inky-Tech-Pty-Ltd/PolicyMesh/wiki/Connection-weights.-Similarities-between-brains-and-communities)
+* [Jagged intelligence](https://github.com/Inky-Tech-Pty-Ltd/PolicyMesh/wiki/Jagged-Intelligence)
+* [Person-to-Person Edges are Tricky](https://github.com/Inky-Tech-Pty-Ltd/PolicyMesh/wiki/Person%E2%80%90to%E2%80%90Person-Edges-are-Tricky)
+* [References, Research](https://github.com/Inky-Tech-Pty-Ltd/PolicyMesh/wiki/References,-Research)
+* [Search](https://github.com/Inky-Tech-Pty-Ltd/PolicyMesh/wiki/Search)
+* [Village defences](https://github.com/Inky-Tech-Pty-Ltd/PolicyMesh/wiki/Village-defences,-vulnerable-members)
+* [Wish list](https://github.com/Inky-Tech-Pty-Ltd/PolicyMesh/wiki/Wish-List)
 #### ... and to elsewhere ...
-* [Earlier history of the Links project](https://inkytech.atlassian.net/wiki/spaces/IT/overview) - a link to a Confluence wiki
+* [Earlier history of the PolicyMesh project](https://inkytech.atlassian.net/wiki/spaces/IT/overview) - a link to a Confluence wiki
 * The decentralized reputation explored in this project is adjacent to, but perhaps subtly different from decentralized trust, where there is a body of work in a Linux Foundation Working Group:
   * [Decentralized Trust Working Group in Confluence](https://lf-toip.atlassian.net/wiki/spaces/HOME/pages/257785857/Decentralized+Trust+Graph+Working+Group)
     * [A related repo in GitHub](https://github.com/trustoverip/dtgwg-cred-tf/tree/14-revised-vrc-spec---v02)

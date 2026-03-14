@@ -1,12 +1,12 @@
 # Governance Risk Crosswalk
 
-This document maps Links system capabilities to operational risks, control objectives, and selected external standards families.
+This document maps PolicyMesh system capabilities to operational risks, control objectives, and selected external standards families.
 
 The goal is not to claim certification or comprehensive control coverage. The goal is to make the architecture legible to operators, reviewers, and institutions that need a clearer account of what the system is trying to protect against.
 
 ## Scope and intent
 
-Links is not a generic compliance platform. It is a small-footprint governance substrate for verifiable claim bundles, village-scoped policy control, quarantine review, audit traces, and policy synchronization.
+PolicyMesh is not a generic compliance platform. It is a small-footprint governance substrate for verifiable claim bundles, village-scoped policy control, quarantine review, audit traces, and policy synchronization.
 
 This crosswalk therefore focuses on:
 
@@ -164,7 +164,7 @@ A few themes matter more than the rest.
 
 ### 1. Governance integrity
 
-Links is unusual because policy is not merely configuration. Policy is part of the system's governance substrate. That means policy authenticity, reviewability, rollback, and drift monitoring are not nice extras. They are first-order controls.
+PolicyMesh is unusual because policy is not merely configuration. Policy is part of the system's governance substrate. That means policy authenticity, reviewability, rollback, and drift monitoring are not nice extras. They are first-order controls.
 
 ### 2. Evidence portability
 
@@ -172,7 +172,7 @@ The system becomes more institutionally useful when it can produce portable evid
 
 ### 3. Bounded trust, not universal trust
 
-Village-level controls, signer allowlists, and trust anchors show that Links is operating with bounded and contextual trust. That is the right posture for a system dealing with reputation-adjacent or governance-sensitive artifacts.
+Village-level controls, signer allowlists, and trust anchors show that PolicyMesh is operating with bounded and contextual trust. That is the right posture for a system dealing with reputation-adjacent or governance-sensitive artifacts.
 
 ## What this crosswalk does not claim
 

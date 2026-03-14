@@ -13,10 +13,10 @@ from links.villages import load_village
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description='Cron-friendly policy drift check for Links operators.')
-    parser.add_argument('url', help='Base URL of remote Links node')
+    parser = argparse.ArgumentParser(description='Cron-friendly policy drift check for PolicyMesh operators.')
+    parser.add_argument('url', help='Base URL of remote PolicyMesh node')
     parser.add_argument('village_id', help='Village identifier')
-    parser.add_argument('--data-root', default='data', help='Local Links data root (default: data)')
+    parser.add_argument('--data-root', default='data', help='Local PolicyMesh data root (default: data)')
     parser.add_argument('--token', default=None, help='Bearer token for remote access')
     parser.add_argument('--out', default=None, help='Output JSON path (default: artifacts/drift/<village_id>/drift.<timestamp>.json)')
     args = parser.parse_args()

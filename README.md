@@ -1,6 +1,6 @@
-# Links
+# PolicyMesh
 
-Links is a small-footprint system for producing **verifiable, inspectable claim bundles** and exchanging them between nodes with **group policy controls**.
+PolicyMesh is a small-footprint system for producing **verifiable, inspectable claim bundles** and exchanging them between nodes with **group policy controls**.
 
 ## What you get
 
@@ -163,10 +163,10 @@ links policy verify artifacts/policy_update.s2.json
 
 ### TLS and exposure
 
-Links is designed to run **behind a TLS terminator** (Nginx/Envoy/Cloud LB). The built-in server is suitable for dev and controlled environments.
+PolicyMesh is designed to run **behind a TLS terminator** (Nginx/Envoy/Cloud LB). The built-in server is suitable for dev and controlled environments.
 
 - Binding to non-loopback interfaces will emit a warning in the CLI.
-- Terminate TLS at the edge and forward to Links over a private network.
+- Terminate TLS at the edge and forward to PolicyMesh over a private network.
 
 ### Authentication tokens
 
@@ -174,7 +174,7 @@ If village membership/auth is enabled, use `Authorization: Bearer <token>` for m
 
 ### Rate limiting
 
-Links enforces a basic **in-memory per-village rate limit** using the village policy field `rate_limit_per_min`. For production, enforce rate limiting at the gateway as well.
+PolicyMesh enforces a basic **in-memory per-village rate limit** using the village policy field `rate_limit_per_min`. For production, enforce rate limiting at the gateway as well.
 
 ### Quarantine workflow
 

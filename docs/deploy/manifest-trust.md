@@ -1,6 +1,6 @@
 # Manifest Trust Bootstrap and Rotation
 
-Links can now evaluate remote policy feed manifests against local village policy.
+PolicyMesh can now evaluate remote policy feed manifests against local village policy.
 
 ## Policy fields
 

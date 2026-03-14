@@ -1,6 +1,6 @@
-# Links Roadmap
+# PolicyMesh Roadmap
 
-This document captures the intended direction of the Links project.
+This document captures the intended direction of the PolicyMesh project.
 It is intentionally schedule-free. Items move forward based on architectural readiness, contributor bandwidth, and operational priority.
 
 ## Status legend

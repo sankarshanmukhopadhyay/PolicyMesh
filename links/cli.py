@@ -25,7 +25,7 @@ except Exception:  # pragma: no cover
     apply_policy_update = None
     load_village = None
 
-app = typer.Typer(help="Links: verifiable claim exchange with group policy controls.")
+app = typer.Typer(help="PolicyMesh: verifiable claim exchange with group policy controls.")
 policy = typer.Typer(help="Policy feed operations")
 anchors = typer.Typer(help="Trust anchor registry operations")
 app.add_typer(policy, name="policy")
@@ -45,7 +45,7 @@ def serve(host: str = "127.0.0.1", port: int = 8080):
         is_loopback = host in ("localhost", "127.0.0.1", "::1")
 
     if not is_loopback:
-        typer.echo("WARNING: Binding to a non-loopback interface. Run Links behind a TLS terminator (e.g., Nginx/Envoy) and use proper auth/rate limiting.", err=True)
+        typer.echo("WARNING: Binding to a non-loopback interface. Run PolicyMesh behind a TLS terminator (e.g., Nginx/Envoy) and use proper auth/rate limiting.", err=True)
 
     uvicorn.run(create_app(), host=host, port=port)
 

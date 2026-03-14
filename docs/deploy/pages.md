@@ -15,4 +15,4 @@ The Pages workflow copies the contents of `docs/` into the deployment artifact. 
 
 ## Operational note
 
-This is documentation publishing, not application hosting. Keep production Links nodes behind a proper TLS terminator and do not use GitHub Pages for sensitive runtime surfaces.
+This is documentation publishing, not application hosting. Keep production PolicyMesh nodes behind a proper TLS terminator and do not use GitHub Pages for sensitive runtime surfaces.

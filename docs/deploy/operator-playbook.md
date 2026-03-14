@@ -1,6 +1,6 @@
 # Operator Playbook
 
-This playbook turns the Links governance surfaces into repeatable operating motions.
+This playbook turns the PolicyMesh governance surfaces into repeatable operating motions.
 
 ## 1. Drift detected
 

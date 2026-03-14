@@ -44,10 +44,10 @@ def _bearer_token(authorization: str | None) -> str | None:
 
 
 def create_app(store_root: Path = Path("data/store"), villages_root: Path = Path("data")) -> FastAPI:
-    app = FastAPI(title="Links Claim Exchange", version="0.12.0")
+    app = FastAPI(title="PolicyMesh Claim Exchange", version="0.12.0")
 
     # Simple in-memory per-village rate limiter (minute bucket).
-    # NOTE: In production, put Links behind a proper gateway (Envoy/Nginx) with real rate limiting.
+    # NOTE: In production, put PolicyMesh behind a proper gateway (Envoy/Nginx) with real rate limiting.
     _buckets: Dict[Tuple[str, str], Tuple[int, int]] = {}  # (village_id, client_key) -> (minute_epoch, count)
 
     @app.middleware("http")

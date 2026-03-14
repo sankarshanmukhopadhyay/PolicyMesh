@@ -1,6 +1,6 @@
-# Links
+# PolicyMesh
 
-Links is a verifiable claim exchange with group policy controls, policy governance artifacts, and operator-facing reconciliation workflows.
+PolicyMesh is a verifiable claim exchange with group policy controls, policy governance artifacts, and operator-facing reconciliation workflows.
 
 ## What is here
 
