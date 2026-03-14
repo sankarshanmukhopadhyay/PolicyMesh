@@ -16,3 +16,5 @@
 {"ts": "2026-02-27T03:54:32.278778Z", "action": "member.add", "bundle_id": null, "village_id": "test", "issuer_key_hash": null, "actor": null, "reason": "role=member", "policy_hash": null}
 {"ts": "2026-02-27T03:55:03.973924Z", "action": "issuer.allow", "bundle_id": null, "village_id": "ops", "issuer_key_hash": "cb74917bed5c44a9e480ae8e5d410bd62d084b690772affd1d31c77b5d5f2336", "actor": "alice", "reason": null, "policy_hash": "92cc4f065f0b1908"}
 {"ts": "2026-02-27T03:55:03.976829Z", "action": "member.add", "bundle_id": null, "village_id": "test", "issuer_key_hash": null, "actor": null, "reason": "role=member", "policy_hash": null}
+{"ts": "2026-03-14T02:27:37.059900Z", "action": "issuer.allow", "bundle_id": null, "village_id": "ops", "issuer_key_hash": "faef80cc8ca7a7c75feac20ebc77c5445fa92986df263809d9c6012d50c189d8", "actor": "alice", "reason": null, "policy_hash": "fad3c7cfa586d417"}
+{"ts": "2026-03-14T02:27:37.064987Z", "action": "member.add", "bundle_id": null, "village_id": "test", "issuer_key_hash": null, "actor": null, "reason": "role=member", "policy_hash": null}

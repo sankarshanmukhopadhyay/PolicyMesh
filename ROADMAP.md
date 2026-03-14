@@ -8,7 +8,7 @@ It is intentionally schedule-free. Items move forward based on architectural rea
 - 🟡 Partial
 - 🔜 Planned
 
-_Last updated: 2026-03-09_
+_Last updated: 2026-03-14_
 
 ---
 
@@ -47,7 +47,7 @@ _Last updated: 2026-03-09_
 **Status:** 🟡 Partial
 - Cross-node reconciliation conflict detection
 - Explicit fork detection reporting
-- Durable reconciliation artifacts suitable for audit
+- Durable reconciliation artifacts suitable for audit ✅
 - Optional gossip-style propagation
 
 ### 2.3 Trust Anchors
@@ -69,9 +69,9 @@ _Last updated: 2026-03-09_
 
 ### 3.2 Drift Monitoring
 **Status:** 🟡 Partial
-- Drift check CLI and severity classification
+- Drift check CLI and severity classification ✅
 - Alert hooks (webhook or CLI-based triggers)
-- Periodic automated drift checks and cron-ready operator examples
+- Periodic automated drift checks and cron-ready operator examples ✅
 
 ### 3.3 Governance Transparency
 **Status:** 🟡 Partial

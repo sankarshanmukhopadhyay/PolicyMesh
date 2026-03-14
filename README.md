@@ -93,9 +93,10 @@ links policy pull http://127.0.0.1:8080 ops --apply
 
 ```bash
 links policy drift http://127.0.0.1:8080 ops
+python scripts/policy_drift_check.py http://127.0.0.1:8080 ops
 ```
 
-Reconciliation rule: select the most recent update by `(created_at, policy_hash)`.
+Reconciliation rule: select the most recent update by `(created_at, policy_hash)`. Durable reports can be written under `artifacts/reconciliation/<village_id>/...`.
 
 ### M-of-N signer quorum for policy updates
 
@@ -144,10 +145,10 @@ links policy verify artifacts/policy_update.s2.json
 
 #### Next priorities
 
-- end-to-end reconciliation artifacts for conflicts and forks
 - storage abstraction with an optional SQLite backend
-- scheduled drift automation and operator playbooks
 - stronger production deployment templates and observability guidance
+- alert hooks and operator runbooks for drift workflows
+- deeper reconciliation automation across more than two nodes
 
 ## Operations
 
@@ -169,3 +170,16 @@ Links enforces a basic **in-memory per-village rate limit** using the village po
 ### Quarantine workflow
 
 Quarantine approvals **re-check the current village policy** before ingestion. If the policy no longer allows the bundle (predicate/window/issuer constraints), the bundle remains quarantined.
+
+
+### Reconciliation CLI
+
+```bash
+links policy reconcile local_updates.json remote_updates.json ops
+```
+
+The command emits a richer reconciliation report and writes a durable JSON artifact under `artifacts/reconciliation/`.
+
+### GitHub Pages
+
+This repository includes GitHub Actions workflows for test execution and Pages deployment. See [`docs/deploy/pages.md`](./docs/deploy/pages.md).

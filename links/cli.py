@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+from datetime import datetime, timezone
 import json
 import base64
 import typer
@@ -9,10 +10,10 @@ import requests
 from nacl.signing import SigningKey
 
 from links.server import create_app
-from links.policy_updates import VillagePolicyUpdate, verify_update_any, add_signature, sign_update_legacy, build_update
+from links.policy_updates import VillagePolicyUpdate, verify_update_any, add_signature, sign_update_legacy, build_update, compute_policy_hash
 from links.policy_diff import diff_policies
 from links.policy_feed import PolicyFeedManifest, verify_manifest
-from links.reconcile import reconcile
+from links.reconcile import reconcile, write_reconciliation_report
 from links.trust_anchors import TrustAnchorEntry, add_anchor_signature, verify_anchor_entry_any
 from links.policy_feed import signer_allowed
 from links.validate import validate_village_id
@@ -199,10 +200,40 @@ def policy_pull(url: str, village_id: str, apply: bool = True, since: str = None
     out.write_text(chosen.model_dump_json(indent=2), encoding="utf-8")
     typer.echo(f"Wrote {out}")
 
-@policy.command("drift")
-def policy_drift(url: str, village_id: str, token: str = None):
+
+
+def _load_updates_from_path(path: Path) -> list[VillagePolicyUpdate]:
+    raw = json.loads(path.read_text(encoding="utf-8"))
+    if isinstance(raw, list):
+        return [VillagePolicyUpdate.model_validate(x) for x in raw]
+    if isinstance(raw, dict) and isinstance(raw.get("items"), list):
+        return [VillagePolicyUpdate.model_validate(x) for x in raw.get("items", [])]
+    if isinstance(raw, dict):
+        return [VillagePolicyUpdate.model_validate(raw)]
+    raise typer.BadParameter(f"Unsupported reconciliation input: {path}")
+
+
+@policy.command("reconcile")
+def policy_reconcile(local: Path, remote: Path, village_id: str, out: Path = typer.Option(None, help="Optional JSON report output path")):
     """
-    Compare local policy hash to remote latest policy hash.
+    Reconcile local and remote policy update artifacts and write a durable report.
+    """
+    validate_village_id(village_id)
+    local_updates = _load_updates_from_path(local)
+    remote_updates = _load_updates_from_path(remote)
+    report = reconcile(local_updates, remote_updates, village_id=village_id)
+
+    if out is None:
+        stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+        out = Path("artifacts/reconciliation") / village_id / f"reconciliation.{stamp}.json"
+    write_reconciliation_report(report, out)
+    typer.echo(json.dumps(report.to_dict(), indent=2))
+    typer.echo(f"Wrote {out}")
+
+@policy.command("drift")
+def policy_drift(url: str, village_id: str, token: str = None, out: Path = typer.Option(None, help="Optional JSON output path")):
+    """
+    Compare local policy hash to remote latest policy hash and optionally write a durable artifact.
     """
     validate_village_id(village_id)
     base = url.rstrip("/")
@@ -219,11 +250,27 @@ def policy_drift(url: str, village_id: str, token: str = None):
     if load_village:
         try:
             v = load_village(Path("data"), village_id)
-            local_hash = __import__("links.policy_updates", fromlist=["compute_policy_hash"]).compute_policy_hash(v.policy.model_dump())
+            local_hash = compute_policy_hash(v.policy.model_dump())
         except Exception:
             local_hash = None
 
-    typer.echo(json.dumps({"village_id": village_id, "local_policy_hash": local_hash, "remote_policy_hash": remote_hash, "drift": (local_hash != remote_hash)}, indent=2))
+    payload = {
+        "village_id": village_id,
+        "checked_at": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
+        "local_policy_hash": local_hash,
+        "remote_policy_hash": remote_hash,
+        "drift": (local_hash != remote_hash),
+        "status": "drift" if local_hash != remote_hash else "aligned",
+        "source_url": base,
+    }
+
+    if out is None:
+        stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+        out = Path("artifacts/drift") / village_id / f"drift.{stamp}.json"
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text(json.dumps(payload, indent=2, ensure_ascii=False, sort_keys=True) + "\n", encoding="utf-8")
+    typer.echo(json.dumps(payload, indent=2))
+    typer.echo(f"Wrote {out}")
 
 
 # -----------------------------

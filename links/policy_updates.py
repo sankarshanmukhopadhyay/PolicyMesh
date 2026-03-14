@@ -1,91 +1,46 @@
 from __future__ import annotations
 
 import base64
-import hashlib
-import json
-from datetime import datetime, timezone
-from typing import Any, Optional, List, Set, Dict, Tuple
+from datetime import datetime
+from typing import Optional, List, Dict, Set, Tuple, Any
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict, model_validator, computed_field
 from nacl.signing import SigningKey, VerifyKey
 from nacl.exceptions import BadSignatureError
 
-from .crypto import verify_bytes
-
-
-# -----------------------------
-# Helpers
-# -----------------------------
-
-def utc_now() -> datetime:
-    return datetime.now(timezone.utc)
-
-
-def iso_utc(dt: datetime) -> str:
-    if dt.tzinfo is None:
-        dt = dt.replace(tzinfo=timezone.utc)
-    return dt.astimezone(timezone.utc).isoformat().replace("+00:00", "Z")
-
-
-def _json_default(o: Any):
-    from datetime import datetime
-    if isinstance(o, datetime):
-        # Always serialize datetimes to ISO-8601 UTC strings
-        if o.tzinfo is None:
-            return o.replace(tzinfo=timezone.utc).isoformat().replace('+00:00','Z')
-        return o.astimezone(timezone.utc).isoformat().replace('+00:00','Z')
-    raise TypeError(f"Object of type {o.__class__.__name__} is not JSON serializable")
-
-
-def canonical_json(obj: Any) -> bytes:
-    return json.dumps(obj, ensure_ascii=False, sort_keys=True, separators=(",", ":"), default=_json_default).encode("utf-8")
-
-
-def sha256_hex(data: bytes) -> str:
-    return hashlib.sha256(data).hexdigest()
-
-
-def key_hash_from_public_key_b64(public_key_b64: str) -> str:
-    """Key hash = sha256(public_key_bytes)."""
-    pk = base64.b64decode(public_key_b64)
-    return hashlib.sha256(pk).hexdigest()
+from .utils import canonical_json, sha256_hex, utc_now
 
 
 def compute_policy_hash(policy: dict) -> str:
     return sha256_hex(canonical_json(policy))
 
 
-# -----------------------------
-# Models
-# -----------------------------
+def key_hash_from_public_key_b64(public_key_b64: str) -> str:
+    return sha256_hex(base64.b64decode(public_key_b64))
+
 
 class SignatureEntry(BaseModel):
-    public_key: str  # base64 (public key bytes or PEM, depending on alg)
-    signature: str   # base64
-    alg: str = "ed25519"  # ed25519|ecdsa_p256
+    public_key: str
+    signature: str
+    alg: str = 'ed25519'
 
 
 class QuorumRequirement(BaseModel):
     role: str
-    min_signers: int = 1
+    min_signers: int
 
 
 class QuorumMetadata(BaseModel):
-    """Explicit quorum metadata included inside the signed update artifact for audit clarity."""
-    model: str = Field(default="m_of_n", description="m_of_n|weighted|role_based")
-    threshold_m: Optional[int] = Field(default=None, description="M for m_of_n")
-    threshold_weight: Optional[float] = Field(default=None, description="Total weight required for weighted quorum")
-
-    # Optional snapshot of signer configuration used for evaluation
-    signer_set_hash: Optional[str] = Field(default=None, description="sha256(canonical_json(policy_signers_snapshot))")
-    role_requirements: List[QuorumRequirement] = Field(default_factory=list)
+    model: str = Field(description='For example: m_of_n | weighted | role_based')
+    threshold_m: Optional[int] = None
+    required_weight: Optional[float] = None
+    requirements: List[QuorumRequirement] = Field(default_factory=list)
 
 
 class PolicyChangeSummary(BaseModel):
-    """Machine-readable summary of a policy change."""
-    added: List[str] = Field(default_factory=list, description="JSON pointer paths added")
-    removed: List[str] = Field(default_factory=list, description="JSON pointer paths removed")
-    changed: List[str] = Field(default_factory=list, description="JSON pointer paths changed")
+    added: List[str] = Field(default_factory=list, description='JSON pointer paths added')
+    removed: List[str] = Field(default_factory=list, description='JSON pointer paths removed')
+    changed: List[str] = Field(default_factory=list, description='JSON pointer paths changed')
 
 
 class VillagePolicyUpdate(BaseModel):
@@ -94,70 +49,58 @@ class VillagePolicyUpdate(BaseModel):
     Backwards compatibility:
       - legacy single signature fields: public_key + signature
       - multisig quorum via signatures[]
-
-    New governance features:
-      - lifecycle states (proposal -> approved -> active)
-      - policy versioning & rollback metadata
-      - explicit quorum metadata for audit clarity
-      - machine-readable change summaries (optional)
+      - accepts historical `quorum_metadata` aliasing for `quorum`
+      - accepts string activation_time and dict-based change_summary inputs
     """
+
+    model_config = ConfigDict(populate_by_name=True)
 
     village_id: str
     created_at: datetime
     actor: Optional[str] = None
-    expires_at: Optional[datetime] = Field(default=None, description="If set, the update must not be applied after this time")
+    expires_at: Optional[datetime] = Field(default=None, description='If set, the update must not be applied after this time')
 
-    # The effective policy content (for the requested lifecycle state).
     policy: dict = Field(default_factory=dict)
-
-    # Hash of the policy content (canonical JSON).
     policy_hash: str
-
-    # First-class policy version identifier (can be semantic or arbitrary); defaults to policy_hash when unset.
     policy_version_id: Optional[str] = None
-
-    # Lifecycle: proposal -> approved -> active
-    lifecycle_state: str = Field(default="proposal", description="proposal|approved|active|rolled_back")
-
-    # Versioning / rollback linking
+    lifecycle_state: str = Field(default='proposal', description='proposal|approved|active|rolled_back')
     previous_policy_hash: Optional[str] = None
     rollback_to_policy_hash: Optional[str] = None
-
-    # Activation semantics (time and/or height)
     activation_time: Optional[datetime] = None
     activation_height: Optional[int] = None
-
-    # Audit-friendly quorum metadata (signed)
-    quorum: Optional[QuorumMetadata] = None
-
-    # Optional machine-readable diff summary (signed)
+    quorum: Optional[QuorumMetadata] = Field(default=None, validation_alias='quorum_metadata')
     change_summary: Optional[PolicyChangeSummary] = None
-
-    signature_alg: str = "Ed25519"
-
-    # Legacy single signature (backwards compatible)
+    signature_alg: str = 'Ed25519'
     public_key: Optional[str] = None
     signature: Optional[str] = None
-
-    # Multisig support
     signatures: List[SignatureEntry] = Field(default_factory=list)
 
+    @model_validator(mode='before')
+    @classmethod
+    def _compat_inputs(cls, data: Any) -> Any:
+        if not isinstance(data, dict):
+            return data
+        out = dict(data)
+        if out.get('quorum') is None and out.get('quorum_metadata') is not None:
+            out['quorum'] = out.get('quorum_metadata')
+        return out
 
-# -----------------------------
-# Signing / verification
-# -----------------------------
+    @computed_field(return_type=Optional[QuorumMetadata])
+    @property
+    def quorum_metadata(self) -> Optional[QuorumMetadata]:
+        return self.quorum
+
 
 def payload_for_signing(u: VillagePolicyUpdate) -> dict:
     d = u.model_dump()
-    # remove signature material (legacy + multisig)
-    d.pop("signature", None)
-    d.pop("public_key", None)
-    d.pop("signatures", None)
+    d.pop('quorum_metadata', None)
+    d.pop('signature', None)
+    d.pop('public_key', None)
+    d.pop('signatures', None)
     return d
 
 
 def compute_update_hash(u: VillagePolicyUpdate) -> str:
-    """Deterministic update hash for linking/manifests."""
     return sha256_hex(canonical_json(payload_for_signing(u)))
 
 
@@ -166,15 +109,23 @@ def build_update(
     policy: dict,
     actor: Optional[str] = None,
     *,
-    lifecycle_state: str = "proposal",
+    lifecycle_state: str = 'proposal',
     previous_policy_hash: Optional[str] = None,
-    activation_time: Optional[datetime] = None,
+    activation_time: Optional[datetime | str] = None,
     activation_height: Optional[int] = None,
     policy_version_id: Optional[str] = None,
-    quorum: Optional[QuorumMetadata] = None,
-    change_summary: Optional[PolicyChangeSummary] = None,
+    quorum: Optional[QuorumMetadata | Dict[str, Any]] = None,
+    quorum_metadata: Optional[QuorumMetadata | Dict[str, Any]] = None,
+    change_summary: Optional[PolicyChangeSummary | Dict[str, Any]] = None,
 ) -> VillagePolicyUpdate:
     ph = compute_policy_hash(policy)
+    q = quorum if quorum is not None else quorum_metadata
+    if isinstance(q, dict):
+        q = QuorumMetadata.model_validate(q)
+    if isinstance(change_summary, dict):
+        change_summary = PolicyChangeSummary.model_validate(change_summary)
+    if isinstance(activation_time, str):
+        activation_time = datetime.fromisoformat(activation_time.replace('Z', '+00:00'))
     return VillagePolicyUpdate(
         village_id=village_id,
         created_at=utc_now(),
@@ -186,30 +137,28 @@ def build_update(
         previous_policy_hash=previous_policy_hash,
         activation_time=activation_time,
         activation_height=activation_height,
-        quorum=quorum,
+        quorum=q,
         change_summary=change_summary,
     )
 
 
 def sign_update_legacy(u: VillagePolicyUpdate, signing_key: SigningKey) -> VillagePolicyUpdate:
-    """Produce a legacy single-signature update (public_key/signature)."""
     payload = payload_for_signing(u)
     sig = signing_key.sign(canonical_json(payload)).signature
     pub = signing_key.verify_key.encode()
     return u.model_copy(update={
-        "public_key": base64.b64encode(pub).decode("utf-8"),
-        "signature": base64.b64encode(sig).decode("utf-8"),
+        'public_key': base64.b64encode(pub).decode('utf-8'),
+        'signature': base64.b64encode(sig).decode('utf-8'),
     })
 
 
 def add_signature(u: VillagePolicyUpdate, signing_key: SigningKey) -> VillagePolicyUpdate:
-    """Append a signature entry to u.signatures (multisig). Ensures uniqueness by public_key hash."""
     payload = payload_for_signing(u)
     sig = signing_key.sign(canonical_json(payload)).signature
     pub = signing_key.verify_key.encode()
     entry = SignatureEntry(
-        public_key=base64.b64encode(pub).decode("utf-8"),
-        signature=base64.b64encode(sig).decode("utf-8"),
+        public_key=base64.b64encode(pub).decode('utf-8'),
+        signature=base64.b64encode(sig).decode('utf-8'),
     )
 
     seen: Set[str] = set()
@@ -225,20 +174,21 @@ def add_signature(u: VillagePolicyUpdate, signing_key: SigningKey) -> VillagePol
     if h_new not in seen:
         out.append(entry)
 
-    return u.model_copy(update={"signatures": out})
+    return u.model_copy(update={'signatures': out})
 
 
-def _verify_one(payload: dict, public_key_b64: str, signature_b64: str) -> bool:
+def _verify_one(payload: dict, public_key_b64: str, signature_b64: str, alg: str = 'ed25519') -> bool:
+    if (alg or 'ed25519').lower() != 'ed25519':
+        return False
     vk = VerifyKey(base64.b64decode(public_key_b64))
     try:
         vk.verify(canonical_json(payload), base64.b64decode(signature_b64))
         return True
-    except BadSignatureError:
+    except (BadSignatureError, ValueError, TypeError):
         return False
 
 
 def verify_update_any(u: VillagePolicyUpdate) -> bool:
-    """Verify policy_hash matches and at least one signature verifies."""
     if u.policy_hash != compute_policy_hash(u.policy):
         return False
     payload = payload_for_signing(u)
@@ -258,11 +208,10 @@ def verify_update_quorum(
     required_m: int,
     signer_allowlist: list[str] | None = None
 ) -> tuple[bool, str]:
-    """Verify policy_hash and that >= required_m distinct allowlisted signers have valid signatures."""
     if required_m < 1:
-        return False, "invalid quorum threshold"
+        return False, 'invalid quorum threshold'
     if u.policy_hash != compute_policy_hash(u.policy):
-        return False, "policy_hash mismatch"
+        return False, 'policy_hash mismatch'
 
     payload = payload_for_signing(u)
     allow = set(signer_allowlist or [])
@@ -282,8 +231,8 @@ def verify_update_quorum(
                 valid_signers.add(kh)
 
     if len(valid_signers) >= required_m:
-        return True, "ok"
-    return False, f"quorum not met (valid={len(valid_signers)} required={required_m})"
+        return True, 'ok'
+    return False, f'quorum not met (valid={len(valid_signers)} required={required_m})'
 
 
 def verify_update_weighted_quorum(
@@ -292,45 +241,38 @@ def verify_update_weighted_quorum(
     required_weight: float,
     signer_allowlist: list[str] | None = None,
 ) -> Tuple[bool, str, float]:
-    """Weighted quorum verification.
-
-    - weights_by_key_hash: key_hash -> weight (float)
-    - required_weight: threshold
-    - signer_allowlist: optional allowlist (key hashes)
-    Returns (ok, msg, achieved_weight)
-    """
     if required_weight <= 0:
-        return False, "invalid weight threshold", 0.0
+        return False, 'invalid weight threshold', 0.0
     if u.policy_hash != compute_policy_hash(u.policy):
-        return False, "policy_hash mismatch", 0.0
+        return False, 'policy_hash mismatch', 0.0
 
     payload = payload_for_signing(u)
     allow = set(signer_allowlist or [])
     achieved = 0.0
     counted: Set[str] = set()
 
-    def maybe_count(pub_b64: str, sig_b64: str):
+    def maybe_count(pub_b64: str, sig_b64: str, alg: str = 'ed25519'):
         nonlocal achieved
         kh = key_hash_from_public_key_b64(pub_b64)
         if kh in counted:
             return
         if allow and kh not in allow:
             return
-        if not _verify_one(payload, pub_b64, sig_b64, 'ed25519'):
+        if not _verify_one(payload, pub_b64, sig_b64, alg):
             return
         w = float(weights_by_key_hash.get(kh, 0.0))
         achieved += w
         counted.add(kh)
 
     for e in (u.signatures or []):
-        maybe_count(e.public_key, e.signature)
+        maybe_count(e.public_key, e.signature, getattr(e, 'alg', 'ed25519'))
 
     if u.public_key and u.signature:
-        maybe_count(u.public_key, u.signature)
+        maybe_count(u.public_key, u.signature, 'ed25519')
 
     if achieved >= required_weight:
-        return True, "ok", achieved
-    return False, f"weighted quorum not met (weight={achieved} required={required_weight})", achieved
+        return True, 'ok', achieved
+    return False, f'weighted quorum not met (weight={achieved} required={required_weight})', achieved
 
 
 def verify_update_role_based_quorum(
@@ -339,26 +281,21 @@ def verify_update_role_based_quorum(
     requirements: List[QuorumRequirement],
     signer_allowlist: list[str] | None = None,
 ) -> Tuple[bool, str, Dict[str, int]]:
-    """Role-based quorum verification.
-
-    Example: requirements=[{role:'core',min_signers:1},{role:'external',min_signers:1}]
-    Returns (ok, msg, role_counts)
-    """
     if u.policy_hash != compute_policy_hash(u.policy):
-        return False, "policy_hash mismatch", {}
+        return False, 'policy_hash mismatch', {}
     payload = payload_for_signing(u)
     allow = set(signer_allowlist or [])
 
     role_counts: Dict[str, int] = {r.role: 0 for r in requirements}
     counted: Set[str] = set()
 
-    def maybe_count(pub_b64: str, sig_b64: str):
+    def maybe_count(pub_b64: str, sig_b64: str, alg: str = 'ed25519'):
         kh = key_hash_from_public_key_b64(pub_b64)
         if kh in counted:
             return
         if allow and kh not in allow:
             return
-        if not _verify_one(payload, pub_b64, sig_b64, 'ed25519'):
+        if not _verify_one(payload, pub_b64, sig_b64, alg):
             return
         counted.add(kh)
         for role in roles_by_key_hash.get(kh, []):
@@ -366,10 +303,10 @@ def verify_update_role_based_quorum(
                 role_counts[role] += 1
 
     for e in (u.signatures or []):
-        maybe_count(e.public_key, e.signature)
+        maybe_count(e.public_key, e.signature, getattr(e, 'alg', 'ed25519'))
 
     if u.public_key and u.signature:
-        maybe_count(u.public_key, u.signature)
+        maybe_count(u.public_key, u.signature, 'ed25519')
 
     missing = []
     for req in requirements:
@@ -377,5 +314,5 @@ def verify_update_role_based_quorum(
             missing.append(f"{req.role}({role_counts.get(req.role, 0)}/{req.min_signers})")
 
     if not missing:
-        return True, "ok", role_counts
-    return False, "role quorum not met: " + ", ".join(missing), role_counts
+        return True, 'ok', role_counts
+    return False, 'role quorum not met: ' + ', '.join(missing), role_counts

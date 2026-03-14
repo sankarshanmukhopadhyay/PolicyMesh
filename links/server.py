@@ -43,7 +43,7 @@ def _bearer_token(authorization: str | None) -> str | None:
 
 
 def create_app(store_root: Path = Path("data/store"), villages_root: Path = Path("data")) -> FastAPI:
-    app = FastAPI(title="Links Claim Exchange", version="0.11.0")
+    app = FastAPI(title="Links Claim Exchange", version="0.12.0")
 
     # Simple in-memory per-village rate limiter (minute bucket).
     # NOTE: In production, put Links behind a proper gateway (Envoy/Nginx) with real rate limiting.
