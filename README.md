@@ -16,6 +16,8 @@ Links is a small-footprint system for producing **verifiable, inspectable claim 
 - Next increment plan: [`docs/NEXT_INCREMENT_PLAN.md`](./docs/NEXT_INCREMENT_PLAN.md)
 - Policy governance: [`docs/policy-governance.md`](./docs/policy-governance.md)
 - Production deployment guidance: [`docs/deploy/production-hardened.md`](./docs/deploy/production-hardened.md)
+- SQLite backend guidance: [`docs/deploy/sqlite-backend.md`](./docs/deploy/sqlite-backend.md)
+- Operator playbook: [`docs/deploy/operator-playbook.md`](./docs/deploy/operator-playbook.md)
 - Governance risk crosswalk: [`docs/risk-crosswalk.md`](./docs/risk-crosswalk.md)
 - Upstream snapshot notes: [`upstream/UPSTREAM_SNAPSHOT.md`](./upstream/UPSTREAM_SNAPSHOT.md)
 
@@ -23,6 +25,13 @@ Links is a small-footprint system for producing **verifiable, inspectable claim 
 
 ```bash
 pip install -e .
+```
+
+Optional durable local backend:
+
+```bash
+export LINKS_STORAGE_BACKEND=sqlite
+export LINKS_SQLITE_PATH=data/store/links.sqlite3
 ```
 
 ## Run a node
@@ -96,7 +105,7 @@ links policy drift http://127.0.0.1:8080 ops
 python scripts/policy_drift_check.py http://127.0.0.1:8080 ops
 ```
 
-Reconciliation rule: select the most recent update by `(created_at, policy_hash)`. Durable reports can be written under `artifacts/reconciliation/<village_id>/...`.
+Reconciliation rule: prefer a consistent remote head only when lineage is intact; otherwise retain the local head as a deterministic fallback. Durable reports can be written under `artifacts/reconciliation/<village_id>/...`.
 
 ### M-of-N signer quorum for policy updates
 
@@ -145,10 +154,10 @@ links policy verify artifacts/policy_update.s2.json
 
 #### Next priorities
 
-- storage abstraction with an optional SQLite backend
-- stronger production deployment templates and observability guidance
-- alert hooks and operator runbooks for drift workflows
-- deeper reconciliation automation across more than two nodes
+- weighted or role-based quorum operationalization beyond the current artifact model
+- larger-fleet federation workflows and richer replay handling
+- stronger audit signing and transparency publication pipelines
+- broader SDK stabilization and ecosystem integration work
 
 ## Operations
 
@@ -183,3 +192,12 @@ The command emits a richer reconciliation report and writes a durable JSON artif
 ### GitHub Pages
 
 This repository includes GitHub Actions workflows for test execution and Pages deployment. See [`docs/deploy/pages.md`](./docs/deploy/pages.md).
+
+### Transparency checkpoints
+
+```bash
+links drift checkpoint ops
+python scripts/transparency_checkpoint.py ops
+```
+
+These write durable checkpoint artifacts under `artifacts/transparency/<village_id>/...` for operator comparison and incident review.

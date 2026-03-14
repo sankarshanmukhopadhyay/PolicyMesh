@@ -25,6 +25,9 @@ class ReconciliationReport:
     missing_local: List[str]
     missing_remote: List[str]
     generated_at: str
+    selected_source: Optional[str]
+    selection_reason: Optional[str]
+    lineage_issues: List[Dict[str, Any]]
 
     def to_dict(self) -> Dict[str, Any]:
         return asdict(self)
@@ -59,19 +62,54 @@ def detect_forks(ups: List[VillagePolicyUpdate]) -> List[Dict[str, Any]]:
     return forks
 
 
+def _lineage_issues(ups: List[VillagePolicyUpdate]) -> List[Dict[str, Any]]:
+    seen = {u.policy_hash for u in ups}
+    issues: List[Dict[str, Any]] = []
+    for u in ups:
+        prev = u.previous_policy_hash
+        if prev and prev not in seen:
+            issues.append({
+                "policy_hash": u.policy_hash,
+                "previous_policy_hash": prev,
+                "issue": "missing_parent",
+            })
+    return issues
+
+
 def reconcile(local: List[VillagePolicyUpdate], remote: List[VillagePolicyUpdate], village_id: str) -> ReconciliationReport:
     local_set = {u.policy_hash for u in local}
     remote_set = {u.policy_hash for u in remote}
 
     local_head = _head(local)
     remote_head = _head(remote)
-    selected_head = remote_head or local_head
 
     forks = detect_forks(local + remote)
     shared = local_set & remote_set
+    lineage_issues = _lineage_issues(local + remote)
     drift = local_head != remote_head
+
+    if remote_head and remote_head in local_set:
+        selected_head = remote_head
+        selected_source = "shared"
+        selection_reason = "remote head already present locally"
+    elif remote_head and not forks and not lineage_issues:
+        selected_head = remote_head
+        selected_source = "remote"
+        selection_reason = "remote head is newer and lineage is consistent"
+    else:
+        selected_head = local_head or remote_head
+        selected_source = "local" if local_head else ("remote" if remote_head else None)
+        if forks:
+            selection_reason = "retained local head because reconciliation detected a fork"
+        elif lineage_issues:
+            selection_reason = "retained local head because update lineage is incomplete"
+        else:
+            selection_reason = "retained local head as deterministic fallback"
+
     if forks:
         status = 'fork'
+    elif lineage_issues:
+        status = 'lineage_gap'
     elif drift:
         status = 'drift'
     else:
@@ -92,6 +130,9 @@ def reconcile(local: List[VillagePolicyUpdate], remote: List[VillagePolicyUpdate
         missing_local=sorted(list(remote_set - local_set)),
         missing_remote=sorted(list(local_set - remote_set)),
         generated_at=__import__('datetime').datetime.now(timezone.utc).isoformat().replace('+00:00', 'Z'),
+        selected_source=selected_source,
+        selection_reason=selection_reason,
+        lineage_issues=lineage_issues,
     )
 
 

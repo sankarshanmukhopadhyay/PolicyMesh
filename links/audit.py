@@ -7,6 +7,7 @@ from pathlib import Path
 from typing import Optional
 
 from .file_lock import locked_open
+from .storage_backend import sqlite_enabled, transaction, write_audit_event
 
 
 def iso_utc(dt: datetime) -> str:
@@ -51,3 +52,6 @@ def write_audit(store_root: Path, ev: AuditEvent) -> None:
     }
     with locked_open(p, "a") as f:
         f.write(json.dumps(row, ensure_ascii=False) + "\n")
+    if sqlite_enabled():
+        with transaction(store_root) as conn:
+            write_audit_event(conn, row)

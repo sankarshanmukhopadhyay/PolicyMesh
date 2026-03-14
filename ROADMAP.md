@@ -48,6 +48,7 @@ _Last updated: 2026-03-14_
 - Cross-node reconciliation conflict detection
 - Explicit fork detection reporting
 - Durable reconciliation artifacts suitable for audit ✅
+- Deterministic pull selection with lineage-gap handling ✅
 - Optional gossip-style propagation
 
 ### 2.3 Trust Anchors
@@ -76,7 +77,7 @@ _Last updated: 2026-03-14_
 ### 3.3 Governance Transparency
 **Status:** 🟡 Partial
 - Signed transparency log support
-- Reproducible policy history snapshots
+- Reproducible policy history snapshots and checkpoints ✅
 - Read-only public policy endpoint hardening
 
 ---
@@ -84,17 +85,17 @@ _Last updated: 2026-03-14_
 ## 4. Operational Hardening
 
 ### 4.1 Storage Layer Evolution
-**Status:** 🔜 Planned
-- Optional SQLite backend
-- Pluggable storage abstraction layer
-- Atomic policy apply transactions
+**Status:** 🟡 Partial
+- Optional SQLite backend ✅
+- Pluggable storage abstraction layer ✅
+- Atomic policy apply transactions ✅
 
 ### 4.2 Deployment Profiles
 **Status:** 🟡 Partial
 - Single-node development profile
 - Production-hardened profile guidance
 - Container-ready configuration examples
-- More explicit production templates and operator runbooks
+- More explicit production templates and operator runbooks ✅
 
 ### 4.3 Performance & Limits
 **Status:** 🟡 Partial

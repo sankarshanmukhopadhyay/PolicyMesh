@@ -13,6 +13,7 @@ from .validate import validate_village_id
 
 from .audit import write_audit, AuditEvent, policy_hash
 from .transparency import append_transparency_entry
+from .storage_backend import sqlite_enabled, transaction, write_policy_apply_event
 from .keys import load_signing_key_from_env
 
 # Default store root for audit events
@@ -321,16 +322,43 @@ def append_policy_history(root: Path, village_id: str, update_obj: dict) -> None
 
 def apply_policy_update(root: Path, village_id: str, policy_obj: dict, actor: Optional[str] = None, update_meta: Optional[dict] = None) -> None:
     v = load_village(root, village_id)
-    # preserve capabilities defaults if missing from incoming policy
     incoming = VillagePolicy.model_validate(policy_obj)
     v = v.model_copy(update={"policy": incoming})
     save_village(root, v)
     if update_meta is None:
         update_meta = {"actor": actor, "ts": iso_utc(utc_now())}
-    append_policy_history(root, village_id, {"policy": incoming.model_dump(), **update_meta})
-    # Signed transparency log (best-effort)
+    applied_at = update_meta.get("ts") if isinstance(update_meta, dict) and update_meta.get("ts") else iso_utc(utc_now())
+    history_row = {"policy": incoming.model_dump(), **(update_meta or {})}
+    append_policy_history(root, village_id, history_row)
+
+    audit_row = {
+        "ts": applied_at,
+        "action": "policy.apply",
+        "bundle_id": None,
+        "village_id": village_id,
+        "issuer_key_hash": None,
+        "actor": actor,
+        "reason": (update_meta or {}).get("policy_update") if isinstance(update_meta, dict) else None,
+        "policy_hash": policy_hash(incoming.model_dump()),
+    }
+    write_audit(store_root, AuditEvent(action="policy.apply", village_id=village_id, actor=actor, reason=audit_row["reason"], policy_hash=audit_row["policy_hash"]))
+
+    transparency_entry = None
     try:
         sk = load_signing_key_from_env()
-        append_transparency_entry(store_root, village_id, policy_hash(incoming.model_dump()), update_meta.get('policy_hash') if isinstance(update_meta, dict) else None, sk)
+        transparency_entry = append_transparency_entry(store_root, village_id, policy_hash(incoming.model_dump()), update_meta.get('policy_hash') if isinstance(update_meta, dict) else None, sk)
     except Exception:
-        pass
+        transparency_entry = None
+
+    if sqlite_enabled():
+        with transaction(store_root) as conn:
+            write_policy_apply_event(
+                conn,
+                village_id=village_id,
+                applied_at=applied_at,
+                policy_hash=policy_hash(incoming.model_dump()),
+                policy_obj=incoming.model_dump(),
+                actor=actor,
+                update_hash=(update_meta or {}).get("policy_hash") if isinstance(update_meta, dict) else None,
+                history_row=history_row,
+            )

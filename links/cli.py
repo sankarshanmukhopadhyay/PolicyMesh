@@ -17,6 +17,7 @@ from links.reconcile import reconcile, write_reconciliation_report
 from links.trust_anchors import TrustAnchorEntry, add_anchor_signature, verify_anchor_entry_any
 from links.policy_feed import signer_allowed
 from links.validate import validate_village_id
+from links.transparency import write_transparency_checkpoint
 
 try:
     from links.villages import apply_policy_update, load_village  # type: ignore
@@ -149,9 +150,34 @@ def policy_pull(url: str, village_id: str, apply: bool = True, since: str = None
             typer.echo(f"Invalid signature material for update policy_hash={u.policy_hash}")
             raise typer.Exit(code=1)
 
-    # Reconcile: choose latest
-    updates.sort(key=lambda u: (u.created_at, u.policy_hash), reverse=True)
-    chosen = updates[0]
+    manifest_ok = None
+    manifest_msg = None
+    if manifest:
+        try:
+            m = PolicyFeedManifest.model_validate(manifest)
+            if m.signature:
+                manifest_ok, manifest_msg = verify_manifest(m)
+            else:
+                manifest_ok, manifest_msg = True, "unsigned manifest accepted for development use"
+        except Exception as exc:
+            manifest_ok, manifest_msg = False, f"manifest validation failed: {exc}"
+        if manifest_ok is False:
+            typer.echo(f"Manifest validation failed: {manifest_msg}")
+            raise typer.Exit(code=1)
+
+    local_updates = []
+    try:
+        from links.policy_feed import list_policy_updates
+        local_updates = list_policy_updates(Path("data"), village_id)
+    except Exception:
+        local_updates = []
+
+    report = reconcile(local_updates, updates, village_id=village_id)
+    chosen_hash = report.selected_head
+    chosen = next((u for u in updates if u.policy_hash == chosen_hash), None)
+    if chosen is None:
+        updates.sort(key=lambda u: (u.created_at, u.policy_hash), reverse=True)
+        chosen = updates[0]
 
     # Drift detection (best-effort)
     local_hash = None
@@ -162,19 +188,18 @@ def policy_pull(url: str, village_id: str, apply: bool = True, since: str = None
         except Exception:
             local_hash = None
 
+    typer.echo(f"Selected policy_hash={chosen.policy_hash} source={report.selected_source} status={report.status}")
+    typer.echo(f"Selection reason: {report.selection_reason}")
     if local_hash and local_hash != chosen.policy_hash:
-        typer.echo(f"Drift detected: local={local_hash} remote_latest={chosen.policy_hash}")
-    else:
-        typer.echo(f"Remote latest policy_hash={chosen.policy_hash}")
+        typer.echo(f"Drift detected: local={local_hash} remote_selected={chosen.policy_hash}")
+    if manifest_msg:
+        typer.echo(f"Manifest: {manifest_msg}")
 
-    # Fork detection (best-effort)
-    try:
-        from links.reconcile import detect_forks
-        forks = detect_forks(updates)
-        if forks:
-            typer.echo(f"Fork signals detected: {len(forks)} (run `links policy reconcile` for full report)")
-    except Exception:
-        pass
+    rec_out_dir = Path("artifacts/reconciliation") / village_id
+    rec_out_dir.mkdir(parents=True, exist_ok=True)
+    rec_out = rec_out_dir / f"pull.{datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ')}.json"
+    write_reconciliation_report(report, rec_out)
+    typer.echo(f"Wrote {rec_out}")
 
     if apply and apply_policy_update:
         current_policy = {}
@@ -199,6 +224,10 @@ def policy_pull(url: str, village_id: str, apply: bool = True, since: str = None
     out = out_dir / f"latest.{chosen.policy_hash}.json"
     out.write_text(chosen.model_dump_json(indent=2), encoding="utf-8")
     typer.echo(f"Wrote {out}")
+    if manifest is not None:
+        man_out = out_dir / f"manifest.{datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ')}.json"
+        man_out.write_text(json.dumps(manifest, indent=2, ensure_ascii=False, sort_keys=True) + "\n", encoding="utf-8")
+        typer.echo(f"Wrote {man_out}")
 
 
 
@@ -326,6 +355,7 @@ def audit_export_cmd(village_id: str, fmt: str = typer.Option("json", help="json
     typer.echo(_json.dumps({"village_id": village_id, "format": fmt, "count": count, "sha256": digest, "signed": bool(sig), "path": str(target)}, indent=2))
 
 
+
 # -----------------------------
 # Registry I/O (Ecosystem)
 # -----------------------------
@@ -381,6 +411,17 @@ def registry_import(path: Path):
 # -----------------------------
 drift = typer.Typer(help="Drift checks and alert hooks.")
 app.add_typer(drift, name="drift")
+
+@drift.command("checkpoint")
+def drift_checkpoint(village_id: str, out: Path = typer.Option(None, help="Optional output path for transparency checkpoint JSON")):
+    """Write a transparency checkpoint artifact for a village."""
+    validate_village_id(village_id)
+    if out is None:
+        stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+        out = Path("artifacts/transparency") / village_id / f"checkpoint.{stamp}.json"
+    write_transparency_checkpoint(Path("data/store"), village_id, out)
+    typer.echo(f"Wrote {out}")
+
 
 @drift.command("check")
 def drift_check(village_id: str, remote_base: str = typer.Option(..., help="Remote node base URL"), webhook: str = typer.Option("", help="Optional webhook URL for alerts")):
