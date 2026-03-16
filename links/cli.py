@@ -19,6 +19,17 @@ from links.policy_feed import signer_allowed
 from links.validate import validate_village_id
 from links.transparency import write_transparency_checkpoint
 
+from links.norms import (
+    init_norm_set,
+    validate_norm_file,
+    compile_norm_set,
+    write_json as write_norm_json,
+    diff_norm_sets,
+    apply_compiled_policy,
+    CompiledPolicyArtifact,
+    ContradictoryNormError,
+)
+
 try:
     from links.villages import apply_policy_update, load_village  # type: ignore
 except Exception:  # pragma: no cover
@@ -28,8 +39,10 @@ except Exception:  # pragma: no cover
 app = typer.Typer(help="PolicyMesh: verifiable claim exchange with group policy controls.")
 policy = typer.Typer(help="Policy feed operations")
 anchors = typer.Typer(help="Trust anchor registry operations")
+norms = typer.Typer(help="Norm authoring and compilation operations")
 app.add_typer(policy, name="policy")
 app.add_typer(anchors, name="anchors")
+app.add_typer(norms, name="norms")
 
 
 @app.command("serve")
@@ -248,6 +261,48 @@ def policy_pull(url: str, village_id: str, apply: bool = True, since: str = None
         man_out.write_text(json.dumps(manifest, indent=2, ensure_ascii=False, sort_keys=True) + "\n", encoding="utf-8")
         typer.echo(f"Wrote {man_out}")
 
+
+
+@norms.command("init")
+def norms_init(village_id: str, out: Path, title: str = None, author: str = "operator"):
+    norm_set = init_norm_set(village_id=village_id, title=title, author=author)
+    write_norm_json(out, norm_set)
+    typer.echo(f"Wrote {out}")
+
+
+@norms.command("validate")
+def norms_validate(inp: Path):
+    norm_set = validate_norm_file(inp)
+    typer.echo(f"OK norm_set_id={norm_set.norm_set_id} norms={len(norm_set.norms)}")
+
+
+@norms.command("compile")
+def norms_compile(inp: Path, out: Path):
+    try:
+        norm_set = validate_norm_file(inp)
+        result = compile_norm_set(norm_set)
+    except ContradictoryNormError as exc:
+        typer.echo(f"Compilation failed: {exc}", err=True)
+        raise typer.Exit(code=1)
+    write_norm_json(out, result.artifact)
+    typer.echo(f"Wrote {out}")
+
+
+@norms.command("diff")
+def norms_diff(old: Path, new: Path):
+    old_set = validate_norm_file(old)
+    new_set = validate_norm_file(new)
+    typer.echo(json.dumps(diff_norm_sets(old_set, new_set), indent=2, ensure_ascii=False))
+
+
+@policy.command("apply-compiled")
+def policy_apply_compiled(inp: Path, village_id: str = None, actor: str = "norm-compiler", data_root: Path = Path("data")):
+    artifact = CompiledPolicyArtifact.model_validate_json(inp.read_text(encoding="utf-8"))
+    if village_id and artifact.village_id != village_id:
+        typer.echo(f"Village mismatch: artifact={artifact.village_id} arg={village_id}", err=True)
+        raise typer.Exit(code=1)
+    apply_compiled_policy(data_root, artifact, actor=actor)
+    typer.echo(f"Applied compiled policy for {artifact.village_id}")
 
 
 def _load_updates_from_path(path: Path) -> list[VillagePolicyUpdate]:

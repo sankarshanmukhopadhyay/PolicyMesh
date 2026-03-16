@@ -1,0 +1,28 @@
+{
+  "norm_set_id": "federation-intake-v1",
+  "village_id": "federation",
+  "title": "Federation intake controls",
+  "version": "1.0.0",
+  "description": "Require signed manifests and trusted signers for federation pull operations.",
+  "authors": ["operator"],
+  "created_at": "2026-03-16T00:00:00Z",
+  "norms": [
+    {
+      "norm_id": "signed-manifests",
+      "statement": "Remote policy manifests must be signed.",
+      "category": "trust",
+      "compile_to": [
+        {"key": "require_manifest_signature", "value": true}
+      ]
+    },
+    {
+      "norm_id": "trusted-manifest-signers",
+      "statement": "Only approved manifest signers are trusted for policy pull.",
+      "category": "trust",
+      "compile_to": [
+        {"key": "require_trusted_manifest_signer", "value": true},
+        {"key": "trust_anchor_allowlist", "value": ["signer-key-hash-1", "signer-key-hash-2"]}
+      ]
+    }
+  ]
+}

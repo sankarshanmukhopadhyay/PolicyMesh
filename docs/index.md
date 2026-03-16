@@ -19,3 +19,10 @@ PolicyMesh is a verifiable claim exchange with group policy controls, policy gov
 - Cron-friendly drift reports under `artifacts/drift/`
 - GitHub Actions workflows for tests and Pages deployment
 - Backwards-compatible policy update construction for governance metadata
+
+
+## v0.15.0 governance authoring
+
+- Norm engine documentation: [norm-engine.md](./norm-engine.md)
+- Norm-to-policy mapping: [norm-to-policy.md](./norm-to-policy.md)
+- Release notes: [release-notes/v0.15.0.md](./release-notes/v0.15.0.md)

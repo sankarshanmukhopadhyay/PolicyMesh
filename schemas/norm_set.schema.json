@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "NormSet",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["norm_set_id", "village_id", "title", "version", "created_at", "norms"],
+  "properties": {
+    "norm_set_id": {"type": "string"},
+    "village_id": {"type": "string"},
+    "title": {"type": "string"},
+    "version": {"type": "string"},
+    "description": {"type": "string"},
+    "authors": {"type": "array", "items": {"type": "string"}},
+    "created_at": {"type": "string", "format": "date-time"},
+    "norms": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["norm_id", "statement", "category", "compile_to"],
+        "properties": {
+          "norm_id": {"type": "string"},
+          "statement": {"type": "string"},
+          "category": {"type": "string", "enum": ["intake", "review", "governance", "trust", "transparency"]},
+          "enforcement": {"type": "string"},
+          "rationale": {"type": ["string", "null"]},
+          "tags": {"type": "array", "items": {"type": "string"}},
+          "compile_to": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["key", "value"],
+              "properties": {
+                "key": {
+                  "type": "string",
+                  "enum": [
+                    "quarantine_external_bundles",
+                    "review_min_approvals",
+                    "require_policy_signature",
+                    "policy_signature_threshold_m",
+                    "trust_anchor_allowlist",
+                    "enable_transparency_checkpoints",
+                    "require_manifest_signature",
+                    "require_trusted_manifest_signer"
+                  ]
+                },
+                "value": {}
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

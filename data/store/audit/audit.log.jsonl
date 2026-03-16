@@ -32,3 +32,9 @@
 {"ts": "2026-03-14T05:21:56.063034Z", "action": "member.add", "bundle_id": null, "village_id": "test", "issuer_key_hash": null, "actor": null, "reason": "role=member", "policy_hash": null}
 {"ts": "2026-03-16T06:24:15.832811Z", "action": "issuer.allow", "bundle_id": null, "village_id": "ops", "issuer_key_hash": "c547297611a255529e142101151f9ff01715e6c7bbac098075c3370516f944db", "actor": "alice", "reason": null, "policy_hash": "58217e33738654bb"}
 {"ts": "2026-03-16T06:24:15.839916Z", "action": "member.add", "bundle_id": null, "village_id": "test", "issuer_key_hash": null, "actor": null, "reason": "role=member", "policy_hash": null}
+{"ts": "2026-03-16T06:59:20.193486Z", "action": "policy.apply", "bundle_id": null, "village_id": "ops", "issuer_key_hash": null, "actor": "tester", "reason": "norms.compile_apply", "policy_hash": "4ffb0f05f4d03eef"}
+{"ts": "2026-03-16T06:59:20.647940Z", "action": "issuer.allow", "bundle_id": null, "village_id": "ops", "issuer_key_hash": "495563b2a260ec04ea4fc046040631c120558d6d10c29e39f948a277898f47d6", "actor": "alice", "reason": null, "policy_hash": "180930a8690e74ae"}
+{"ts": "2026-03-16T06:59:20.654457Z", "action": "member.add", "bundle_id": null, "village_id": "test", "issuer_key_hash": null, "actor": null, "reason": "role=member", "policy_hash": null}
+{"ts": "2026-03-16T06:59:40.625391Z", "action": "policy.apply", "bundle_id": null, "village_id": "ops", "issuer_key_hash": null, "actor": "tester", "reason": "norms.compile_apply", "policy_hash": "4ffb0f05f4d03eef"}
+{"ts": "2026-03-16T06:59:40.771167Z", "action": "issuer.allow", "bundle_id": null, "village_id": "ops", "issuer_key_hash": "ca81719324e8ab7d4add2b6b7cec4ffe6d9e0af314fc95b34ed6ab513fcbb200", "actor": "alice", "reason": null, "policy_hash": "1a98afaba2922578"}
+{"ts": "2026-03-16T06:59:40.776473Z", "action": "member.add", "bundle_id": null, "village_id": "test", "issuer_key_hash": null, "actor": null, "reason": "role=member", "policy_hash": null}

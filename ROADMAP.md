@@ -1,3 +1,10 @@
+## Current release focus
+
+- [x] NormSet authoring model and compiled policy artifact lineage
+- [x] Deterministic norm compiler with contradiction detection
+- [x] CLI workflow for init, validate, compile, diff, and apply-compiled
+- [x] Docs and examples connecting village governance to policy transport
+
 # PolicyMesh Roadmap
 
 This document captures the intended direction of the PolicyMesh project.

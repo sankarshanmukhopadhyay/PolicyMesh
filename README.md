@@ -15,11 +15,28 @@ PolicyMesh is a small-footprint system for producing **verifiable, inspectable c
 - Roadmap: [`ROADMAP.md`](./ROADMAP.md)
 - Next increment plan: [`docs/NEXT_INCREMENT_PLAN.md`](./docs/NEXT_INCREMENT_PLAN.md)
 - Policy governance: [`docs/policy-governance.md`](./docs/policy-governance.md)
+- Norm engine: [`docs/norm-engine.md`](./docs/norm-engine.md)
+- Norm-to-policy mapping: [`docs/norm-to-policy.md`](./docs/norm-to-policy.md)
 - Production deployment guidance: [`docs/deploy/production-hardened.md`](./docs/deploy/production-hardened.md)
 - SQLite backend guidance: [`docs/deploy/sqlite-backend.md`](./docs/deploy/sqlite-backend.md)
 - Operator playbook: [`docs/deploy/operator-playbook.md`](./docs/deploy/operator-playbook.md)
 - Governance risk crosswalk: [`docs/risk-crosswalk.md`](./docs/risk-crosswalk.md)
 - Upstream snapshot notes: [`upstream/UPSTREAM_SNAPSHOT.md`](./upstream/UPSTREAM_SNAPSHOT.md)
+
+## Norm compilation and governance authoring (v0.15.0)
+
+PolicyMesh now includes a first-class norm engine so villages can declare structured governance intent and compile it into executable policy artifacts with provenance.
+
+### Norm authoring
+
+```bash
+links norms init ops --out artifacts/norms/ops.norms.json
+links norms validate artifacts/norms/ops.norms.json
+links norms compile artifacts/norms/ops.norms.json --out artifacts/policy/ops.compiled.json
+links policy apply-compiled artifacts/policy/ops.compiled.json --actor norm-compiler
+```
+
+The compiled artifact preserves source norm set ID, source norm IDs, compiler version, and output policy hash.
 
 ## Transparency and federation (v0.14.0)
 
@@ -186,6 +203,10 @@ links policy verify artifacts/policy_update.s2.json
 
 #### Implemented governance capabilities
 
+- structured norm authoring with deterministic norm compilation
+- compiled policy provenance and source norm lineage
+- CLI support for norm init, validate, compile, and diff
+- compiled-policy apply workflow feeding the existing policy lifecycle
 - M-of-N signer quorum for policy updates
 - policy diff tooling and machine-readable change summaries
 - policy version identifiers and deterministic rollback by prior policy hash
@@ -199,7 +220,14 @@ links policy verify artifacts/policy_update.s2.json
 - signed feed manifests with policy-pinned trust evaluation and deep-history parent-chain recovery
 - transparency and audit signing workflows for production operations
 
-#### Delivered in v0.14.0
+#### Delivered in v0.15.0
+
+- first-class norm engine and compiled policy artifact model (`links.norms`)
+- deterministic norm compiler with contradiction checks and provenance
+- new schemas for norm sets and compiled policy artifacts
+- operator docs and examples for governance authoring
+
+#### Previously delivered in v0.14.0
 
 - transparency checkpoint signing, publication, and peer comparison (`links.checkpoint_exchange`)
 - drift class taxonomy distinguishing policy divergence from publication lag (`links.drift_classes`)

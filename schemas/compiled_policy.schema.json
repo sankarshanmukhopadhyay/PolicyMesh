@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CompiledPolicyArtifact",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "compiled_policy_id",
+    "village_id",
+    "title",
+    "source_norm_set_id",
+    "generated_at",
+    "compiler",
+    "policy",
+    "policy_hash",
+    "lineage"
+  ],
+  "properties": {
+    "compiled_policy_id": {"type": "string"},
+    "village_id": {"type": "string"},
+    "title": {"type": "string"},
+    "source_norm_set_id": {"type": "string"},
+    "generated_at": {"type": "string", "format": "date-time"},
+    "compiler": {"type": "object"},
+    "policy": {"type": "object"},
+    "policy_hash": {"type": "string"},
+    "lineage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source_norm_set_id", "source_norm_ids", "compiler_version", "compiler_ruleset", "output_policy_hash"],
+      "properties": {
+        "source_norm_set_id": {"type": "string"},
+        "source_norm_ids": {"type": "array", "items": {"type": "string"}},
+        "compiler_version": {"type": "string"},
+        "compiler_ruleset": {"type": "string"},
+        "output_policy_hash": {"type": "string"},
+        "transformation_notes": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "source_norm_snapshot": {"type": "array", "items": {"type": "object"}}
+  }
+}

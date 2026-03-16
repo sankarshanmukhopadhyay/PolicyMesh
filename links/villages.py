@@ -39,6 +39,8 @@ class VillageCapabilities(BaseModel):
 class VillagePolicy(BaseModel):
     visibility: str = Field(default="village", description="private|village|public")
     allowed_predicates: list[str] = Field(default_factory=lambda: ["links.weighted_to"])
+    quarantine_external_bundles: bool = Field(default=False, description="If true, external claim bundles are quarantined pending review.")
+    quarantine_review_min_approvals: int = Field(default=1, description="Minimum approvals required to release a quarantined bundle.")
     max_window_days: int = 30
     min_signature_alg: str = "Ed25519"
     allow_unverified: bool = False
