@@ -1,43 +1,42 @@
-# Next Increment Plan — Live Endpoints, Quorum Operationalization, and SDK Stabilization
+# Next Increment Plan — Feed Integrity Hardening and Operator Automation
 
-The prior increment (v0.14.0) delivered transparency checkpoint signing and publication, a formal drift class taxonomy, and machine-readable capability declarations. All three modules have full test coverage and are independently usable.
+The v0.16.0 release closes the largest operational gap from the prior roadmap by exposing live checkpoint and capability endpoints, adding quorum inspection, and stabilizing the public SDK surface.
 
 ## Objective
 
-Advance from library-level capability to operator-visible, protocol-level surfaces. The three new modules need server integration points, and the quorum governance work needs to move from artifact-level scaffolding toward operational enforcement.
+Advance from discoverable operator surfaces to stronger federation trust guarantees and more automation-ready operational workflows.
 
 ---
 
-## Priority 1: Live HTTP endpoints for transparency and capability
+## Priority 1: Feed integrity hardening
 
 ### Target outcomes
-- Add `GET /villages/{village_id}/transparency/checkpoint` to `server.py` so `fetch_peer_checkpoint` has a real target.
-- Add `GET /nodes/capability` to serve the node's capability manifest over HTTP for peer discovery.
-- Document the endpoint contract and add integration tests against a `TestClient`.
+- Tighten signed policy feed manifest verification and trust-pinning workflows.
+- Expand parent-chain recovery and unresolved-history reporting for long pull histories.
+- Add more explicit operator artifacts for manifest trust failures, lineage gaps, and fork conditions.
 
 ---
 
-## Priority 2: Quorum operationalization
+## Priority 2: Alertable drift and reconciliation workflows
 
 ### Target outcomes
-- Enforce weighted and role-based quorum checks at policy apply time, not just at verification time.
-- Add operator-facing CLI for quorum inspection: which signers have signed, what weight total has been reached, what role requirements are met.
-- Expand `docs/policy-governance.md` with worked examples for weighted and role-based quorum setups.
+- Add webhook- or command-hook based alert surfaces for drift classification changes.
+- Provide operator-ready scheduled examples for pull, drift, and checkpoint comparison.
+- Improve durable reconciliation output so operators can distinguish publication lag, policy divergence, and trust failure faster.
 
 ---
 
-## Priority 3: SDK stabilization and surface documentation
+## Priority 3: Quorum metadata and review discipline
 
 ### Target outcomes
-- Publish a machine-readable surface map distinguishing stable, experimental, and internal-only modules.
-- Add a `links.sdk` façade that re-exports the stable public API surface with stable import paths.
-- Document breaking-change policy for the stable surface.
+- Tighten quorum metadata requirements for higher-assurance deployments.
+- Expand worked examples for weighted and role-based quorum review procedures.
+- Clarify lifecycle semantics across proposal, approval, activation, and rollback.
 
 ---
 
 ## Explicit non-goals for this increment
 
-- Large architectural rewrites
 - New storage backends beyond filesystem and SQLite
-- Speculative standards work without a concrete operator use case
-- Broad schema churn unrelated to the endpoint or quorum work
+- Broad schema redesign without an operator-facing payoff
+- New standards alignment work that does not improve federation operations

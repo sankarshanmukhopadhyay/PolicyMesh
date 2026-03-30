@@ -23,6 +23,39 @@ PolicyMesh is a small-footprint system for producing **verifiable, inspectable c
 - Governance risk crosswalk: [`docs/risk-crosswalk.md`](./docs/risk-crosswalk.md)
 - Upstream snapshot notes: [`upstream/UPSTREAM_SNAPSHOT.md`](./upstream/UPSTREAM_SNAPSHOT.md)
 
+## Live federation surfaces and quorum operations (v0.16.0)
+
+PolicyMesh now exposes live HTTP surfaces for transparency checkpoints and node capability discovery, adds an operator-facing quorum inspection workflow, and stabilizes the public Python SDK façade for federation and governance tooling.
+
+### Live node surfaces
+
+```bash
+curl http://127.0.0.1:8080/nodes/capability
+curl http://127.0.0.1:8080/villages/ops/transparency/checkpoint
+```
+
+The node capability endpoint returns a machine-readable capability manifest derived from runtime configuration. The transparency checkpoint endpoint returns the current village checkpoint and signs it automatically when `LINKS_NODE_SIGNING_KEY_B64` is configured.
+
+### Quorum inspection
+
+```bash
+links policy quorum-inspect ops
+```
+
+This writes a durable artifact under `artifacts/quorum/<village_id>/...` so operators can inspect effective threshold, signer allowlist, signer weights, and role assignments before approving or troubleshooting policy updates.
+
+### Stable SDK surface
+
+```python
+from links.sdk import build_manifest, fetch_peer_checkpoint, compare_checkpoints
+
+manifest = build_manifest(node_id="node.example.org")
+peer = fetch_peer_checkpoint("https://peer.example.org", "ops")
+report = compare_checkpoints(local_checkpoint, peer)
+```
+
+The `links.sdk` module is the stable import surface for capability manifests, checkpoint exchange, and the minimal HTTP client.
+
 ## Norm compilation and governance authoring (v0.15.0)
 
 PolicyMesh now includes a first-class norm engine so villages can declare structured governance intent and compile it into executable policy artifacts with provenance.
@@ -213,11 +246,18 @@ links policy verify artifacts/policy_update.s2.json
 - policy feed pull/apply flow and drift detection CLI
 - trust anchor register / rotate / revoke primitives
 
-#### Partially implemented or still hardening
+#### Delivered in v0.16.0
 
-- weighted signer and role-based quorum models
+- live HTTP transparency checkpoint endpoint for peer fetch and comparison
+- live node capability manifest endpoint for peer discovery and operator inspection
+- quorum inspection CLI with durable artifacts under `artifacts/quorum/`
+- stable `links.sdk` façade for capability and federation workflows
+
+#### Still hardening
+
 - richer policy lifecycle semantics across proposal, approval, and activation
 - signed feed manifests with policy-pinned trust evaluation and deep-history parent-chain recovery
+- stricter quorum metadata enforcement policies and broader operator examples
 - transparency and audit signing workflows for production operations
 
 #### Delivered in v0.15.0

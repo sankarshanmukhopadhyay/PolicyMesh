@@ -20,7 +20,7 @@ Bearer tokens authenticate an operator. Signatures add:
 - Log and review all policy changes via the audit log.
 
 
-## Quorum governance enhancements (vNext)
+## Quorum governance enhancements (v0.16.0)
 
 This repo now supports **three policy-approval quorum models**, driven by village policy config:
 
@@ -64,3 +64,21 @@ The CLI can compute a structured diff summary between two policy JSON files:
 - `links policy diff old.json new.json`
 
 This emits a machine-readable summary (`added`, `removed`, `changed` JSON pointer paths) that can be embedded in policy update artifacts as `change_summary`.
+
+
+## Operator workflow additions
+
+Inspect the effective quorum configuration for a village:
+
+```bash
+links policy quorum-inspect ops
+```
+
+This produces a durable JSON artifact showing the active quorum model, threshold, allowlisted signer set, signer weights, and role assignments. It is intended for operator review, troubleshooting, and audit preparation before or after a policy update is proposed.
+
+For live federation checks, the server now exposes:
+
+- `GET /villages/{village_id}/transparency/checkpoint`
+- `GET /nodes/capability`
+
+Together these surfaces make it possible to compare peer publication state, fetch checkpoints through a stable HTTP contract, and discover runtime capability posture without inspecting the repository by hand.

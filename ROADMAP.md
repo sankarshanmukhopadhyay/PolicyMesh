@@ -1,9 +1,9 @@
 ## Current release focus
 
-- [x] NormSet authoring model and compiled policy artifact lineage
-- [x] Deterministic norm compiler with contradiction detection
-- [x] CLI workflow for init, validate, compile, diff, and apply-compiled
-- [x] Docs and examples connecting village governance to policy transport
+- [x] Live HTTP transparency checkpoint endpoint for peer fetch and comparison
+- [x] Live node capability endpoint for runtime capability discovery
+- [x] Operator-facing quorum inspection workflow with durable artifacts
+- [x] Stable public SDK façade and refreshed operator documentation
 
 # PolicyMesh Roadmap
 
@@ -15,7 +15,7 @@ It is intentionally schedule-free. Items move forward based on architectural rea
 - 🟡 Partial
 - 🔜 Planned
 
-_Last updated: 2026-03-16_
+_Last updated: 2026-03-30_
 
 ---
 
@@ -23,8 +23,9 @@ _Last updated: 2026-03-16_
 
 ### 1.1 Quorum Governance Enhancements
 **Status:** 🟡 Partial
-- Weighted quorum support beyond simple M-of-N acceptance
-- Role-based quorum sets (for example, at least one “core” plus one “external” signer)
+- Weighted quorum support beyond simple M-of-N acceptance ✅
+- Role-based quorum sets (for example, at least one “core” plus one “external” signer) ✅
+- Operator-facing quorum inspection workflow ✅
 - Explicit quorum metadata in policy update artifacts for audit clarity
 
 ### 1.2 Policy Diff & Review
@@ -86,6 +87,7 @@ _Last updated: 2026-03-16_
 - Signed transparency log support ✅
 - Reproducible policy history snapshots and checkpoints ✅
 - Signed checkpoint publication and peer comparison ✅
+- Live checkpoint endpoint for peer retrieval ✅
 - Drift class taxonomy (policy divergence vs. publication lag) ✅
 - Read-only public policy endpoint hardening
 
@@ -157,9 +159,11 @@ _Last updated: 2026-03-16_
 
 ### 6.3 Tooling & SDK
 **Status:** 🟡 Partial
-- Python SDK wrapper
-- Minimal HTTP client library
+- Python SDK wrapper ✅
+- Minimal HTTP client library ✅
+- Stable `links.sdk` façade for capability and checkpoint workflows ✅
 - Example integration materials
 - Clearer separation between stable and experimental SDK surfaces ✅
 - Machine-readable capability declarations with JSON Schema ✅
+- Live capability endpoint for peer discovery ✅
 - Operator acceptance criteria for small-federation pilots ✅

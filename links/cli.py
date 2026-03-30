@@ -295,6 +295,44 @@ def norms_diff(old: Path, new: Path):
     typer.echo(json.dumps(diff_norm_sets(old_set, new_set), indent=2, ensure_ascii=False))
 
 
+@policy.command("quorum-inspect")
+def policy_quorum_inspect(village_id: str, data_root: Path = Path("data"), out: Path = typer.Option(None, help="Optional JSON report output path")):
+    """Inspect the effective policy quorum configuration for a village."""
+    if load_village is None:
+        typer.echo("Local village loader not available", err=True)
+        raise typer.Exit(code=2)
+
+    village = load_village(data_root, village_id)
+    policy_obj = village.policy.model_dump()
+    quorum_cfg = policy_obj.get("policy_quorum") or {}
+    allowlist = list(policy_obj.get("policy_signer_allowlist") or [])
+    weights = dict(policy_obj.get("policy_signer_weights") or {})
+    roles = dict(policy_obj.get("policy_signer_roles") or {})
+
+    model = quorum_cfg.get("model") or ("m_of_n" if policy_obj.get("require_policy_signature") else "optional")
+    payload = {
+        "village_id": village_id,
+        "inspected_at": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
+        "require_policy_signature": bool(policy_obj.get("require_policy_signature", False)),
+        "model": model,
+        "threshold_m": quorum_cfg.get("threshold_m") or policy_obj.get("policy_signature_threshold_m") or 1,
+        "threshold_weight": quorum_cfg.get("threshold_weight"),
+        "role_requirements": quorum_cfg.get("role_requirements") or [],
+        "allowlisted_signer_count": len(allowlist),
+        "allowlisted_signers": allowlist,
+        "weighted_signers": weights,
+        "role_assignments": roles,
+    }
+
+    if out is None:
+        stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+        out = Path("artifacts/quorum") / village_id / f"quorum.{stamp}.json"
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text(json.dumps(payload, indent=2, ensure_ascii=False, sort_keys=True) + "\n", encoding="utf-8")
+    typer.echo(json.dumps(payload, indent=2))
+    typer.echo(f"Wrote {out}")
+
+
 @policy.command("apply-compiled")
 def policy_apply_compiled(inp: Path, village_id: str = None, actor: str = "norm-compiler", data_root: Path = Path("data")):
     artifact = CompiledPolicyArtifact.model_validate_json(inp.read_text(encoding="utf-8"))

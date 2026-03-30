@@ -11,7 +11,7 @@ PolicyMesh is a verifiable claim exchange with group policy controls, policy gov
 - [Ethics](ethics.md)
 - [Risks](risks.md)
 - [GitHub Pages deployment](deploy/pages.md)
-- [Release notes v0.12.0](release-notes/v0.12.0.md)
+- [Release notes v0.16.0](release-notes/v0.16.0.md)
 
 ## Operator surfaces in v0.12.0
 
@@ -26,3 +26,11 @@ PolicyMesh is a verifiable claim exchange with group policy controls, policy gov
 - Norm engine documentation: [norm-engine.md](./norm-engine.md)
 - Norm-to-policy mapping: [norm-to-policy.md](./norm-to-policy.md)
 - Release notes: [release-notes/v0.15.0.md](./release-notes/v0.15.0.md)
+
+
+## v0.16.0 federation and operator surfaces
+
+- Live checkpoint endpoint: `GET /villages/{village_id}/transparency/checkpoint`
+- Live capability endpoint: `GET /nodes/capability`
+- Quorum inspection CLI: `links policy quorum-inspect <village_id>`
+- Release notes: [release-notes/v0.16.0.md](./release-notes/v0.16.0.md)

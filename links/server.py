@@ -26,6 +26,9 @@ from .validate import validate_village_id
 from .audit_export import export_audit_json, export_audit_csv, sign_digest_hex
 from .keys import load_signing_key_from_env
 from .file_lock import locked_open
+from .transparency import build_transparency_checkpoint
+from .checkpoint_exchange import sign_checkpoint
+from .capability_manifest import build_manifest
 
 # Optional: if a richer villages module exists, use it for auth + apply + policy lookup.
 try:
@@ -44,7 +47,7 @@ def _bearer_token(authorization: str | None) -> str | None:
 
 
 def create_app(store_root: Path = Path("data/store"), villages_root: Path = Path("data")) -> FastAPI:
-    app = FastAPI(title="PolicyMesh Claim Exchange", version="0.15.0")
+    app = FastAPI(title="PolicyMesh Claim Exchange", version="0.16.0")
 
     # Simple in-memory per-village rate limiter (minute bucket).
     # NOTE: In production, put PolicyMesh behind a proper gateway (Envoy/Nginx) with real rate limiting.
@@ -221,6 +224,67 @@ def create_app(store_root: Path = Path("data/store"), villages_root: Path = Path
         if not u:
             raise HTTPException(status_code=404, detail="no policy updates found")
         return u.model_dump()
+
+
+
+    @app.get("/villages/{village_id}/transparency/checkpoint")
+    def transparency_checkpoint(village_id: str):
+        """Return the latest transparency checkpoint, optionally signed with the node key."""
+        validate_village_id(village_id)
+        payload = build_transparency_checkpoint(store_root, village_id)
+
+        try:
+            sk = load_signing_key_from_env()
+            payload = sign_checkpoint(payload, sk)
+        except Exception:
+            pass
+
+        return payload
+
+    @app.get("/nodes/capability")
+    def node_capability():
+        """Return a live capability manifest describing this node's operational surfaces."""
+        node_id = (
+            os.environ.get("LINKS_NODE_ID")
+            or os.environ.get("HOSTNAME")
+            or "local-node"
+        )
+        storage_mode = "sqlite" if os.environ.get("LINKS_STORAGE_BACKEND", "").strip().lower() == "sqlite" else "filesystem"
+        reconciliation_mode = os.environ.get("LINKS_RECONCILIATION_MODE", "lineage_aware").strip() or "lineage_aware"
+
+        transparency_features = ["http_publish"]
+        experimental_features = ["capability_manifest", "checkpoint_http_publish", "checkpoint_peer_compare", "quorum_weighted", "quorum_role_based"]
+        notes = [
+            "Live capability surface published over HTTP.",
+            "Weighted and role-based quorum verification available for policy evaluation.",
+        ]
+        try:
+            load_signing_key_from_env()
+            transparency_features.append("signed_checkpoint")
+            experimental_features.append("checkpoint_signed_digest")
+            notes.append("Node signing key configured; transparency checkpoints and manifests can be signed.")
+        except Exception:
+            notes.append("Node signing key not configured; capability manifest and checkpoints are currently unsigned.")
+
+        manifest = build_manifest(
+            node_id=node_id,
+            storage_mode=storage_mode,
+            reconciliation_mode=reconciliation_mode,
+            transparency_features=sorted(set(transparency_features)),
+            experimental_features=sorted(set(experimental_features)),
+            federation_pilot=os.environ.get("LINKS_FEDERATION_PILOT", "").strip().lower() in {"1", "true", "yes"},
+            operator_notes=" ".join(notes),
+            extra={
+                "service_version": "0.16.0",
+                "routes": {
+                    "policy_latest": "/villages/{village_id}/policy/latest",
+                    "policy_manifest": "/villages/{village_id}/policy/manifest",
+                    "transparency_checkpoint": "/villages/{village_id}/transparency/checkpoint",
+                    "node_capability": "/nodes/capability",
+                },
+            },
+        )
+        return manifest
 
     @app.get("/villages/{village_id}/transparency/policy_log")
     def transparency_policy_log(village_id: str, limit: int = Query(default=500, ge=1, le=5000)):
