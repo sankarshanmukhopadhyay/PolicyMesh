@@ -4,8 +4,8 @@ PolicyMesh is a verifiable claim exchange with group policy controls, policy gov
 
 ## What is here
 
-- [README](../README.md)
-- [Roadmap](../ROADMAP.md)
+- [Repository on GitHub](https://github.com/sankarshanmukhopadhyay/PolicyMesh)
+- [Published roadmap](ROADMAP.md)
 - [Policy governance](policy-governance.md)
 - [Risk crosswalk](risk-crosswalk.md)
 - [Ethics](ethics.md)
@@ -13,7 +13,7 @@ PolicyMesh is a verifiable claim exchange with group policy controls, policy gov
 - [GitHub Pages deployment](deploy/pages.md)
 - [Release notes v0.16.0](release-notes/v0.16.0.md)
 
-## Operator surfaces in v0.12.0
+## Earlier operator surfaces
 
 - Durable reconciliation reports under `artifacts/reconciliation/`
 - Cron-friendly drift reports under `artifacts/drift/`
