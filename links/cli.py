@@ -11,6 +11,16 @@ from nacl.signing import SigningKey
 
 from links.server import create_app
 from links.policy_updates import VillagePolicyUpdate, verify_update_any, add_signature, sign_update_legacy, build_update, compute_policy_hash
+from links.decision_receipts import (
+    ReceiptEvidence,
+    PolicyDecisionReceipt,
+    build_policy_decision_receipt,
+    build_quorum_summary,
+    evaluate_policy_update,
+    sign_receipt,
+    verify_receipt,
+    write_receipt,
+)
 from links.policy_diff import diff_policies
 from links.policy_feed import PolicyFeedManifest, fill_history_gaps, verify_manifest_against_policy
 from links.reconcile import reconcile, write_reconciliation_report
@@ -95,6 +105,14 @@ def policy_sign_legacy(inp: Path, key: Path, out: Path):
 def policy_verify(inp: Path):
     u = VillagePolicyUpdate.model_validate_json(inp.read_text(encoding="utf-8"))
     ok = verify_update_any(u)
+    typer.echo("OK" if ok else "FAIL")
+    raise typer.Exit(code=0 if ok else 1)
+
+
+@policy.command("verify-receipt")
+def policy_verify_receipt(inp: Path):
+    receipt = PolicyDecisionReceipt.model_validate_json(inp.read_text(encoding="utf-8"))
+    ok = verify_receipt(receipt)
     typer.echo("OK" if ok else "FAIL")
     raise typer.Exit(code=0 if ok else 1)
 
@@ -240,16 +258,65 @@ def policy_pull(url: str, village_id: str, apply: bool = True, since: str = None
     if unresolved_parent_hashes:
         typer.echo(f"Warning: unresolved parent hashes remain: {', '.join(unresolved_parent_hashes[:10])}")
 
-    if apply and apply_policy_update:
-        ok, msg = signer_allowed(current_policy, chosen)
-        if not ok:
-            typer.echo(f"Refusing to apply update: {msg}")
-            raise typer.Exit(code=1)
+    signer_ok, signer_msg = signer_allowed(current_policy, chosen)
+    decision, reason_codes, decision_notes = evaluate_policy_update(
+        current_policy,
+        chosen,
+        manifest_ok=manifest_ok,
+        signer_ok=signer_ok,
+        signer_message=signer_msg,
+    )
 
+    if apply and apply_policy_update and decision == "apply":
         apply_policy_update(Path("data"), village_id, chosen.policy, actor=chosen.actor or "pull", update_meta={"policy_hash": chosen.policy_hash, "policy_update": "pull"})
         typer.echo("Applied.")
+    elif decision == "defer":
+        typer.echo(f"Deferred apply: {', '.join(reason_codes)}")
+    elif decision == "reject":
+        typer.echo(f"Refusing to apply update: {', '.join(reason_codes)}")
     else:
         typer.echo("Not applied (apply=false or local apply not available).")
+
+    receipt = build_policy_decision_receipt(
+        village_id=village_id,
+        update=chosen,
+        decision=decision if apply else "defer",
+        reason_codes=reason_codes if apply else ["apply_skipped"],
+        notes=decision_notes if apply else ["Policy update was fetched and reconciled but not applied because apply=false or local apply is unavailable."],
+        actor=chosen.actor or "pull",
+        action="policy_pull",
+        local_policy_hash=local_hash,
+        evidence=ReceiptEvidence(
+            selected_source=report.selected_source,
+            selected_head=report.selected_head,
+            selection_reason=report.selection_reason,
+            manifest_ok=manifest_ok,
+            manifest_message=manifest_msg,
+            reconciliation_status=report.status,
+            reconciliation_report_path=str(rec_out),
+            fetched_parent_hashes=fetched_parent_hashes,
+            unresolved_parent_hashes=unresolved_parent_hashes,
+            quorum_summary=build_quorum_summary(chosen),
+        ),
+    )
+
+    signing_key_b64 = None
+    try:
+        import os
+        signing_key_b64 = os.environ.get("LINKS_NODE_SIGNING_KEY_B64")
+    except Exception:
+        signing_key_b64 = None
+    if signing_key_b64:
+        try:
+            seed = base64.b64decode(signing_key_b64.strip())
+            receipt = sign_receipt(receipt, SigningKey(seed[:32]))
+        except Exception:
+            pass
+
+    receipt_out_dir = Path("artifacts/receipts") / village_id
+    receipt_out = receipt_out_dir / f"policy_pull.{datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ')}.{chosen.policy_hash[:12]}.json"
+    write_receipt(receipt_out, receipt)
+    typer.echo(f"Wrote {receipt_out}")
 
     out_dir = Path("artifacts/policy_feed") / village_id
     out_dir.mkdir(parents=True, exist_ok=True)

@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sankarshanmukhopadhyay.github.io/PolicyMesh/schemas/policy_decision_receipt.schema.json",
+  "title": "PolicyMesh Policy Decision Receipt",
+  "description": "Machine-verifiable evidence artifact for policy pull, verification, and apply decisions.",
+  "type": "object",
+  "required": [
+    "format",
+    "receipt_id",
+    "ts",
+    "village_id",
+    "action",
+    "decision",
+    "subject_type",
+    "subject_id",
+    "candidate_policy_hash",
+    "reason_codes",
+    "notes",
+    "evidence"
+  ],
+  "properties": {
+    "format": {"const": "links.policy.decision_receipt.v1"},
+    "receipt_id": {"type": "string"},
+    "ts": {"type": "string", "format": "date-time"},
+    "village_id": {"type": "string"},
+    "action": {"type": "string", "enum": ["policy_pull", "policy_apply", "policy_verify"]},
+    "decision": {"type": "string", "enum": ["apply", "defer", "reject"]},
+    "subject_type": {"type": "string", "const": "policy_update"},
+    "subject_id": {"type": "string"},
+    "actor": {"type": ["string", "null"]},
+    "candidate_policy_hash": {"type": "string"},
+    "local_policy_hash": {"type": ["string", "null"]},
+    "policy_version_id": {"type": ["string", "null"]},
+    "lifecycle_state": {"type": ["string", "null"]},
+    "activation_time": {"type": ["string", "null"], "format": "date-time"},
+    "expires_at": {"type": ["string", "null"], "format": "date-time"},
+    "reason_codes": {"type": "array", "items": {"type": "string"}},
+    "notes": {"type": "array", "items": {"type": "string"}},
+    "evidence": {
+      "type": "object",
+      "required": ["quorum_summary", "fetched_parent_hashes", "unresolved_parent_hashes"],
+      "properties": {
+        "selected_source": {"type": ["string", "null"]},
+        "selected_head": {"type": ["string", "null"]},
+        "selection_reason": {"type": ["string", "null"]},
+        "manifest_ok": {"type": ["boolean", "null"]},
+        "manifest_message": {"type": ["string", "null"]},
+        "reconciliation_status": {"type": ["string", "null"]},
+        "reconciliation_report_path": {"type": ["string", "null"]},
+        "fetched_parent_hashes": {"type": "array", "items": {"type": "string"}},
+        "unresolved_parent_hashes": {"type": "array", "items": {"type": "string"}},
+        "quorum_summary": {"type": "object"}
+      },
+      "additionalProperties": false
+    },
+    "signature_alg": {"type": ["string", "null"]},
+    "signer_public_key": {"type": ["string", "null"]},
+    "signature": {"type": ["string", "null"]}
+  },
+  "additionalProperties": false
+}

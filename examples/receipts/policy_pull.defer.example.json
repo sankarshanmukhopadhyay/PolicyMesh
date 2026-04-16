@@ -1,0 +1,38 @@
+{
+  "format": "links.policy.decision_receipt.v1",
+  "receipt_id": "0212a5f2841f36a8e668607158bf36565d91ab6e0cfffa866ab3cf3d910ece74",
+  "ts": "2026-04-17T08:00:00Z",
+  "village_id": "ops",
+  "action": "policy_pull",
+  "decision": "defer",
+  "subject_type": "policy_update",
+  "subject_id": "f78f98264496c09e2a4416c607e297ff579e960912c6b4608d83ec5072ff759d",
+  "actor": "pull",
+  "candidate_policy_hash": "f78f98264496c09e2a4416c607e297ff579e960912c6b4608d83ec5072ff759d",
+  "local_policy_hash": "b1f59fb76d2dcf8abf89ca66ce1b6ef3fceab640277c0ecdc87794044314aa34",
+  "policy_version_id": "v2026-04-17-ops-02",
+  "lifecycle_state": "approved",
+  "activation_time": "2026-04-18T00:00:00Z",
+  "expires_at": null,
+  "reason_codes": ["awaiting_activation_time"],
+  "notes": ["Activation time has not yet been reached."],
+  "evidence": {
+    "selected_source": "remote",
+    "selected_head": "f78f98264496c09e2a4416c607e297ff579e960912c6b4608d83ec5072ff759d",
+    "selection_reason": "remote policy selected but activation is still pending",
+    "manifest_ok": true,
+    "manifest_message": "manifest verified",
+    "reconciliation_status": "selected_remote",
+    "reconciliation_report_path": "artifacts/reconciliation/ops/pull.20260417T080000Z.json",
+    "fetched_parent_hashes": [],
+    "unresolved_parent_hashes": [],
+    "quorum_summary": {
+      "model": "m_of_n",
+      "threshold_m": 2,
+      "requirements": []
+    }
+  },
+  "signature_alg": null,
+  "signer_public_key": null,
+  "signature": null
+}

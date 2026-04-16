@@ -1,0 +1,40 @@
+{
+  "format": "links.policy.decision_receipt.v1",
+  "receipt_id": "b31ce3dbce2bbf0f7fa6c9a1785f7c40c97f78a06ae1f2624b60fdf235dd8fbf",
+  "ts": "2026-04-17T07:30:00Z",
+  "village_id": "ops",
+  "action": "policy_pull",
+  "decision": "apply",
+  "subject_type": "policy_update",
+  "subject_id": "9b4a097db5fd4dbe0df7c8f2f9d0d2044ef9c2b302fbde0eb3bfe7866f7c2c93",
+  "actor": "pull",
+  "candidate_policy_hash": "9b4a097db5fd4dbe0df7c8f2f9d0d2044ef9c2b302fbde0eb3bfe7866f7c2c93",
+  "local_policy_hash": "b1f59fb76d2dcf8abf89ca66ce1b6ef3fceab640277c0ecdc87794044314aa34",
+  "policy_version_id": "v2026-04-17-ops-01",
+  "lifecycle_state": "active",
+  "activation_time": null,
+  "expires_at": null,
+  "reason_codes": ["ready_for_apply"],
+  "notes": ["Policy update passed the current admission checks."],
+  "evidence": {
+    "selected_source": "remote",
+    "selected_head": "9b4a097db5fd4dbe0df7c8f2f9d0d2044ef9c2b302fbde0eb3bfe7866f7c2c93",
+    "selection_reason": "remote lineage intact and newer than local head",
+    "manifest_ok": true,
+    "manifest_message": "trusted manifest signer matched local allowlist",
+    "reconciliation_status": "selected_remote",
+    "reconciliation_report_path": "artifacts/reconciliation/ops/pull.20260417T073000Z.json",
+    "fetched_parent_hashes": ["3d5a0127d4d3fafd4a1fa15c8171a59d6feadf6f0f83b22d28ff2d3a8116d714"],
+    "unresolved_parent_hashes": [],
+    "quorum_summary": {
+      "model": "role_based",
+      "requirements": [
+        {"role": "core", "min_signers": 1},
+        {"role": "external", "min_signers": 1}
+      ]
+    }
+  },
+  "signature_alg": null,
+  "signer_public_key": null,
+  "signature": null
+}

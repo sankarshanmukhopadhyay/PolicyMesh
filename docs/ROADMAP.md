@@ -19,7 +19,7 @@ It is intentionally schedule-free. Items move forward based on architectural rea
 - 🟡 Partial
 - 🔜 Planned
 
-_Last updated: 2026-03-30_
+_Last updated: 2026-04-17_
 
 ---
 
@@ -30,13 +30,13 @@ _Last updated: 2026-03-30_
 - Weighted quorum support beyond simple M-of-N acceptance ✅
 - Role-based quorum sets (for example, at least one “core” plus one “external” signer) ✅
 - Operator-facing quorum inspection workflow ✅
-- Explicit quorum metadata in policy update artifacts for audit clarity
+- Explicit quorum metadata in policy update artifacts for audit clarity ✅
 
 ### 1.2 Policy Diff & Review
 **Status:** 🟡 Partial
 - Structured policy diff tooling
 - Machine-readable policy change summaries
-- Lifecycle semantics across proposal, approval, and activation
+- Lifecycle semantics across proposal, approval, and activation 🟡 decision receipts now distinguish apply/defer/reject and respect activation time
 
 ### 1.3 Policy Rollback & Versioning
 **Status:** 🟡 Partial
@@ -83,7 +83,7 @@ _Last updated: 2026-03-30_
 ### 3.2 Drift Monitoring
 **Status:** 🟡 Partial
 - Drift check CLI and severity classification ✅
-- Alert hooks (webhook or CLI-based triggers)
+- Alert hooks (webhook or CLI-based triggers) ✅
 - Periodic automated drift checks and cron-ready operator examples ✅
 
 ### 3.3 Governance Transparency
@@ -144,7 +144,8 @@ _Last updated: 2026-03-30_
 **Status:** 🟡 Partial
 - Capability-to-risk-to-control mapping documented
 - Selected standards-family references for operator legibility
-- Machine-readable evidence and deeper control mapping remain future work
+- Machine-readable policy decision receipts and example evidence artifacts ✅
+- Deeper control mapping remains future work
 
 ---
 

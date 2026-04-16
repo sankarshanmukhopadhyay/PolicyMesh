@@ -21,9 +21,34 @@ PolicyMesh is a small-footprint system for producing **verifiable, inspectable c
 - SQLite backend guidance: [`docs/deploy/sqlite-backend.md`](./docs/deploy/sqlite-backend.md)
 - Operator playbook: [`docs/deploy/operator-playbook.md`](./docs/deploy/operator-playbook.md)
 - Governance risk crosswalk: [`docs/risk-crosswalk.md`](./docs/risk-crosswalk.md)
+- Decision receipts: [`docs/decision-receipts.md`](./docs/decision-receipts.md)
+- Drift alerting: [`docs/deploy/drift-alerting.md`](./docs/deploy/drift-alerting.md)
 - Upstream snapshot notes: [`upstream/UPSTREAM_SNAPSHOT.md`](./upstream/UPSTREAM_SNAPSHOT.md)
 
-## Live federation surfaces and quorum operations (v0.16.0)
+## Decision receipts and alertable drift workflows (v0.17.0)
+
+PolicyMesh now turns policy pull and admission outcomes into machine-verifiable decision receipts, and the operator drift checker can trigger webhook or command-hook automation when status changes.
+
+### Policy decision receipts
+
+```bash
+links policy pull https://peer.example.org ops --apply
+links policy verify-receipt artifacts/receipts/ops/policy_pull.20260417T073000Z.9b4a097db5fd.json
+```
+
+Each pull now writes a durable receipt under `artifacts/receipts/<village_id>/` with the selected policy head, reconciliation evidence, manifest trust result, quorum metadata summary, and the final decision: `apply`, `defer`, or `reject`.
+
+### Alertable drift workflows
+
+```bash
+python scripts/policy_drift_check.py https://peer.example.org ops \
+  --state-file artifacts/drift/ops/state.json \
+  --webhook-url https://ops.example.org/hooks/policymesh-drift
+```
+
+The drift checker now supports persisted state, command hooks, and webhooks so operators can trigger incident workflows only when drift classification changes.
+
+## Live federation surfaces and quorum operations (v0.17.0)
 
 PolicyMesh now exposes live HTTP surfaces for transparency checkpoints and node capability discovery, adds an operator-facing quorum inspection workflow, and stabilizes the public Python SDK façade for federation and governance tooling.
 
@@ -246,7 +271,7 @@ links policy verify artifacts/policy_update.s2.json
 - policy feed pull/apply flow and drift detection CLI
 - trust anchor register / rotate / revoke primitives
 
-#### Delivered in v0.16.0
+#### Delivered in v0.17.0
 
 - live HTTP transparency checkpoint endpoint for peer fetch and comparison
 - live node capability manifest endpoint for peer discovery and operator inspection
@@ -257,7 +282,7 @@ links policy verify artifacts/policy_update.s2.json
 
 - richer policy lifecycle semantics across proposal, approval, and activation
 - signed feed manifests with policy-pinned trust evaluation and deep-history parent-chain recovery
-- stricter quorum metadata enforcement policies and broader operator examples
+- richer lifecycle semantics for proposal promotion and rollback orchestration
 - transparency and audit signing workflows for production operations
 
 #### Delivered in v0.15.0
