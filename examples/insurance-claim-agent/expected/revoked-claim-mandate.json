@@ -1,0 +1,6 @@
+{
+  "decision": "deny",
+  "policy": "claim-submission.action-policy.json",
+  "authority": "revoked-mandate.json",
+  "evidence": "base.json"
+}

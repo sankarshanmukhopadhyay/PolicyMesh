@@ -1,0 +1,10 @@
+{
+  "request_id": "health-002",
+  "principal": "arjun",
+  "actor": "health-agent-01",
+  "action": "book_appointment",
+  "appointment": {
+    "specialty": "dermatology",
+    "provider_id": "new-clinic-99"
+  }
+}

@@ -1,0 +1,79 @@
+{
+  "format": "policymesh.action_policy.v1",
+  "policy_id": "personal-shopping-purchase",
+  "version": "1.0.0",
+  "title": "Personal shopping purchase policy",
+  "description": "Constrains an AI shopping agent before it creates a financial commitment on behalf of its principal.",
+  "rules": [
+    {
+      "rule_id": "mandate-active",
+      "description": "The personal shopping mandate must be active.",
+      "source": "authority_context",
+      "path": "mandate.status",
+      "operator": "eq",
+      "expected": "active",
+      "on_fail": "deny",
+      "reason_code": "mandate_not_active"
+    },
+    {
+      "rule_id": "action-delegated",
+      "description": "The purchase action must be delegated to the agent.",
+      "source": "request",
+      "path": "action",
+      "operator": "in",
+      "expected_path": "authority_context.mandate.permissions",
+      "on_fail": "deny",
+      "reason_code": "action_outside_delegated_scope"
+    },
+    {
+      "rule_id": "category-allowed",
+      "description": "The product category must be within the user's autonomous shopping policy.",
+      "source": "request",
+      "path": "item.category",
+      "operator": "in",
+      "expected_path": "evidence.personal_policy.allowed_categories",
+      "on_fail": "deny",
+      "reason_code": "category_not_allowed"
+    },
+    {
+      "rule_id": "merchant-trusted",
+      "description": "The merchant must be on the user's trusted merchant list.",
+      "source": "request",
+      "path": "merchant_id",
+      "operator": "in",
+      "expected_path": "evidence.personal_policy.trusted_merchants",
+      "on_fail": "deny",
+      "reason_code": "merchant_not_trusted"
+    },
+    {
+      "rule_id": "not-subscription",
+      "description": "The agent may not create a recurring subscription under this mandate.",
+      "source": "request",
+      "path": "commitment_type",
+      "operator": "not_in",
+      "expected_path": "evidence.personal_policy.prohibited_commitment_types",
+      "on_fail": "deny",
+      "reason_code": "recurring_commitment_not_authorised"
+    },
+    {
+      "rule_id": "autonomous-limit",
+      "description": "Purchases above the autonomous limit require fresh user approval.",
+      "source": "request",
+      "path": "price.amount",
+      "operator": "lte",
+      "expected_path": "authority_context.mandate.autonomous_purchase_limit",
+      "on_fail": "defer",
+      "reason_code": "user_approval_required"
+    },
+    {
+      "rule_id": "currency",
+      "description": "Purchase currency must match the mandate.",
+      "source": "request",
+      "path": "price.currency",
+      "operator": "eq",
+      "expected_path": "authority_context.mandate.currency",
+      "on_fail": "deny",
+      "reason_code": "currency_outside_mandate"
+    }
+  ]
+}

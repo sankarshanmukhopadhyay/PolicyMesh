@@ -1,0 +1,49 @@
+{
+  "format": "policymesh.action_policy.v1",
+  "policy_id": "personal-health-appointment",
+  "version": "1.0.0",
+  "title": "Healthcare appointment policy",
+  "description": "Allows a personal health agent to book bounded appointments without granting general clinical or disclosure authority.",
+  "rules": [
+    {
+      "rule_id": "mandate-active",
+      "description": "Health-agent mandate must be active.",
+      "source": "authority_context",
+      "path": "mandate.status",
+      "operator": "eq",
+      "expected": "active",
+      "on_fail": "deny",
+      "reason_code": "mandate_not_active"
+    },
+    {
+      "rule_id": "action-delegated",
+      "description": "Appointment booking must be delegated.",
+      "source": "request",
+      "path": "action",
+      "operator": "in",
+      "expected_path": "authority_context.mandate.permissions",
+      "on_fail": "deny",
+      "reason_code": "action_outside_delegated_scope"
+    },
+    {
+      "rule_id": "specialty-authorised",
+      "description": "Requested specialty must be within the user's mandate.",
+      "source": "request",
+      "path": "appointment.specialty",
+      "operator": "in",
+      "expected_path": "authority_context.mandate.allowed_specialties",
+      "on_fail": "deny",
+      "reason_code": "specialty_outside_mandate"
+    },
+    {
+      "rule_id": "provider-approved",
+      "description": "Provider must be on the trusted provider registry.",
+      "source": "request",
+      "path": "appointment.provider_id",
+      "operator": "in",
+      "expected_path": "evidence.provider_registry.approved_providers",
+      "on_fail": "defer",
+      "reason_code": "provider_verification_required"
+    }
+  ]
+}

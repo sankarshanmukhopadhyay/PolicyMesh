@@ -1,0 +1,14 @@
+{
+  "request_id": "claim-003",
+  "principal": "leena",
+  "actor": "claim-agent-01",
+  "action": "submit_claim",
+  "claim": {
+    "type": "medical_expense",
+    "evidence": {
+      "booking_receipt": true,
+      "airline_cancellation_notice": true,
+      "payment_receipt": true
+    }
+  }
+}

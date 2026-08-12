@@ -1,0 +1,59 @@
+{
+  "format": "policymesh.action_policy.v1",
+  "policy_id": "personal-health-disclosure",
+  "version": "1.0.0",
+  "title": "Purpose-limited health data disclosure policy",
+  "description": "Constrains which health data a personal agent may disclose for an explicitly permitted purpose.",
+  "rules": [
+    {
+      "rule_id": "mandate-active",
+      "description": "Health-agent mandate must be active.",
+      "source": "authority_context",
+      "path": "mandate.status",
+      "operator": "eq",
+      "expected": "active",
+      "on_fail": "deny",
+      "reason_code": "mandate_not_active"
+    },
+    {
+      "rule_id": "action-delegated",
+      "description": "Health-data sharing must be delegated.",
+      "source": "request",
+      "path": "action",
+      "operator": "in",
+      "expected_path": "authority_context.mandate.permissions",
+      "on_fail": "deny",
+      "reason_code": "action_outside_delegated_scope"
+    },
+    {
+      "rule_id": "purpose-authorised",
+      "description": "Disclosure purpose must be explicitly authorised.",
+      "source": "request",
+      "path": "disclosure.purpose",
+      "operator": "in",
+      "expected_path": "authority_context.mandate.disclosure_purposes",
+      "on_fail": "deny",
+      "reason_code": "purpose_not_authorised"
+    },
+    {
+      "rule_id": "data-autonomous",
+      "description": "Requested data class must be approved for autonomous disclosure; otherwise explicit consent is required.",
+      "source": "request",
+      "path": "disclosure.data_class",
+      "operator": "in",
+      "expected_path": "evidence.disclosure_policy.autonomous_data_classes",
+      "on_fail": "defer",
+      "reason_code": "explicit_consent_required"
+    },
+    {
+      "rule_id": "data-not-prohibited",
+      "description": "The user's policy must not explicitly prohibit this data class.",
+      "source": "request",
+      "path": "disclosure.data_class",
+      "operator": "not_in",
+      "expected_path": "evidence.disclosure_policy.prohibited_data_classes",
+      "on_fail": "deny",
+      "reason_code": "data_class_prohibited"
+    }
+  ]
+}

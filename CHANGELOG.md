@@ -1,5 +1,15 @@
 # Changelog
 
+## v0.19.0 — Personal-agent governance and worked-example portfolio
+
+- add fully runnable Personal Shopping, Healthcare Appointment & Consent, and Insurance Claim agent examples using the generic Action Decision contract;
+- add a shared personal-agent demo runner and integration tests covering permit/deny/defer decisions and receipt integrity;
+- introduce the Personal Agent Governance umbrella model, including observe/recommend/prepare/commit consequence levels, human approval as new evidence, revocable mandates, purpose-limited disclosure and agent-to-agent negotiation;
+- add reusable governance pattern documentation and a worked-example portfolio index;
+- expand reader onboarding and agentic interoperability documentation to connect the examples to MCP/API/tool enforcement points;
+- advance package, SDK and service-reported version to v0.19.0.
+
+
 ## Unreleased
 
 ### Added

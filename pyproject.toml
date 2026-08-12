@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "links"
-version = "0.18.0"
+version = "0.19.0"
 description = "PolicyMesh: executable policy governance, federation, and decision evidence for bounded trust domains"
 readme = "README.md"
 requires-python = ">=3.8"

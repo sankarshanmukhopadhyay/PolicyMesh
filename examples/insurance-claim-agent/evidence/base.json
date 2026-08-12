@@ -1,0 +1,17 @@
+{
+  "policy_status": {
+    "active": true
+  },
+  "claim_requirements": {
+    "required_evidence": [
+      "booking_receipt",
+      "airline_cancellation_notice",
+      "payment_receipt"
+    ]
+  },
+  "evidence_present": [
+    "booking_receipt",
+    "airline_cancellation_notice",
+    "payment_receipt"
+  ]
+}

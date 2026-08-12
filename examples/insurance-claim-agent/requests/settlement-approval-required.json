@@ -1,0 +1,11 @@
+{
+  "request_id": "claim-005",
+  "principal": "leena",
+  "actor": "claim-agent-01",
+  "action": "accept_settlement",
+  "settlement": {
+    "amount": 22000,
+    "currency": "INR",
+    "final": true
+  }
+}

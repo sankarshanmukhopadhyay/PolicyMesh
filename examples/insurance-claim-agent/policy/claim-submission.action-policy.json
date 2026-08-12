@@ -1,0 +1,79 @@
+{
+  "format": "policymesh.action_policy.v1",
+  "policy_id": "personal-insurance-claim-submission",
+  "version": "1.0.0",
+  "title": "Insurance claim submission policy",
+  "description": "Allows an AI claims assistant to submit a bounded claim only when mandate, policy state, claim type and minimum evidence are present.",
+  "rules": [
+    {
+      "rule_id": "mandate-active",
+      "description": "Claim-agent mandate must be active.",
+      "source": "authority_context",
+      "path": "mandate.status",
+      "operator": "eq",
+      "expected": "active",
+      "on_fail": "deny",
+      "reason_code": "mandate_not_active"
+    },
+    {
+      "rule_id": "action-delegated",
+      "description": "Claim submission must be delegated.",
+      "source": "request",
+      "path": "action",
+      "operator": "in",
+      "expected_path": "authority_context.mandate.permissions",
+      "on_fail": "deny",
+      "reason_code": "action_outside_delegated_scope"
+    },
+    {
+      "rule_id": "claim-type-authorised",
+      "description": "Claim type must be within the delegated scope.",
+      "source": "request",
+      "path": "claim.type",
+      "operator": "in",
+      "expected_path": "authority_context.mandate.claim_types",
+      "on_fail": "deny",
+      "reason_code": "claim_type_outside_mandate"
+    },
+    {
+      "rule_id": "policy-active",
+      "description": "Underlying insurance policy must be active.",
+      "source": "evidence",
+      "path": "policy_status.active",
+      "operator": "eq",
+      "expected": true,
+      "on_fail": "deny",
+      "reason_code": "insurance_policy_inactive"
+    },
+    {
+      "rule_id": "booking-evidence",
+      "description": "Booking receipt must be present.",
+      "source": "request",
+      "path": "claim.evidence.booking_receipt",
+      "operator": "eq",
+      "expected": true,
+      "on_fail": "defer",
+      "reason_code": "booking_receipt_required"
+    },
+    {
+      "rule_id": "cancellation-evidence",
+      "description": "Airline cancellation notice must be present.",
+      "source": "request",
+      "path": "claim.evidence.airline_cancellation_notice",
+      "operator": "eq",
+      "expected": true,
+      "on_fail": "defer",
+      "reason_code": "cancellation_notice_required"
+    },
+    {
+      "rule_id": "payment-evidence",
+      "description": "Payment receipt must be present.",
+      "source": "request",
+      "path": "claim.evidence.payment_receipt",
+      "operator": "eq",
+      "expected": true,
+      "on_fail": "defer",
+      "reason_code": "payment_receipt_required"
+    }
+  ]
+}

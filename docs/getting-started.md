@@ -15,7 +15,8 @@ Read, in order:
 1. this page;
 2. [Architecture](architecture.md);
 3. [Authority boundaries](concepts/authority-boundaries.md);
-4. the [Travel & Hospitality example](examples/travel-hospitality.md).
+4. the [Travel & Hospitality example](examples/travel-hospitality.md);
+5. [PolicyMesh for personal-agent governance](concepts/personal-agent-governance.md) and the additional worked examples.
 
 ### I want to run something meaningful
 
@@ -82,3 +83,7 @@ For a first pilot, avoid deploying every PolicyMesh feature. Start with:
 7. only then add federation, signed feeds, trust anchors and external evidence exchange.
 
 That sequence keeps the governance boundary observable while avoiding premature distributed-system complexity.
+
+## Continue with personal agents
+
+After Travel, run `python examples/personal-shopping/run.py all`, `python examples/healthcare-agent/run.py all`, and `python examples/insurance-claim-agent/run.py all`. They deliberately reuse the same action-decision contract while changing the governance problem: bounded purchase authority, purpose-limited health disclosure, and evidence/settlement authority.

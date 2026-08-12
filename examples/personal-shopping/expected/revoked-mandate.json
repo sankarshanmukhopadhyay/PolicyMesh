@@ -1,0 +1,5 @@
+{
+  "decision": "deny",
+  "policy": "purchase.action-policy.json",
+  "authority": "revoked-mandate.json"
+}

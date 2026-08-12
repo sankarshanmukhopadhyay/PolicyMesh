@@ -1,0 +1,16 @@
+{
+  "request_id": "shop-004",
+  "principal": "maya",
+  "actor": "personal-shopping-agent-01",
+  "action": "purchase_item",
+  "merchant_id": "merchant-b",
+  "item": {
+    "category": "books",
+    "name": "Reading club"
+  },
+  "commitment_type": "subscription",
+  "price": {
+    "amount": 699,
+    "currency": "INR"
+  }
+}

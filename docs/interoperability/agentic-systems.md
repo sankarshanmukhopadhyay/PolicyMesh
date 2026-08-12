@@ -10,3 +10,9 @@ An external agent registry, mandate system, governance model or trust framework 
 
 
 For the broader relationship to DTG Trust Tasks, ceremonies, credentials, proofs and assurance work, see [PolicyMesh and DTG](dtg.md).
+
+## Personal-agent profile
+
+For personal AI agents, a useful enforcement position is immediately before an MCP/API/tool invocation that creates consequential external state. The agent proposes an action; PolicyMesh evaluates the action policy, authority context and evidence; only `PERMIT` proceeds to execution. `DEFER` causes the agent to obtain approval or missing evidence and re-evaluate; `DENY` blocks the candidate.
+
+See [PolicyMesh for personal-agent governance](../concepts/personal-agent-governance.md) and the runnable Shopping, Healthcare and Insurance examples.

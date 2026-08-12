@@ -1,0 +1,17 @@
+{
+  "mandate": {
+    "id": "claim-mandate-001",
+    "principal": "leena",
+    "actor": "claim-agent-01",
+    "status": "revoked",
+    "permissions": [
+      "submit_claim",
+      "accept_settlement"
+    ],
+    "claim_types": [
+      "flight_cancellation"
+    ],
+    "autonomous_settlement_limit": 10000,
+    "currency": "INR"
+  }
+}

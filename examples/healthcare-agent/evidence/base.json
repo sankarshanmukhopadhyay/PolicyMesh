@@ -1,0 +1,23 @@
+{
+  "provider_registry": {
+    "approved_providers": [
+      "clinic-derm-01",
+      "clinic-derm-02"
+    ]
+  },
+  "disclosure_policy": {
+    "autonomous_data_classes": [
+      "contact",
+      "dermatology_history"
+    ],
+    "prohibited_data_classes": [
+      "complete_medical_record"
+    ],
+    "consent_required_data_classes": [
+      "raw_genetic_data"
+    ]
+  },
+  "consent": {
+    "explicit_data_classes": []
+  }
+}

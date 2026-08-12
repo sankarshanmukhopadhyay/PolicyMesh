@@ -1,0 +1,10 @@
+{
+  "request_id": "health-003",
+  "principal": "arjun",
+  "actor": "health-agent-01",
+  "action": "book_appointment",
+  "appointment": {
+    "specialty": "cardiology",
+    "provider_id": "clinic-derm-01"
+  }
+}

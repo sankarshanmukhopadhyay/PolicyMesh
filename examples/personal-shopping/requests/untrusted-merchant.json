@@ -1,0 +1,16 @@
+{
+  "request_id": "shop-005",
+  "principal": "maya",
+  "actor": "personal-shopping-agent-01",
+  "action": "purchase_item",
+  "merchant_id": "merchant-x",
+  "item": {
+    "category": "household",
+    "name": "Air filter"
+  },
+  "commitment_type": "one_time",
+  "price": {
+    "amount": 2400,
+    "currency": "INR"
+  }
+}

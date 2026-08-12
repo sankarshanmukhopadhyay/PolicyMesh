@@ -1,0 +1,49 @@
+{
+  "format": "policymesh.action_policy.v1",
+  "policy_id": "personal-insurance-settlement",
+  "version": "1.0.0",
+  "title": "Insurance settlement authority policy",
+  "description": "Constrains when an AI claims assistant may accept a settlement with final financial/legal effect.",
+  "rules": [
+    {
+      "rule_id": "mandate-active",
+      "description": "Claim-agent mandate must be active.",
+      "source": "authority_context",
+      "path": "mandate.status",
+      "operator": "eq",
+      "expected": "active",
+      "on_fail": "deny",
+      "reason_code": "mandate_not_active"
+    },
+    {
+      "rule_id": "action-delegated",
+      "description": "Settlement acceptance must be delegated.",
+      "source": "request",
+      "path": "action",
+      "operator": "in",
+      "expected_path": "authority_context.mandate.permissions",
+      "on_fail": "deny",
+      "reason_code": "action_outside_delegated_scope"
+    },
+    {
+      "rule_id": "settlement-limit",
+      "description": "Settlement above the autonomous authority limit requires the principal's approval.",
+      "source": "request",
+      "path": "settlement.amount",
+      "operator": "lte",
+      "expected_path": "authority_context.mandate.autonomous_settlement_limit",
+      "on_fail": "defer",
+      "reason_code": "principal_approval_required"
+    },
+    {
+      "rule_id": "settlement-currency",
+      "description": "Settlement currency must match the mandate.",
+      "source": "request",
+      "path": "settlement.currency",
+      "operator": "eq",
+      "expected_path": "authority_context.mandate.currency",
+      "on_fail": "deny",
+      "reason_code": "currency_outside_mandate"
+    }
+  ]
+}

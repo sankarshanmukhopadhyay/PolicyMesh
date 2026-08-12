@@ -1,0 +1,13 @@
+{
+  "mandate": {
+    "id": "shopping-mandate-001",
+    "principal": "maya",
+    "actor": "personal-shopping-agent-01",
+    "status": "revoked",
+    "permissions": [
+      "purchase_item"
+    ],
+    "autonomous_purchase_limit": 5000,
+    "currency": "INR"
+  }
+}

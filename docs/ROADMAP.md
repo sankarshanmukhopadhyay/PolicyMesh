@@ -2,7 +2,7 @@
 
 This roadmap records capability state against executable evidence. A capability is marked shipped only when implementation, operator guidance and tests/evidence exist within the repository's declared scope.
 
-**Current release:** v0.18.0  
+**Current release:** v0.19.0  
 **Last updated:** 2026-08-12
 
 ## Status legend

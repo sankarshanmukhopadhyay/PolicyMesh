@@ -1,0 +1,18 @@
+{
+  "mandate": {
+    "id": "health-mandate-001",
+    "principal": "arjun",
+    "actor": "health-agent-01",
+    "status": "active",
+    "permissions": [
+      "book_appointment",
+      "share_health_data"
+    ],
+    "allowed_specialties": [
+      "dermatology"
+    ],
+    "disclosure_purposes": [
+      "appointment_intake"
+    ]
+  }
+}

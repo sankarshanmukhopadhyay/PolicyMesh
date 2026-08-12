@@ -1,0 +1,17 @@
+{
+  "personal_policy": {
+    "allowed_categories": [
+      "books",
+      "household",
+      "electronics_accessories"
+    ],
+    "trusted_merchants": [
+      "merchant-a",
+      "merchant-b"
+    ],
+    "prohibited_commitment_types": [
+      "subscription"
+    ],
+    "human_approval_above": 5000
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "decision": "permit",
+  "policy": "settlement.action-policy.json",
+  "authority": "active-mandate.json",
+  "evidence": "base.json"
+}

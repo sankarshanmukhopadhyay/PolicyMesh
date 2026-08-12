@@ -47,7 +47,7 @@ def _bearer_token(authorization: str | None) -> str | None:
 
 
 def create_app(store_root: Path = Path("data/store"), villages_root: Path = Path("data")) -> FastAPI:
-    app = FastAPI(title="PolicyMesh Claim Exchange", version="0.18.0")
+    app = FastAPI(title="PolicyMesh Claim Exchange", version="0.19.0")
 
     # Simple in-memory per-village rate limiter (minute bucket).
     # NOTE: In production, put PolicyMesh behind a proper gateway (Envoy/Nginx) with real rate limiting.
@@ -275,7 +275,7 @@ def create_app(store_root: Path = Path("data/store"), villages_root: Path = Path
             federation_pilot=os.environ.get("LINKS_FEDERATION_PILOT", "").strip().lower() in {"1", "true", "yes"},
             operator_notes=" ".join(notes),
             extra={
-                "service_version": "0.18.0",
+                "service_version": "0.19.0",
                 "routes": {
                     "policy_latest": "/villages/{village_id}/policy/latest",
                     "policy_manifest": "/villages/{village_id}/policy/manifest",

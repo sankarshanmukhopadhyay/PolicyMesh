@@ -1,0 +1,16 @@
+{
+  "request_id": "shop-002",
+  "principal": "maya",
+  "actor": "personal-shopping-agent-01",
+  "action": "purchase_item",
+  "merchant_id": "merchant-a",
+  "item": {
+    "category": "electronics_accessories",
+    "name": "Noise-cancelling headphones"
+  },
+  "commitment_type": "one_time",
+  "price": {
+    "amount": 8200,
+    "currency": "INR"
+  }
+}

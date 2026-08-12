@@ -8,7 +8,9 @@ If PolicyMesh is new to you, use this path:
 
 1. [Getting started: from governance intent to a decision](getting-started.md)
 2. [Travel & Hospitality: governed autonomous hotel booking](examples/travel-hospitality.md)
-3. [Consuming PolicyMesh](consuming-policymesh.md)
+3. [PolicyMesh for personal-agent governance](concepts/personal-agent-governance.md)
+4. [Worked examples](../examples/README.md)
+5. [Consuming PolicyMesh](consuming-policymesh.md)
 4. [Architecture](architecture.md)
 5. [Authority boundaries](concepts/authority-boundaries.md)
 6. [Policy lifecycle](concepts/policy-lifecycle.md)
@@ -28,4 +30,4 @@ Once that model is clear, continue into advanced operating surfaces:
 - [Governance](governance/governance.md)
 - [Security](governance/security.md)
 - [Project roadmap summary](ROADMAP.md)
-- [Release notes](release-notes/v0.18.0.md)
+- [Release notes](release-notes/v0.19.0.md)

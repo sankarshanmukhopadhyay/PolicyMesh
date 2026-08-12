@@ -48,7 +48,7 @@ links evidence build --village-id example --event-id evt-001 --source artifacts/
 
 Start with one bounded decision domain, keep upstream authority in the systems that already own it, and use PolicyMesh to evaluate the locally applicable policy and retain evidence. The new [Getting started](docs/getting-started.md) guide explains the recommended adoption sequence and the distinction between policy-admission decisions and application-action decisions.
 
-The [Travel & Hospitality reference example](examples/travel-hospitality/README.md) is the recommended first implementation walkthrough.
+The [Travel & Hospitality reference example](examples/travel-hospitality/README.md) is the recommended first implementation walkthrough. Then use the [worked-example portfolio](examples/README.md) and [PolicyMesh for personal-agent governance](docs/concepts/personal-agent-governance.md) to see the same decision substrate applied to shopping, healthcare and insurance agents.
 
 ## Architecture
 
@@ -114,14 +114,19 @@ Machine-readable control and evidence mappings are in [`assurance/`](assurance/)
 
 ## Project status
 
-PolicyMesh v0.18.0 is an **implementation draft under active validation**. It is suitable for experimentation, interoperability testing and small-federation pilots. It does **not** assert production certification, independent assurance, universal policy authority or the legitimacy of an external mandate. See [`PROJECT-STATUS.yaml`](PROJECT-STATUS.yaml).
+PolicyMesh v0.19.0 is an **implementation draft under active validation**. It is suitable for experimentation, interoperability testing and small-federation pilots. It does **not** assert production certification, independent assurance, universal policy authority or the legitimacy of an external mandate. See [`PROJECT-STATUS.yaml`](PROJECT-STATUS.yaml).
 
 ## Documentation
 
 Start with the [documentation home](docs/index.md), then use:
 
 - [Getting started](docs/getting-started.md)
+- [Worked examples](examples/README.md)
 - [Travel & Hospitality reference example](docs/examples/travel-hospitality.md)
+- [PolicyMesh for personal-agent governance](docs/concepts/personal-agent-governance.md)
+- [Personal Shopping Agent](docs/examples/personal-shopping.md)
+- [Healthcare Appointment & Consent](docs/examples/healthcare-agent.md)
+- [Insurance Claim Agent](docs/examples/insurance-claim-agent.md)
 - [Consuming PolicyMesh](docs/consuming-policymesh.md)
 - [Architecture](docs/architecture.md)
 - [Policy lifecycle](docs/concepts/policy-lifecycle.md)

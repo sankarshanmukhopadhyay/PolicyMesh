@@ -1,0 +1,6 @@
+{
+  "decision": "defer",
+  "policy": "appointment.action-policy.json",
+  "evidence": "base.json",
+  "authority": "active-mandate.json"
+}

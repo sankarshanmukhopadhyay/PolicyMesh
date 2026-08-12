@@ -1,0 +1,5 @@
+{
+  "decision": "permit",
+  "policy": "purchase.action-policy.json",
+  "authority": "active-mandate.json"
+}

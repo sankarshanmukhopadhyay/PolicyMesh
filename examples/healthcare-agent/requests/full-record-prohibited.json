@@ -1,0 +1,11 @@
+{
+  "request_id": "health-005",
+  "principal": "arjun",
+  "actor": "health-agent-01",
+  "action": "share_health_data",
+  "disclosure": {
+    "purpose": "appointment_intake",
+    "data_class": "complete_medical_record",
+    "recipient": "clinic-derm-01"
+  }
+}
