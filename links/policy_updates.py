@@ -58,6 +58,7 @@ class VillagePolicyUpdate(BaseModel):
     village_id: str
     created_at: datetime
     actor: Optional[str] = None
+    authority_context: Optional[dict] = Field(default=None, description='Optional presented authority/delegation context; recorded as evidence, not independently legitimized by PolicyMesh')
     expires_at: Optional[datetime] = Field(default=None, description='If set, the update must not be applied after this time')
 
     policy: dict = Field(default_factory=dict)

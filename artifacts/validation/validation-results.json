@@ -1,0 +1,136 @@
+{
+  "format": "policymesh.repository-validation.v1",
+  "passed": true,
+  "checks": [
+    {
+      "check": "required:README.md",
+      "pass": true
+    },
+    {
+      "check": "required:ROADMAP.md",
+      "pass": true
+    },
+    {
+      "check": "required:PROJECT-STATUS.yaml",
+      "pass": true
+    },
+    {
+      "check": "required:GOVERNANCE.md",
+      "pass": true
+    },
+    {
+      "check": "required:SECURITY.md",
+      "pass": true
+    },
+    {
+      "check": "required:CODE_OF_CONDUCT.md",
+      "pass": true
+    },
+    {
+      "check": "required:CONTRIBUTING.md",
+      "pass": true
+    },
+    {
+      "check": "required:CHANGELOG.md",
+      "pass": true
+    },
+    {
+      "check": "required:LICENSE",
+      "pass": true
+    },
+    {
+      "check": "required:assurance/controls.yaml",
+      "pass": true
+    },
+    {
+      "check": "required:assurance/capability-control-map.yaml",
+      "pass": true
+    },
+    {
+      "check": "required:assurance/evidence-map.yaml",
+      "pass": true
+    },
+    {
+      "check": "required:schemas/external_registry.schema.json",
+      "pass": true
+    },
+    {
+      "check": "required:schemas/project-status.schema.json",
+      "pass": true
+    },
+    {
+      "check": "required:config/profiles/development.yaml",
+      "pass": true
+    },
+    {
+      "check": "required:config/profiles/federation-pilot.yaml",
+      "pass": true
+    },
+    {
+      "check": "required:config/profiles/production-hardened.yaml",
+      "pass": true
+    },
+    {
+      "check": "roadmap:no-partial-status",
+      "pass": true
+    },
+    {
+      "check": "project-status:maturity:",
+      "pass": true
+    },
+    {
+      "check": "project-status:lifecycle:",
+      "pass": true
+    },
+    {
+      "check": "project-status:operational_status:",
+      "pass": true
+    },
+    {
+      "check": "project-status:normative_scope:",
+      "pass": true
+    },
+    {
+      "check": "project-status:does_not_own:",
+      "pass": true
+    },
+    {
+      "check": "project-status:validation_commands:",
+      "pass": true
+    },
+    {
+      "check": "project-status:schema",
+      "pass": true,
+      "errors": []
+    },
+    {
+      "check": "external-registry:schema-valid",
+      "pass": true
+    },
+    {
+      "check": "readme:What PolicyMesh solves",
+      "pass": true
+    },
+    {
+      "check": "readme:Authority boundary",
+      "pass": true
+    },
+    {
+      "check": "readme:First result",
+      "pass": true
+    },
+    {
+      "check": "readme:Evidence",
+      "pass": true
+    },
+    {
+      "check": "readme:Project status",
+      "pass": true
+    },
+    {
+      "check": "documentation:internal-links",
+      "pass": true,
+      "broken": []
+    }
+  ]
+}

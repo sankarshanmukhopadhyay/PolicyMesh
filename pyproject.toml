@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "links"
-version = "0.17.0"
-description = "Links: verifiable claim exchange with group policy controls"
+version = "0.18.0"
+description = "PolicyMesh: executable policy governance, federation, and decision evidence for bounded trust domains"
 readme = "README.md"
 requires-python = ">=3.8"
 dependencies = [

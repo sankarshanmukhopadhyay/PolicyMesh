@@ -1,0 +1,10 @@
+profile: development
+authentication: local-or-test
+tls: optional-loopback-only
+persistence: file
+audit_retention_days: 7
+quorum_posture: optional
+anchor_policy: development
+evidence_signing: optional
+public_endpoints: local-only
+rate_limit_strategy: fixed_window

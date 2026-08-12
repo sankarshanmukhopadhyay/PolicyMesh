@@ -127,6 +127,13 @@
           }
         }
       }
+    },
+    "authority_context": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "description": "Optional presented authority/delegation context retained as evidence; PolicyMesh does not independently establish its legitimacy."
     }
   }
 }

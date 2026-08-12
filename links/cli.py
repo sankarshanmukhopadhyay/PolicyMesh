@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+from typing import List
 from datetime import datetime, timezone
 import json
 import base64
@@ -542,47 +543,77 @@ registry = typer.Typer(help="Import/export village registry artifacts.")
 app.add_typer(registry, name="registry")
 
 @registry.command("export")
-def registry_export(village_id: str, out: Path = typer.Option(Path("registry_export.json"), help="Output JSON file")):
-    """Export a minimal trust-registry artifact (members, revocations, anchors, policy head)."""
+def registry_export(village_id: str, out: Path = typer.Option(Path("registry_export.json"), help="Output JSON file"), authority: str = typer.Option("local-operator")):
+    """Export a versioned registry interchange artifact with provenance."""
     from .validate import validate_village_id
     from .villages import load_village, _members_path, _revocations_path
+    from .trust_anchors import iter_anchor_entries
+    from .registry_interop import ExternalRegistryArtifact
     validate_village_id(village_id)
     root = Path("data")
     v = load_village(root, village_id)
     members = _members_path(root, village_id).read_text(encoding="utf-8").splitlines()
     revocations = _revocations_path(root, village_id).read_text(encoding="utf-8").splitlines()
-    anchors_path = Path("data/store") / "anchors" / village_id / "anchors.jsonl"
-    anchors = []
-    if anchors_path.exists():
-        anchors = [json.loads(l) for l in anchors_path.read_text(encoding="utf-8").splitlines() if l.strip()]
-    payload = {
-        "format": "links.external_registry.v1",
-        "village_id": village_id,
-        "policy": v.policy.model_dump(),
-        "members": [m for m in members if m.strip()],
-        "revocations": [r for r in revocations if r.strip()],
-        "trust_anchors": anchors,
-    }
-    out.write_text(json.dumps(payload, indent=2, ensure_ascii=False, sort_keys=True), encoding="utf-8")
+    anchors = [a.model_dump(mode="json") for a in iter_anchor_entries(root, village_id)]
+    payload = ExternalRegistryArtifact(
+        registry_id=f"policymesh:{village_id}", village_id=village_id, authority=authority,
+        policy=v.policy.model_dump(), members=[m for m in members if m.strip()],
+        revocations=[r for r in revocations if r.strip()], trust_anchors=anchors,
+        provenance={"source": "PolicyMesh", "mode": "export"},
+    )
+    out.write_text(payload.model_dump_json(indent=2), encoding="utf-8")
     typer.echo(str(out))
 
+
+@registry.command("validate")
+def registry_validate(path: Path):
+    """Validate a registry artifact without mutating local authoritative state."""
+    from .registry_interop import ExternalRegistryArtifact
+    artifact = ExternalRegistryArtifact.model_validate_json(path.read_text(encoding="utf-8"))
+    typer.echo(json.dumps({"valid": True, "registry_id": artifact.registry_id, "village_id": artifact.village_id}, indent=2))
+
+
+@registry.command("diff")
+def registry_diff(path: Path):
+    """Compare an incoming registry artifact with local state."""
+    from .registry_interop import ExternalRegistryArtifact, compare_registry
+    from .villages import load_village
+    artifact = ExternalRegistryArtifact.model_validate_json(path.read_text(encoding="utf-8"))
+    try:
+        local = load_village(Path("data"), artifact.village_id).policy.model_dump()
+    except Exception:
+        local = {}
+    typer.echo(json.dumps(compare_registry(local, artifact), indent=2))
+
+
 @registry.command("import")
-def registry_import(path: Path):
-    """Import a minimal trust-registry artifact into local data/ (best-effort)."""
-    payload = json.loads(path.read_text(encoding="utf-8"))
-    village_id = payload.get("village_id")
-    from .validate import validate_village_id
-    validate_village_id(village_id)
-    root = Path("data")
-    # write village policy
-    from .villages import save_village, Village
-    v = Village(village_id=village_id, policy=payload.get("policy", {}), capabilities={})
-    save_village(root, v)
-    # members/revocations
-    (root / "villages" / village_id).mkdir(parents=True, exist_ok=True)
-    (root / "villages" / village_id / "members.jsonl").write_text("\n".join(payload.get("members", [])) + "\n", encoding="utf-8")
-    (root / "villages" / village_id / "revocations.jsonl").write_text("\n".join(payload.get("revocations", [])) + "\n", encoding="utf-8")
-    typer.echo(f"Imported village {village_id}")
+def registry_import(path: Path, decision: str = typer.Option("defer", help="defer|apply|reject")):
+    """Validate and explicitly decide an import; never silently overwrite local authority."""
+    from .registry_interop import ExternalRegistryArtifact, compare_registry
+    from .villages import load_village, save_village, Village, VillagePolicy
+    artifact = ExternalRegistryArtifact.model_validate_json(path.read_text(encoding="utf-8"))
+    if decision not in {"defer", "apply", "reject"}:
+        raise typer.BadParameter("decision must be defer, apply, or reject")
+    try:
+        local_policy = load_village(Path("data"), artifact.village_id).policy.model_dump()
+    except Exception:
+        local_policy = {}
+    report = compare_registry(local_policy, artifact)
+    receipt = {**report, "decision": decision, "source": str(path), "decided_at": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")}
+    out = Path("artifacts/registry_import") / artifact.village_id
+    out.mkdir(parents=True, exist_ok=True)
+    receipt_path = out / f"{datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ')}.{decision}.json"
+    receipt_path.write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    if decision == "apply":
+        try:
+            existing = load_village(Path("data"), artifact.village_id)
+            updated = existing.model_copy(update={"policy": VillagePolicy.model_validate(artifact.policy)})
+            save_village(Path("data"), updated)
+        except Exception:
+            typer.echo("apply requires an existing local village; import refused", err=True)
+            raise typer.Exit(code=1)
+    typer.echo(json.dumps(receipt, indent=2))
+    typer.echo(f"Wrote {receipt_path}")
 
 
 # -----------------------------
@@ -637,3 +668,161 @@ def drift_check(village_id: str, remote_base: str = typer.Option(..., help="Remo
             requests.post(webhook, json=report, timeout=10)
         except Exception:
             pass
+
+# -----------------------------
+# Governed lifecycle operations
+# -----------------------------
+@policy.command("transition")
+def policy_transition(
+    inp: Path,
+    to_state: str = typer.Option(..., help="approved|active|rolled_back"),
+    out: Path = typer.Option(..., help="Output update artifact"),
+    actor: str = typer.Option("operator"),
+    reason: str = typer.Option(""),
+    rollback_to: str = typer.Option("", help="Required when transitioning to rolled_back"),
+):
+    """Perform a validated lifecycle transition and emit a durable transition event."""
+    from .policy_lifecycle import transition_update, write_lifecycle_event
+    u = VillagePolicyUpdate.model_validate_json(inp.read_text(encoding="utf-8"))
+    try:
+        changed, event = transition_update(
+            u, to_state, actor=actor, reason=reason or None,
+            rollback_to_policy_hash=rollback_to or None,
+        )
+    except ValueError as exc:
+        typer.echo(str(exc), err=True)
+        raise typer.Exit(code=1)
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text(changed.model_dump_json(indent=2), encoding="utf-8")
+    ev = write_lifecycle_event(Path("."), event)
+    typer.echo(f"Wrote {out}")
+    typer.echo(f"Wrote {ev}")
+
+
+@policy.command("rollback")
+def policy_rollback(
+    village_id: str,
+    target_policy_hash: str,
+    actor: str = typer.Option("operator"),
+    data_root: Path = typer.Option(Path("data")),
+):
+    """Restore a historical policy as a new audited governance act; history is never erased."""
+    from .villages import load_village, apply_policy_update, policy_history_path
+    from .policy_lifecycle import find_policy_in_history
+    from .policy_updates import compute_policy_hash
+    validate_village_id(village_id)
+    current = load_village(data_root, village_id)
+    hp = policy_history_path(data_root, village_id)
+    rows = [json.loads(line) for line in hp.read_text(encoding="utf-8").splitlines() if line.strip()] if hp.exists() else []
+    target = find_policy_in_history(rows, target_policy_hash)
+    if target is None:
+        typer.echo("target policy hash not found in local history", err=True)
+        raise typer.Exit(code=1)
+    previous = compute_policy_hash(current.policy.model_dump())
+    apply_policy_update(data_root, village_id, target, actor=actor, update_meta={
+        "ts": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
+        "policy_update": "rollback",
+        "policy_hash": target_policy_hash,
+        "previous_policy_hash": previous,
+        "rollback_to_policy_hash": target_policy_hash,
+    })
+    typer.echo(json.dumps({"village_id": village_id, "previous_policy_hash": previous, "active_policy_hash": target_policy_hash, "action": "rollback"}, indent=2))
+
+
+# -----------------------------
+# Trust anchor operator surface
+# -----------------------------
+def _anchor_key_hash(public_key_b64: str) -> str:
+    from .policy_updates import key_hash_from_public_key_b64
+    return key_hash_from_public_key_b64(public_key_b64)
+
+
+@anchors.command("register")
+def anchor_register(village_id: str, public_key: str, anchor_id: str, actor: str = "operator", reason: str = "register"):
+    from .trust_anchors import store_anchor_entry
+    entry = TrustAnchorEntry(village_id=village_id, created_at=datetime.now(timezone.utc), actor=actor, action="register", anchor_id=anchor_id, anchor_public_key=public_key, anchor_key_hash=_anchor_key_hash(public_key), reason=reason)
+    try:
+        from .keys import load_signing_key_from_env
+        entry = add_anchor_signature(entry, load_signing_key_from_env())
+    except Exception:
+        pass
+    path = store_anchor_entry(Path("data"), entry)
+    typer.echo(str(path))
+
+
+@anchors.command("rotate")
+def anchor_rotate(village_id: str, public_key: str, anchor_id: str, previous_key_hash: str, actor: str = "operator", reason: str = "rotation"):
+    from .trust_anchors import store_anchor_entry
+    entry = TrustAnchorEntry(village_id=village_id, created_at=datetime.now(timezone.utc), actor=actor, action="rotate", anchor_id=anchor_id, anchor_public_key=public_key, anchor_key_hash=_anchor_key_hash(public_key), previous_anchor_key_hash=previous_key_hash, reason=reason)
+    try:
+        from .keys import load_signing_key_from_env
+        entry = add_anchor_signature(entry, load_signing_key_from_env())
+    except Exception:
+        pass
+    path = store_anchor_entry(Path("data"), entry)
+    typer.echo(str(path))
+
+
+@anchors.command("revoke")
+def anchor_revoke(village_id: str, anchor_id: str, anchor_key_hash: str, actor: str = "operator", reason: str = "revoked"):
+    from .trust_anchors import store_anchor_entry
+    entry = TrustAnchorEntry(village_id=village_id, created_at=datetime.now(timezone.utc), actor=actor, action="revoke", anchor_id=anchor_id, anchor_key_hash=anchor_key_hash, reason=reason)
+    try:
+        from .keys import load_signing_key_from_env
+        entry = add_anchor_signature(entry, load_signing_key_from_env())
+    except Exception:
+        pass
+    path = store_anchor_entry(Path("data"), entry)
+    typer.echo(str(path))
+
+
+@anchors.command("history")
+def anchor_history(village_id: str):
+    from .trust_anchors import iter_anchor_entries
+    rows = [x.model_dump(mode="json") for x in iter_anchor_entries(Path("data"), village_id)]
+    typer.echo(json.dumps(rows, indent=2))
+
+
+@anchors.command("inspect")
+def anchor_inspect(village_id: str):
+    from .trust_anchors import latest_active_anchor
+    entry = latest_active_anchor(Path("data"), village_id)
+    if not entry:
+        typer.echo("no active anchor")
+        raise typer.Exit(code=2)
+    typer.echo(entry.model_dump_json(indent=2))
+
+
+# -----------------------------
+# Evidence bundle operations
+# -----------------------------
+evidence = typer.Typer(help="Assemble and verify portable policy evidence bundles.")
+app.add_typer(evidence, name="evidence")
+
+
+@evidence.command("build")
+def evidence_build(village_id: str, event_id: str, source: List[Path] = typer.Option(..., "--source"), out: Path = Path("artifacts/evidence"), actor: str = "operator"):
+    from .evidence_bundle import build_evidence_bundle
+    bundle = build_evidence_bundle(out, event_id=event_id, village_id=village_id, sources=source, actor=actor)
+    typer.echo(str(bundle))
+
+
+@evidence.command("verify")
+def evidence_verify(path: Path):
+    from .evidence_bundle import verify_evidence_bundle
+    ok, errors = verify_evidence_bundle(path)
+    typer.echo(json.dumps({"valid": ok, "errors": errors}, indent=2))
+    raise typer.Exit(code=0 if ok else 1)
+
+
+# -----------------------------
+# Crypto lifecycle inspection
+# -----------------------------
+crypto_policy_cli = typer.Typer(help="Inspect governed cryptographic algorithm policy.")
+app.add_typer(crypto_policy_cli, name="crypto-policy")
+
+
+@crypto_policy_cli.command("show")
+def crypto_policy_show():
+    from .crypto_policy import CryptographicPolicy
+    typer.echo(CryptographicPolicy().model_dump_json(indent=2))

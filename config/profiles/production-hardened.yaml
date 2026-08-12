@@ -1,0 +1,12 @@
+profile: production-hardened
+authentication: externally-managed-strong-auth
+tls: required
+persistence: durable-backed-up
+audit_retention_days: 365
+quorum_posture: required-and-role-reviewed
+anchor_policy: rotation-and-revocation-enforced
+evidence_signing: required
+public_endpoints: read-only-explicit-opt-in
+rate_limit_strategy: token_bucket
+notes:
+  - This is hardening guidance, not a production certification claim.

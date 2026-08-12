@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://policymesh.example/schemas/external_registry.schema.json",
+  "title": "PolicyMesh External Registry Artifact v2",
+  "type": "object",
+  "required": ["format", "registry_id", "village_id", "authority", "generated_at", "policy", "members", "revocations", "trust_anchors", "provenance"],
+  "properties": {
+    "format": {"const": "links.external_registry.v2"},
+    "registry_id": {"type": "string", "minLength": 1},
+    "village_id": {"type": "string", "minLength": 1},
+    "authority": {"type": "string", "minLength": 1},
+    "generated_at": {"type": "string", "format": "date-time"},
+    "policy": {"type": "object"},
+    "members": {"type": "array", "items": {"type": "string"}},
+    "revocations": {"type": "array", "items": {"type": "string"}},
+    "trust_anchors": {"type": "array", "items": {"type": "object"}},
+    "provenance": {"type": "object"}
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,24 @@
+schema_version: "1.0"
+mappings:
+  - capability: policy-lifecycle
+    risks: [unauthorized-policy-change, ambiguous-activation]
+    controls: [PM-GOV-001, PM-GOV-002]
+    tests: [tests/test_policy_lifecycle.py]
+    evidence: [policy-lifecycle-event, policy-history]
+    references:
+      nist_sp_800_53: [CM-3, CM-5]
+  - capability: federation-reconciliation
+    risks: [state-divergence, silent-overwrite]
+    controls: [PM-FED-001]
+    tests: [tests/test_reconcile.py, tests/test_reconcile_lineage.py, tests/test_registry_interop.py]
+    evidence: [reconciliation-report, registry-import-receipt]
+  - capability: cryptographic-policy
+    risks: [algorithm-downgrade, unsupported-algorithm]
+    controls: [PM-SEC-001]
+    tests: [tests/test_crypto_policy.py]
+    evidence: [cryptographic-policy]
+  - capability: evidence-bundle
+    risks: [evidence-tampering, unverifiable-assurance]
+    controls: [PM-EVD-001]
+    tests: [tests/test_evidence_bundle.py]
+    evidence: [manifest, evidence-digest]

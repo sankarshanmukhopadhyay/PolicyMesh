@@ -1,0 +1,14 @@
+schema_version: "1.0"
+evidence_types:
+  policy-lifecycle-event:
+    producer: links.policy_lifecycle
+    consumer: operator-or-assurance-review
+  reconciliation-report:
+    producer: links.reconcile
+    consumer: operator-or-assurance-review
+  registry-import-receipt:
+    producer: links.cli.registry_import
+    consumer: operator-or-assurance-review
+  evidence-bundle:
+    producer: links.evidence_bundle
+    consumer: independent-verifier

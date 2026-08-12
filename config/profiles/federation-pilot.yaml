@@ -1,0 +1,10 @@
+profile: federation-pilot
+authentication: bearer-token
+tls: required
+persistence: sqlite-or-durable-file
+audit_retention_days: 90
+quorum_posture: required-for-policy-change
+anchor_policy: explicit-peer-anchors
+evidence_signing: recommended
+public_endpoints: read-only-minimized
+rate_limit_strategy: token_bucket

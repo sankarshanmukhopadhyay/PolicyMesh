@@ -1,0 +1,39 @@
+schema_version: "1.0"
+project:
+  name: PolicyMesh
+  maturity: implementation-draft
+  lifecycle: active
+  operational_status: active-validation
+  specification_status: not-applicable
+  intended_use:
+    - experimentation
+    - interoperability-testing
+    - small-federation-pilots
+  not_asserted:
+    - production-certification
+    - independent-assurance
+    - universal-policy-authority
+    - external-governance-legitimacy
+authority:
+  normative_scope:
+    - policymesh-artifact-formats
+    - policymesh-policy-execution-semantics
+    - policymesh-federation-behaviour
+  does_not_own:
+    - external-governance-authority
+    - upstream-trust-frameworks
+    - agent-mandate-legitimacy
+    - external-registry-authority
+  delegation: "Repository maintainers approve normative implementation and status changes; domain authority remains with the governance context supplying policy."
+  revocation_or_supersession: "Releases and policy states are superseded through explicit versioned changes; historical evidence is retained and never silently rewritten."
+evidence:
+  validation_commands:
+    - pytest
+    - python scripts/validate_repository.py
+  evidence_outputs:
+    - artifacts/validation/validation-results.json
+    - artifacts/evidence/
+  known_limitations:
+    - independent interoperability testing has not been completed
+    - production security certification is not asserted
+    - authority_context records presented authority but does not prove its legitimacy

@@ -1,36 +1,22 @@
-# PolicyMesh
+# PolicyMesh Documentation
 
-PolicyMesh is a verifiable claim exchange with group policy controls, policy governance artifacts, and operator-facing reconciliation workflows.
+PolicyMesh is an executable policy-governance and decision-evidence substrate for bounded trust domains.
 
-## What is here
+## Start here
 
-- [Repository on GitHub](https://github.com/sankarshanmukhopadhyay/PolicyMesh)
-- [Published roadmap](ROADMAP.md)
-- [Policy governance](policy-governance.md)
-- [Risk crosswalk](risk-crosswalk.md)
-- [Ethics](ethics.md)
-- [Risks](risks.md)
-- [GitHub Pages deployment](deploy/pages.md)
-- [Release notes v0.17.0](release-notes/v0.17.0.md)
+1. [Architecture](architecture.md)
+2. [Policy lifecycle](concepts/policy-lifecycle.md)
+3. [Authority boundaries](concepts/authority-boundaries.md)
+4. [Federation](concepts/federation.md)
+5. [Evidence bundles](assurance/evidence-bundles.md)
+6. [Deployment profiles](operations/deployment-profiles.md)
+7. [Registry interoperability](interoperability/registry.md)
+8. [Agentic-system interoperability](interoperability/agentic-systems.md)
 
-## Earlier operator surfaces
+## Governance and status
 
-- Durable reconciliation reports under `artifacts/reconciliation/`
-- Cron-friendly drift reports under `artifacts/drift/`
-- GitHub Actions workflows for tests and Pages deployment
-- Backwards-compatible policy update construction for governance metadata
-
-
-## v0.15.0 governance authoring
-
-- Norm engine documentation: [norm-engine.md](./norm-engine.md)
-- Norm-to-policy mapping: [norm-to-policy.md](./norm-to-policy.md)
-- Release notes: [release-notes/v0.15.0.md](./release-notes/v0.15.0.md)
-
-
-## v0.17.0 federation and operator surfaces
-
-- Live checkpoint endpoint: `GET /villages/{village_id}/transparency/checkpoint`
-- Live capability endpoint: `GET /nodes/capability`
-- Quorum inspection CLI: `links policy quorum-inspect <village_id>`
-- Release notes: [release-notes/v0.17.0.md](./release-notes/v0.17.0.md)
+- [Project status](governance/project-status.md)
+- [Governance](governance/governance.md)
+- [Security](governance/security.md)
+- [Project roadmap summary](ROADMAP.md)
+- [Release notes](release-notes/v0.18.0.md)

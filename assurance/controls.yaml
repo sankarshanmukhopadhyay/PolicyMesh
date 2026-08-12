@@ -1,0 +1,17 @@
+schema_version: "1.0"
+controls:
+  - id: PM-GOV-001
+    title: Governed policy lifecycle
+    requirement: Policy state changes follow explicit allowed transitions and retain evidence.
+  - id: PM-GOV-002
+    title: Explicit rollback
+    requirement: Rollback restores retained state as a new auditable act and never deletes history.
+  - id: PM-FED-001
+    title: Reconciliation classification
+    requirement: Peer differences are classified and do not silently overwrite local state.
+  - id: PM-SEC-001
+    title: Cryptographic algorithm governance
+    requirement: Algorithms have supported, deprecated, or prohibited states and unknown algorithms fail closed.
+  - id: PM-EVD-001
+    title: Portable evidence integrity
+    requirement: Evidence bundle artifacts are digest-addressed and independently verifiable.
