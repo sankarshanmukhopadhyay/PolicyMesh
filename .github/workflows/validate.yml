@@ -13,7 +13,11 @@ jobs:
         with:
           python-version: "3.12"
       - run: python -m pip install --upgrade pip
-      - run: pip install -e . pytest jsonschema pyyaml
+      - name: Install project and validation dependencies
+        run: pip install -e ".[dev]"
+      - name: Verify test-client dependency contract
+        run: |
+          python -c "import httpx2; from starlette.testclient import TestClient; print(\"Starlette TestClient dependency contract OK\")"
       - run: pytest
       - run: python scripts/validate_repository.py
       - uses: actions/upload-artifact@v4

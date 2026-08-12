@@ -11,7 +11,8 @@ PolicyMesh is an executable policy-governance and decision-evidence substrate fo
 5. [Evidence bundles](assurance/evidence-bundles.md)
 6. [Deployment profiles](operations/deployment-profiles.md)
 7. [Registry interoperability](interoperability/registry.md)
-8. [Agentic-system interoperability](interoperability/agentic-systems.md)
+8. [PolicyMesh and DTG](interoperability/dtg.md)
+9. [Agentic-system interoperability](interoperability/agentic-systems.md)
 
 ## Governance and status
 

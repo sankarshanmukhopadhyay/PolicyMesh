@@ -7,3 +7,6 @@ This preserves the architectural distinction:
 **Identity ≠ authority ≠ delegation ≠ permission ≠ policy decision.**
 
 An external agent registry, mandate system, governance model or trust framework remains responsible for validating its own authority semantics. PolicyMesh can consume the resulting constraints and retain decision evidence without silently acquiring that authority.
+
+
+For the broader relationship to DTG Trust Tasks, ceremonies, credentials, proofs and assurance work, see [PolicyMesh and DTG](dtg.md).
