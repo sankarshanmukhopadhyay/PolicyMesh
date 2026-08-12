@@ -4,15 +4,23 @@ PolicyMesh is an executable policy-governance and decision-evidence substrate fo
 
 ## Start here
 
-1. [Architecture](architecture.md)
-2. [Policy lifecycle](concepts/policy-lifecycle.md)
-3. [Authority boundaries](concepts/authority-boundaries.md)
-4. [Federation](concepts/federation.md)
-5. [Evidence bundles](assurance/evidence-bundles.md)
-6. [Deployment profiles](operations/deployment-profiles.md)
-7. [Registry interoperability](interoperability/registry.md)
-8. [PolicyMesh and DTG](interoperability/dtg.md)
-9. [Agentic-system interoperability](interoperability/agentic-systems.md)
+If PolicyMesh is new to you, use this path:
+
+1. [Getting started: from governance intent to a decision](getting-started.md)
+2. [Travel & Hospitality: governed autonomous hotel booking](examples/travel-hospitality.md)
+3. [Consuming PolicyMesh](consuming-policymesh.md)
+4. [Architecture](architecture.md)
+5. [Authority boundaries](concepts/authority-boundaries.md)
+6. [Policy lifecycle](concepts/policy-lifecycle.md)
+7. [Evidence bundles](assurance/evidence-bundles.md)
+
+Once that model is clear, continue into advanced operating surfaces:
+
+- [Federation](concepts/federation.md)
+- [Deployment profiles](operations/deployment-profiles.md)
+- [Registry interoperability](interoperability/registry.md)
+- [PolicyMesh and DTG](interoperability/dtg.md)
+- [Agentic-system interoperability](interoperability/agentic-systems.md)
 
 ## Governance and status
 

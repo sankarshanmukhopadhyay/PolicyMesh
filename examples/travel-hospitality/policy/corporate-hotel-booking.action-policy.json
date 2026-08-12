@@ -1,0 +1,109 @@
+{
+  "format": "policymesh.action_policy.v1",
+  "policy_id": "acme-corporate-hotel-booking",
+  "version": "1.0.0",
+  "title": "Acme autonomous corporate hotel booking policy",
+  "description": "Evaluates whether a delegated travel agent may commit a specific hotel reservation under traveller mandate, employer policy and supplier evidence.",
+  "rules": [
+    {
+      "rule_id": "mandate-active",
+      "description": "The presented travel mandate must be active.",
+      "source": "authority_context",
+      "path": "mandate.status",
+      "operator": "eq",
+      "expected": "active",
+      "on_fail": "deny",
+      "reason_code": "mandate_not_active"
+    },
+    {
+      "rule_id": "action-delegated",
+      "description": "The requested action must be within the agent mandate.",
+      "source": "request",
+      "path": "action",
+      "operator": "in",
+      "expected_path": "authority_context.mandate.permissions",
+      "on_fail": "deny",
+      "reason_code": "action_outside_delegated_scope"
+    },
+    {
+      "rule_id": "destination-authorised",
+      "description": "The booking destination must match the authorised trip destination.",
+      "source": "request",
+      "path": "destination",
+      "operator": "eq",
+      "expected_path": "authority_context.mandate.destination",
+      "on_fail": "deny",
+      "reason_code": "destination_outside_mandate"
+    },
+    {
+      "rule_id": "supplier-approved",
+      "description": "The hotel must be on the employer's approved supplier list.",
+      "source": "request",
+      "path": "hotel_id",
+      "operator": "in",
+      "expected_path": "evidence.employer_policy.approved_hotels",
+      "on_fail": "deny",
+      "reason_code": "supplier_not_approved"
+    },
+    {
+      "rule_id": "nightly-rate-limit",
+      "description": "A rate above the autonomous nightly limit requires additional authority.",
+      "source": "request",
+      "path": "rate.nightly",
+      "operator": "lte",
+      "expected_path": "evidence.employer_policy.autonomous_nightly_limit",
+      "on_fail": "defer",
+      "reason_code": "manager_approval_required"
+    },
+    {
+      "rule_id": "refundable-required",
+      "description": "Bookings made under this policy must use a refundable rate.",
+      "source": "request",
+      "path": "rate.refundable",
+      "operator": "eq",
+      "expected": true,
+      "on_fail": "deny",
+      "reason_code": "refundable_rate_required"
+    },
+    {
+      "rule_id": "mandate-total-limit",
+      "description": "The total financial commitment must stay within the delegated mandate.",
+      "source": "request",
+      "path": "rate.total",
+      "operator": "lte",
+      "expected_path": "authority_context.mandate.maximum_total_commitment",
+      "on_fail": "deny",
+      "reason_code": "mandate_total_limit_exceeded"
+    },
+    {
+      "rule_id": "mandate-currency",
+      "description": "The booking currency must match the currency authorised by the mandate.",
+      "source": "request",
+      "path": "rate.currency",
+      "operator": "eq",
+      "expected_path": "authority_context.mandate.currency",
+      "on_fail": "deny",
+      "reason_code": "currency_outside_mandate"
+    },
+    {
+      "rule_id": "check-in-authorised",
+      "description": "Check-in must match the authorised trip window.",
+      "source": "request",
+      "path": "stay.check_in",
+      "operator": "eq",
+      "expected_path": "authority_context.mandate.stay.check_in",
+      "on_fail": "deny",
+      "reason_code": "stay_outside_mandate"
+    },
+    {
+      "rule_id": "check-out-authorised",
+      "description": "Check-out must match the authorised trip window.",
+      "source": "request",
+      "path": "stay.check_out",
+      "operator": "eq",
+      "expected_path": "authority_context.mandate.stay.check_out",
+      "on_fail": "deny",
+      "reason_code": "stay_outside_mandate"
+    }
+  ]
+}

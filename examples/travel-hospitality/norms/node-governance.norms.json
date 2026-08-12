@@ -1,0 +1,35 @@
+{
+  "norm_set_id": "travel-demo-node-governance-v1",
+  "village_id": "travel-demo",
+  "title": "Travel demo PolicyMesh node governance",
+  "version": "1.0.0",
+  "description": "Governance controls for the PolicyMesh node running the travel and hospitality example. These are node-governance norms, distinct from the application booking rules.",
+  "authors": ["PolicyMesh example"],
+  "created_at": "2026-08-12T00:00:00Z",
+  "norms": [
+    {
+      "norm_id": "signed-policy-updates",
+      "statement": "Policy updates used by the travel decision point must be signed.",
+      "category": "governance",
+      "enforcement": "required",
+      "tags": ["signatures", "governance"],
+      "compile_to": [{"key": "require_policy_signature", "value": true}]
+    },
+    {
+      "norm_id": "signed-manifests",
+      "statement": "Federated policy manifests must be signed before they are trusted.",
+      "category": "trust",
+      "enforcement": "required",
+      "tags": ["federation", "manifest"],
+      "compile_to": [{"key": "require_manifest_signature", "value": true}]
+    },
+    {
+      "norm_id": "transparency-checkpoints",
+      "statement": "The travel decision point publishes transparency checkpoints for review.",
+      "category": "transparency",
+      "enforcement": "required",
+      "tags": ["assurance"],
+      "compile_to": [{"key": "enable_transparency_checkpoints", "value": true}]
+    }
+  ]
+}

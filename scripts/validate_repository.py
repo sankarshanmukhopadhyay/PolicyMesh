@@ -13,7 +13,7 @@ REQUIRED = [
     "README.md", "ROADMAP.md", "PROJECT-STATUS.yaml", "GOVERNANCE.md", "SECURITY.md",
     "CODE_OF_CONDUCT.md", "CONTRIBUTING.md", "CHANGELOG.md", "LICENSE",
     "assurance/controls.yaml", "assurance/capability-control-map.yaml", "assurance/evidence-map.yaml",
-    "schemas/external_registry.schema.json", "schemas/project-status.schema.json", "config/profiles/development.yaml",
+    "schemas/external_registry.schema.json", "schemas/project-status.schema.json", "schemas/action_policy.schema.json", "schemas/action_decision_receipt.schema.json", "config/profiles/development.yaml",
     "config/profiles/federation-pilot.yaml", "config/profiles/production-hardened.yaml",
 ]
 
@@ -35,13 +35,20 @@ def main() -> int:
     except Exception as exc:
         checks.append({"check": "project-status:schema", "pass": False, "errors": [str(exc)]})
     try:
+        for schema_name in ["action_policy.schema.json", "action_decision_receipt.schema.json"]:
+            schema_obj = json.loads((ROOT / "schemas" / schema_name).read_text(encoding="utf-8"))
+            Draft202012Validator.check_schema(schema_obj)
+            checks.append({"check": f"schema:{schema_name}:valid", "pass": True})
+    except Exception as exc:
+        checks.append({"check": "action-schemas:valid", "pass": False, "errors": [str(exc)]})
+    try:
         registry_schema = json.loads((ROOT / "schemas" / "external_registry.schema.json").read_text(encoding="utf-8"))
         Draft202012Validator.check_schema(registry_schema)
         checks.append({"check": "external-registry:schema-valid", "pass": True})
     except Exception as exc:
         checks.append({"check": "external-registry:schema-valid", "pass": False, "errors": [str(exc)]})
     readme = (ROOT / "README.md").read_text(encoding="utf-8")
-    for heading in ["What PolicyMesh solves", "Authority boundary", "First result", "Evidence", "Project status"]:
+    for heading in ["What PolicyMesh solves", "Authority boundary", "First result", "How to adopt PolicyMesh", "Evidence", "Project status"]:
         checks.append({"check": f"readme:{heading}", "pass": heading in readme})
     broken_links = []
     for md in ROOT.rglob("*.md"):

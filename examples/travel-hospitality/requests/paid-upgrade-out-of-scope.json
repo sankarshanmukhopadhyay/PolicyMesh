@@ -1,0 +1,19 @@
+{
+  "principal": "priya",
+  "actor": "travel-agent-01",
+  "action": "purchase_room_upgrade",
+  "destination": "Singapore",
+  "hotel_id": "harbour-hotel-sg",
+  "stay": {
+    "check_in": "2026-09-14",
+    "check_out": "2026-09-17"
+  },
+  "rate": {
+    "nightly": 310,
+    "currency": "SGD",
+    "refundable": true,
+    "breakfast_included": true,
+    "total": 1177
+  },
+  "request_id": "booking-0006"
+}

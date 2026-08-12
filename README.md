@@ -16,16 +16,26 @@ PolicyMesh is intended for implementers and governance engineers evaluating smal
 
 ## First result
 
+Install the project and run the fully offline Travel & Hospitality reference example:
+
 ```bash
 python -m venv .venv
 source .venv/bin/activate
 pip install -e . pytest
+python examples/travel-hospitality/run.py all
+```
+
+You should see a set of `PERMIT`, `DENY` and `DEFER` decisions for an autonomous hotel-booking agent, with an Action Decision Receipt written for each scenario. This is the fastest way to see PolicyMesh as a business-facing decision substrate rather than only as federation infrastructure.
+
+Then validate the complete repository:
+
+```bash
 pytest
 python scripts/validate_repository.py
 links --help
 ```
 
-For a first governed-policy workflow, create or use a policy update, move it through explicit lifecycle transitions, sign it, reconcile it with peer state, and retain the resulting receipts/evidence:
+For a governed policy-lifecycle workflow, use explicit transitions and reconciliation:
 
 ```bash
 links policy transition update.proposal.json --to-state approved --out update.approved.json
@@ -33,6 +43,12 @@ links policy transition update.approved.json --to-state active --out update.acti
 links policy reconcile --local local.json --remote remote.json --village-id example
 links evidence build --village-id example --event-id evt-001 --source artifacts/reconciliation/example/report.json
 ```
+
+## How to adopt PolicyMesh
+
+Start with one bounded decision domain, keep upstream authority in the systems that already own it, and use PolicyMesh to evaluate the locally applicable policy and retain evidence. The new [Getting started](docs/getting-started.md) guide explains the recommended adoption sequence and the distinction between policy-admission decisions and application-action decisions.
+
+The [Travel & Hospitality reference example](examples/travel-hospitality/README.md) is the recommended first implementation walkthrough.
 
 ## Architecture
 
@@ -104,6 +120,9 @@ PolicyMesh v0.18.0 is an **implementation draft under active validation**. It is
 
 Start with the [documentation home](docs/index.md), then use:
 
+- [Getting started](docs/getting-started.md)
+- [Travel & Hospitality reference example](docs/examples/travel-hospitality.md)
+- [Consuming PolicyMesh](docs/consuming-policymesh.md)
 - [Architecture](docs/architecture.md)
 - [Policy lifecycle](docs/concepts/policy-lifecycle.md)
 - [Authority boundaries](docs/concepts/authority-boundaries.md)

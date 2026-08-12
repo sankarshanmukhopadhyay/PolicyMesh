@@ -59,6 +59,14 @@
       "pass": true
     },
     {
+      "check": "required:schemas/action_policy.schema.json",
+      "pass": true
+    },
+    {
+      "check": "required:schemas/action_decision_receipt.schema.json",
+      "pass": true
+    },
+    {
       "check": "required:config/profiles/development.yaml",
       "pass": true
     },
@@ -104,6 +112,14 @@
       "errors": []
     },
     {
+      "check": "schema:action_policy.schema.json:valid",
+      "pass": true
+    },
+    {
+      "check": "schema:action_decision_receipt.schema.json:valid",
+      "pass": true
+    },
+    {
       "check": "external-registry:schema-valid",
       "pass": true
     },
@@ -117,6 +133,10 @@
     },
     {
       "check": "readme:First result",
+      "pass": true
+    },
+    {
+      "check": "readme:How to adopt PolicyMesh",
       "pass": true
     },
     {

@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://policymesh.example/schemas/action_decision_receipt.schema.json",
+  "title": "PolicyMesh Action Decision Receipt",
+  "type": "object",
+  "required": ["format", "receipt_id", "decided_at", "decision", "request_id", "action", "policy_id", "policy_version", "policy_hash", "request_digest", "evidence_digest", "authority_context_digest", "reason_codes", "evaluations"],
+  "properties": {
+    "format": {"const": "policymesh.action_decision_receipt.v1"},
+    "receipt_id": {"type": "string"},
+    "decided_at": {"type": "string", "format": "date-time"},
+    "decision": {"enum": ["permit", "deny", "defer"]},
+    "request_id": {"type": "string"},
+    "action": {"type": "string"},
+    "principal": {"type": ["string", "null"]},
+    "actor": {"type": ["string", "null"]},
+    "policy_id": {"type": "string"},
+    "policy_version": {"type": "string"},
+    "policy_hash": {"type": "string"},
+    "request_digest": {"type": "string"},
+    "evidence_digest": {"type": "string"},
+    "authority_context_digest": {"type": "string"},
+    "reason_codes": {"type": "array", "items": {"type": "string"}},
+    "evaluations": {"type": "array", "items": {"type": "object"}}
+  },
+  "additionalProperties": false
+}

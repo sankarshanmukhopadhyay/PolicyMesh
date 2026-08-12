@@ -1,0 +1,22 @@
+{
+  "employer_policy": {
+    "policy_owner": "Acme Corporation",
+    "business_travel_only": true,
+    "autonomous_nightly_limit": 350,
+    "manager_approval_ceiling": 450,
+    "approved_hotels": ["harbour-hotel-sg", "orchard-business-hotel"]
+  },
+  "hotel_inventory": {
+    "harbour-hotel-sg": {
+      "name": "Harbour Hotel Singapore",
+      "available": true,
+      "breakfast_included": true,
+      "free_cancellation_until": "2026-09-12T18:00:00+08:00"
+    }
+  },
+  "loyalty": {
+    "programme": "ExampleStay",
+    "tier": "gold",
+    "entitlements": ["breakfast", "zero_cost_upgrade_when_available"]
+  }
+}

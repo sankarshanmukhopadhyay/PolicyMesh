@@ -6,7 +6,7 @@ from links import sdk
 
 
 def test_sdk_exports_stable_surface():
-    assert sdk.__version__ == "0.16.0"
+    assert sdk.__version__ == "0.18.0"
     manifest = sdk.build_manifest(node_id="node.example.org")
     ok, msg = sdk.verify_manifest_hash(manifest)
     assert ok is True

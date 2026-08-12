@@ -51,9 +51,41 @@ app = typer.Typer(help="PolicyMesh: verifiable claim exchange with group policy 
 policy = typer.Typer(help="Policy feed operations")
 anchors = typer.Typer(help="Trust anchor registry operations")
 norms = typer.Typer(help="Norm authoring and compilation operations")
+action = typer.Typer(help="Evaluate governed application actions")
 app.add_typer(policy, name="policy")
 app.add_typer(anchors, name="anchors")
 app.add_typer(norms, name="norms")
+app.add_typer(action, name="action")
+
+
+@action.command("evaluate")
+def action_evaluate(
+    policy_file: Path = typer.Argument(..., help="Action policy JSON"),
+    request_file: Path = typer.Argument(..., help="Action request JSON"),
+    evidence_file: Path = typer.Argument(..., help="Evidence JSON"),
+    authority_context_file: Path = typer.Option(None, "--authority-context", help="Optional authority-context JSON"),
+    out: Path = typer.Option(Path("artifacts/action-decisions/decision.json"), help="Decision receipt output"),
+):
+    """Evaluate one application action and emit a deterministic decision receipt."""
+    from .action_decisions import ActionPolicy, evaluate_action, load_json, write_action_receipt
+    policy_obj = ActionPolicy.model_validate(load_json(policy_file))
+    request_obj = load_json(request_file)
+    evidence_obj = load_json(evidence_file)
+    authority_obj = load_json(authority_context_file) if authority_context_file else {}
+    receipt = evaluate_action(policy_obj, request_obj, evidence_obj, authority_obj)
+    write_action_receipt(out, receipt)
+    typer.echo(json.dumps(receipt.model_dump(mode="json"), indent=2, default=str))
+    typer.echo(f"Wrote {out}")
+
+
+@action.command("verify-receipt")
+def action_verify_receipt(inp: Path):
+    """Verify the integrity digest of an action-decision receipt."""
+    from .action_decisions import ActionDecisionReceipt, verify_action_receipt
+    receipt = ActionDecisionReceipt.model_validate_json(inp.read_text(encoding="utf-8"))
+    ok = verify_action_receipt(receipt)
+    typer.echo("OK" if ok else "FAIL")
+    raise typer.Exit(code=0 if ok else 1)
 
 
 @app.command("serve")

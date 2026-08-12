@@ -4,6 +4,8 @@ PolicyMesh can answer whether a configured signer, quorum, anchor, policy state 
 
 `authority_context` therefore records presented context as evidence. It may contain principal, actor, mandate, delegation scope, constraints, validity and revocation references, but consumers must validate those semantics with the authoritative external system or profile.
 
+For application-action evaluation, this means PolicyMesh may enforce that an action is within a presented mandate and may record the mandate digest in its receipt. That does **not** mean PolicyMesh issued the mandate or independently established the legitimacy of the principal, employer, registry or agent relationship.
+
 
 ## DTG boundary
 

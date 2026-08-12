@@ -69,4 +69,4 @@ def test_node_capability_endpoint_reflects_runtime_configuration(monkeypatch):
     assert "http_publish" in payload["transparency_features"]
     assert "signed_checkpoint" in payload["transparency_features"]
     assert "capability_manifest" in payload["experimental_features"]
-    assert payload["extensions"]["service_version"] == "0.16.0"
+    assert payload["extensions"]["service_version"] == "0.18.0"

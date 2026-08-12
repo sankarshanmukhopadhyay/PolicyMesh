@@ -8,6 +8,12 @@ from .capability_manifest import (
     verify_manifest_hash,
     write_manifest,
 )
+from .action_decisions import (
+    ActionPolicy,
+    ActionDecisionReceipt,
+    evaluate_action,
+    verify_action_receipt,
+)
 from .checkpoint_exchange import (
     CheckpointComparisonReport,
     compare_checkpoints,
@@ -19,10 +25,14 @@ from .checkpoint_exchange import (
     write_comparison_report,
 )
 
-__version__ = "0.16.0"
+__version__ = "0.18.0"
 
 __all__ = [
     "LinksClient",
+    "ActionPolicy",
+    "ActionDecisionReceipt",
+    "evaluate_action",
+    "verify_action_receipt",
     "build_manifest",
     "check_compatibility",
     "load_manifest",

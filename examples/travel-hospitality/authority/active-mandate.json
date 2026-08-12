@@ -1,0 +1,14 @@
+{
+  "mandate": {
+    "mandate_id": "travel-mandate-8821",
+    "principal": "priya",
+    "actor": "travel-agent-01",
+    "permissions": ["search_accommodation", "reserve_accommodation", "modify_reservation", "cancel_reservation"],
+    "destination": "Singapore",
+    "stay": {"check_in": "2026-09-14", "check_out": "2026-09-17"},
+    "maximum_total_commitment": 1200,
+    "currency": "SGD",
+    "valid_until": "2026-09-18T00:00:00Z",
+    "status": "active"
+  }
+}

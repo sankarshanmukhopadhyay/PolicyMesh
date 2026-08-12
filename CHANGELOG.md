@@ -2,11 +2,20 @@
 
 ## Unreleased
 
+### Added
+- add a generic `links action evaluate` decision surface with `permit` / `deny` / `defer` semantics and integrity-verifiable Action Decision Receipts;
+- add JSON Schema contracts for action policy and action-decision receipts;
+- add a fully runnable Travel & Hospitality reference example for governed autonomous corporate hotel booking, including permit, repricing/defer, non-refundable, unapproved supplier, revoked mandate and out-of-scope action scenarios;
+- add integration tests that execute every travel scenario and verify the resulting receipt integrity.
+
 ### Fixed
+- align the Python SDK and FastAPI service-reported version with the repository/package v0.18.0 version;
 - declare the `httpx2` test dependency required by current Starlette `TestClient`, preventing CI collection failures;
 - move the GitHub Pages site to Just the Docs and enable supported Mermaid rendering.
 
 ### Documentation
+- add a reader-first getting-started and adoption path organized around a concrete governed decision rather than internal subsystem terminology;
+- make the Travel & Hospitality example the recommended first useful result and document the distinction between policy-admission and application-action decisions;
 - add an explicit PolicyMesh ↔ DTG interoperability and authority-boundary model;
 - connect Trust Tasks, Trust Ceremonies, credentials, ZKP, RAHP, VDS, and implementation work to PolicyMesh without asserting DTG normative status;
 - expand architecture, authority-boundary, README, and documentation navigation material.
