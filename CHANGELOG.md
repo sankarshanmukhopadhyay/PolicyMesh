@@ -1,5 +1,16 @@
 # Changelog
 
+## Unreleased
+
+### Fixed
+- declare the `httpx2` test dependency required by current Starlette `TestClient`, preventing CI collection failures;
+- move the GitHub Pages site to Just the Docs and enable supported Mermaid rendering.
+
+### Documentation
+- add an explicit PolicyMesh ↔ DTG interoperability and authority-boundary model;
+- connect Trust Tasks, Trust Ceremonies, credentials, ZKP, RAHP, VDS, and implementation work to PolicyMesh without asserting DTG normative status;
+- expand architecture, authority-boundary, README, and documentation navigation material.
+
 ## v0.18.0 — Governed lifecycle, assurance evidence, and repository readiness
 
 ### Added

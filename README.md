@@ -52,6 +52,23 @@ flowchart TB
 
 The critical separation is: **authority is supplied by the governance context; PolicyMesh executes and evidences the resulting policy controls.**
 
+## Relationship to DTG work
+
+PolicyMesh is an **adjacent executable-policy and assurance laboratory** for work across the Trust over IP Decentralized Trust Graph (DTG) domain. It is not a DTG protocol, governance authority, authorization specification, or official DTG implementation.
+
+A useful separation is:
+
+- DTG credentials and proofs can supply verified evidence or predicates;
+- Trust Tasks can describe a governed action being attempted;
+- Trust Ceremonies can supply evidence that required governance interactions occurred;
+- authority or delegation systems can supply scope and constraints;
+- **PolicyMesh evaluates locally authoritative policy and emits an allow/deny/defer decision plus reviewable evidence**;
+- RAHP and other assurance work can use those executable decisions and tests as feedback.
+
+This makes PolicyMesh useful for asking whether emerging governance semantics are sufficiently precise to **implement, enforce, evidence, revoke and pressure-test** without PolicyMesh silently acquiring upstream authority.
+
+See [PolicyMesh and the DTG work](docs/interoperability/dtg.md) for the complete relationship and non-authority boundaries.
+
 ## Core capabilities
 
 - governed `proposal → approved → active → rolled_back` policy lifecycle;

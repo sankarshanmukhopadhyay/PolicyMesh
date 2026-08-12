@@ -1,5 +1,22 @@
 title: PolicyMesh
-remote_theme: pages-themes/minimal@v0.2.0
+description: Executable policy governance, federation, and decision evidence for bounded trust domains
+remote_theme: just-the-docs/just-the-docs@v0.9.0
 plugins:
   - jekyll-remote-theme
+
+url: "https://sankarshanmukhopadhyay.github.io"
+baseurl: "/PolicyMesh"
+
+search_enabled: true
+heading_anchors: true
+
+mermaid:
+  version: "10.1.0"
+
+aux_links:
+  "PolicyMesh on GitHub":
+    - "https://github.com/sankarshanmukhopadhyay/PolicyMesh"
+
+footer_content: "PolicyMesh is independently maintained. References to external standards or DTG work do not imply normative authority, endorsement, or conformance."
+
 markdown: kramdown

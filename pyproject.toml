@@ -20,6 +20,15 @@ dependencies = [
   "pywikibot",
 ]
 
+
+[project.optional-dependencies]
+dev = [
+  "pytest",
+  "jsonschema",
+  "pyyaml",
+  "httpx2",
+]
+
 [project.scripts]
 links = "links.cli:app"
 
