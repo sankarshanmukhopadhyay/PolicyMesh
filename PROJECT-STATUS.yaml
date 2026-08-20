@@ -16,9 +16,11 @@ project:
     - external-governance-legitimacy
 authority:
   normative_scope:
-    - policymesh-artifact-formats
+    - policymesh-artifact-contracts
     - policymesh-policy-execution-semantics
     - policymesh-federation-behaviour
+  implementation_scope:
+    - policymesh-artifact-formats
   does_not_own:
     - external-governance-authority
     - upstream-trust-frameworks
