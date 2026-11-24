@@ -165,7 +165,14 @@
             "then": {
               "properties": {
                 "expected": {
-                  "type": "array"
+                  "anyOf": [
+                    {
+                      "type": "array"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
                 }
               }
             }
@@ -189,7 +196,14 @@
             "then": {
               "properties": {
                 "expected": {
-                  "type": "number"
+                  "anyOf": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
                 }
               }
             }

@@ -57,3 +57,12 @@ def test_PM_SCHEMA_001():
     assert not schema("action_policy").is_valid(doc)
     with pytest.raises(ValueError):
         ActionPolicy.model_validate(doc)
+
+
+@pytest.mark.parametrize("operator", ["in", "not_in", "lt", "lte", "gt", "gte"])
+def test_contextual_operand_schema_roundtrip(operator):
+    doc = document(CASES[0])
+    doc["rules"][0].update(operator=operator, expected=None, expected_path="evidence.limit")
+    schema("action_policy").validate(doc)
+    policy = ActionPolicy.model_validate(doc)
+    schema("action_policy").validate(policy.model_dump(mode="json"))
