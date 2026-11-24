@@ -13,7 +13,7 @@ REQUIRED = [
     "README.md", "ROADMAP.md", "PROJECT-STATUS.yaml", "GOVERNANCE.md", "SECURITY.md",
     "CODE_OF_CONDUCT.md", "CONTRIBUTING.md", "CHANGELOG.md", "LICENSE",
     "assurance/controls.yaml", "assurance/capability-control-map.yaml", "assurance/evidence-map.yaml",
-    "schemas/external_registry.schema.json", "schemas/project-status.schema.json", "schemas/action_policy.schema.json", "schemas/action_decision_receipt.schema.json", "config/profiles/development.yaml",
+    "schemas/external_registry.schema.json", "schemas/project-status.schema.json", "schemas/action_policy.schema.json", "schemas/action_decision_receipt.schema.json", "schemas/action_verification.schema.json", "config/profiles/development.yaml",
     "config/profiles/federation-pilot.yaml", "config/profiles/production-hardened.yaml",
 ]
 
@@ -35,7 +35,7 @@ def main() -> int:
     except Exception as exc:
         checks.append({"check": "project-status:schema", "pass": False, "errors": [str(exc)]})
     try:
-        for schema_name in ["action_policy.schema.json", "action_decision_receipt.schema.json"]:
+        for schema_name in ["action_policy.schema.json", "action_decision_receipt.schema.json", "action_verification.schema.json"]:
             schema_obj = json.loads((ROOT / "schemas" / schema_name).read_text(encoding="utf-8"))
             Draft202012Validator.check_schema(schema_obj)
             checks.append({"check": f"schema:{schema_name}:valid", "pass": True})

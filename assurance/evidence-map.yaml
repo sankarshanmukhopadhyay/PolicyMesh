@@ -12,3 +12,6 @@ evidence_types:
   evidence-bundle:
     producer: links.evidence_bundle
     consumer: independent-verifier
+  action-conformance-report:
+    producer: scripts/action_conformance.py
+    consumer: implementation-reviewer

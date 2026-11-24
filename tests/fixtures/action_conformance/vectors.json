@@ -1,0 +1,245 @@
+[
+  {
+    "id": "PM-ACT-001",
+    "rule": {
+      "rule_id": "r",
+      "description": "fixture",
+      "source": "request",
+      "path": "value",
+      "operator": "neq",
+      "expected": "revoked",
+      "on_fail": "deny",
+      "reason_code": "constraint"
+    },
+    "request": {
+      "request_id": "PM-ACT-001",
+      "action": "commit"
+    },
+    "decision": "deny",
+    "failure_kind": "missing_operand"
+  },
+  {
+    "id": "PM-ACT-002",
+    "rule": {
+      "rule_id": "r",
+      "description": "fixture",
+      "source": "request",
+      "path": "value",
+      "operator": "not_in",
+      "expected": [
+        "subscription"
+      ],
+      "on_fail": "deny",
+      "reason_code": "constraint"
+    },
+    "request": {
+      "request_id": "PM-ACT-002",
+      "action": "commit"
+    },
+    "decision": "deny",
+    "failure_kind": "missing_operand"
+  },
+  {
+    "id": "PM-ACT-003",
+    "rule": {
+      "rule_id": "r",
+      "description": "fixture",
+      "source": "request",
+      "path": "value",
+      "operator": "eq",
+      "expected": true,
+      "on_fail": "deny",
+      "reason_code": "constraint"
+    },
+    "request": {
+      "request_id": "PM-ACT-003",
+      "action": "commit",
+      "value": 1
+    },
+    "decision": "deny",
+    "failure_kind": "invalid_operand"
+  },
+  {
+    "id": "PM-ACT-004",
+    "rule": {
+      "rule_id": "r",
+      "description": "fixture",
+      "source": "request",
+      "path": "value",
+      "operator": "eq",
+      "expected": true,
+      "on_fail": "deny",
+      "reason_code": "constraint"
+    },
+    "request": {
+      "request_id": "PM-ACT-004",
+      "action": "commit",
+      "value": true
+    },
+    "decision": "permit",
+    "failure_kind": null
+  },
+  {
+    "id": "PM-ACT-005",
+    "rule": {
+      "rule_id": "r",
+      "description": "fixture",
+      "source": "request",
+      "path": "value",
+      "operator": "lte",
+      "expected": 10,
+      "on_fail": "deny",
+      "reason_code": "constraint"
+    },
+    "request": {
+      "request_id": "PM-ACT-005",
+      "action": "commit",
+      "value": 10
+    },
+    "decision": "permit",
+    "failure_kind": null
+  },
+  {
+    "id": "PM-ACT-006",
+    "rule": {
+      "rule_id": "r",
+      "description": "fixture",
+      "source": "request",
+      "path": "value",
+      "operator": "lte",
+      "expected": 10,
+      "on_fail": "defer",
+      "reason_code": "constraint"
+    },
+    "request": {
+      "request_id": "PM-ACT-006",
+      "action": "commit",
+      "value": 11
+    },
+    "decision": "defer",
+    "failure_kind": "constraint_failed"
+  },
+  {
+    "id": "PM-ACT-007",
+    "rule": {
+      "rule_id": "r",
+      "description": "fixture",
+      "source": "request",
+      "path": "value",
+      "operator": "exists",
+      "on_fail": "deny",
+      "reason_code": "constraint"
+    },
+    "request": {
+      "request_id": "PM-ACT-007",
+      "action": "commit",
+      "value": null
+    },
+    "decision": "deny",
+    "failure_kind": "null_operand"
+  },
+  {
+    "id": "PM-ACT-008",
+    "rule": {
+      "rule_id": "r",
+      "description": "fixture",
+      "source": "request",
+      "path": "value",
+      "operator": "in",
+      "expected": [
+        "allowed"
+      ],
+      "on_fail": "deny",
+      "reason_code": "constraint"
+    },
+    "request": {
+      "request_id": "PM-ACT-008",
+      "action": "commit",
+      "value": "allowed"
+    },
+    "decision": "permit",
+    "failure_kind": null
+  },
+  {
+    "id": "PM-ACT-009",
+    "rule": {
+      "rule_id": "r",
+      "description": "fixture",
+      "source": "request",
+      "path": "value",
+      "operator": "lt",
+      "expected": 10,
+      "on_fail": "deny",
+      "reason_code": "constraint"
+    },
+    "request": {
+      "request_id": "PM-ACT-009",
+      "action": "commit",
+      "value": 10
+    },
+    "decision": "deny",
+    "failure_kind": "constraint_failed"
+  },
+  {
+    "id": "PM-ACT-010",
+    "rule": {
+      "rule_id": "r",
+      "description": "fixture",
+      "source": "request",
+      "path": "value",
+      "operator": "gt",
+      "expected": 10,
+      "on_fail": "deny",
+      "reason_code": "constraint"
+    },
+    "request": {
+      "request_id": "PM-ACT-010",
+      "action": "commit",
+      "value": 11
+    },
+    "decision": "permit",
+    "failure_kind": null
+  },
+  {
+    "id": "PM-ACT-011",
+    "rule": {
+      "rule_id": "r",
+      "description": "fixture",
+      "source": "request",
+      "path": "value",
+      "operator": "gte",
+      "expected": 10,
+      "on_fail": "deny",
+      "reason_code": "constraint"
+    },
+    "request": {
+      "request_id": "PM-ACT-011",
+      "action": "commit",
+      "value": 10
+    },
+    "decision": "permit",
+    "failure_kind": null
+  },
+  {
+    "id": "PM-ACT-012",
+    "rule": {
+      "rule_id": "r",
+      "description": "fixture",
+      "source": "request",
+      "path": "value",
+      "operator": "not_in",
+      "expected": [
+        "subscription"
+      ],
+      "on_fail": "deny",
+      "reason_code": "constraint"
+    },
+    "request": {
+      "request_id": "PM-ACT-012",
+      "action": "commit",
+      "value": "one_time"
+    },
+    "decision": "permit",
+    "failure_kind": null
+  }
+]

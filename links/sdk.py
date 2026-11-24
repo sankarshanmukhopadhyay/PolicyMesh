@@ -13,6 +13,8 @@ from .action_decisions import (
     ActionDecisionReceipt,
     evaluate_action,
     verify_action_receipt,
+    ActionVerification,
+    verify_action_decision,
 )
 from .checkpoint_exchange import (
     CheckpointComparisonReport,
@@ -25,7 +27,7 @@ from .checkpoint_exchange import (
     write_comparison_report,
 )
 
-__version__ = "0.19.0"
+__version__ = "0.20.0"
 
 __all__ = [
     "LinksClient",
@@ -33,6 +35,8 @@ __all__ = [
     "ActionDecisionReceipt",
     "evaluate_action",
     "verify_action_receipt",
+    "ActionVerification",
+    "verify_action_decision",
     "build_manifest",
     "check_compatibility",
     "load_manifest",

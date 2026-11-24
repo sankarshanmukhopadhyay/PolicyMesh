@@ -2,8 +2,8 @@
 
 This roadmap records capability state against executable evidence. A capability is marked shipped only when implementation, operator guidance and tests/evidence exist within the repository's declared scope.
 
-**Current release:** v0.18.0  
-**Last updated:** 2026-08-12
+**Release baseline:** v0.20.0  
+**Last updated:** 2026-11-24
 
 ## Status legend
 - ✅ Shipped
@@ -164,6 +164,10 @@ JSON-LD is not required for the v0.18.0 interoperability contract and remains an
 - machine-readable capability manifest;
 - stable vs experimental surface documentation;
 - small-federation pilot acceptance guidance.
+
+## Action governance (v0.20.0)
+
+Fail-closed evaluation, retained-input verification and executable conformance are included in the v0.20.0 baseline. Independent implementation conformance and authenticated external authority remain outside this scope.
 
 ## Next horizon
 

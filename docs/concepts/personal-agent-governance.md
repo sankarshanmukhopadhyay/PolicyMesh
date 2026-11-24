@@ -12,12 +12,12 @@ flowchart TB
     A[Personal AI agent] -->|proposed action| D[PolicyMesh action decision]
     P --> D
     E[External evidence / registry / service terms] --> D
-    D -->|PERMIT| X[Execute API / MCP tool]
+    D -->|permit| F[Current authority and exact request checks]
+    F --> X[Execute API / MCP tool]
     D -->|DEFER| H[Obtain approval or missing evidence]
     D -->|DENY| S[Stop or seek another permissible option]
     H -->|new evidence| D
-    X --> R[Action Decision Receipt]
-    D --> R
+    D --> R[Action decision receipt]
 ```
 
 PolicyMesh does not need to be the AI runtime, identity wallet, delegation protocol, registry, payment service or domain API. Those systems remain authoritative for their own facts. PolicyMesh consumes verified outputs and evaluates locally applicable rules.
@@ -35,7 +35,7 @@ The worked examples place the strongest PolicyMesh gate at `commit`, while demon
 
 ## PERMIT, DENY and DEFER
 
-`PERMIT` means the currently presented policy and evidence authorise execution. `DENY` means a policy constraint is violated and the action should not execute. `DEFER` means the action is not yet authorised but additional evidence or authority could make it permissible.
+`PERMIT` means the supplied inputs satisfy the configured local action policy. The consumer must establish input authority, freshness and exact action binding before execution. `DENY` means a policy constraint is violated and the action should not execute. `DEFER` means the action is not yet authorised but additional evidence or authority could make it permissible.
 
 For personal agents, `DEFER` is especially important. A purchase above an autonomous limit, an unverified healthcare provider, missing claim evidence or sensitive disclosure without explicit consent should not be silently treated as either globally forbidden or automatically allowed. The agent can obtain the missing approval/evidence and ask PolicyMesh to evaluate again.
 
@@ -72,3 +72,5 @@ Where both parties use policy domains, an executable agreement exists only in th
 - [Insurance Claim Agent](../examples/insurance-claim-agent.md)
 
 Together they show PolicyMesh governing travel commitments, consumer purchases, sensitive information disclosure, and stateful claims/settlement workflows using the same action-decision substrate.
+
+See [action evaluation semantics](action-evaluation.md) for fail-closed operands and [the adoption walkthrough](../examples/action-governance.md) for execution-boundary handling.

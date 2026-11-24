@@ -81,11 +81,30 @@ def action_evaluate(
 @action.command("verify-receipt")
 def action_verify_receipt(inp: Path):
     """Verify the integrity digest of an action-decision receipt."""
-    from .action_decisions import ActionDecisionReceipt, verify_action_receipt
-    receipt = ActionDecisionReceipt.model_validate_json(inp.read_text(encoding="utf-8"))
+    from .action_decisions import ActionDecisionReceipt, load_json, verify_action_receipt
+    receipt = ActionDecisionReceipt.model_validate(load_json(inp))
     ok = verify_action_receipt(receipt)
     typer.echo("OK" if ok else "FAIL")
     raise typer.Exit(code=0 if ok else 1)
+
+
+@action.command("verify-decision")
+def action_verify_decision(
+    inp: Path,
+    policy_file: Path,
+    request_file: Path,
+    evidence_file: Path,
+    authority_context_file: Path,
+):
+    """Reproduce a decision from retained inputs; exit nonzero unless verified."""
+    from .action_decisions import ActionDecisionReceipt, ActionPolicy, load_json, verify_action_decision
+    receipt = ActionDecisionReceipt.model_validate(load_json(inp))
+    result = verify_action_decision(
+        receipt, ActionPolicy.model_validate(load_json(policy_file)),
+        load_json(request_file), load_json(evidence_file), load_json(authority_context_file),
+    )
+    typer.echo(result.model_dump_json(indent=2))
+    raise typer.Exit(code=0 if result.overall == "verified" else 1)
 
 
 @app.command("serve")

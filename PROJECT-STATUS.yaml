@@ -32,8 +32,10 @@ evidence:
   validation_commands:
     - pytest
     - python scripts/validate_repository.py
+    - python scripts/action_conformance.py
   evidence_outputs:
     - artifacts/validation/validation-results.json
+    - artifacts/validation/action-conformance-results.json
     - artifacts/evidence/
   known_limitations:
     - independent interoperability testing has not been completed

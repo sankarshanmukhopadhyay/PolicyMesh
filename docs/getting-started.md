@@ -25,7 +25,7 @@ Install PolicyMesh, then run the travel example:
 ```bash
 python -m venv .venv
 source .venv/bin/activate
-pip install -e . pytest
+pip install -e ".[dev]"
 python examples/travel-hospitality/run.py all
 ```
 
@@ -87,3 +87,5 @@ That sequence keeps the governance boundary observable while avoiding premature 
 ## Continue with personal agents
 
 After Travel, run `python examples/personal-shopping/run.py all`, `python examples/healthcare-agent/run.py all`, and `python examples/insurance-claim-agent/run.py all`. They deliberately reuse the same action-decision contract while changing the governance problem: bounded purchase authority, purpose-limited health disclosure, and evidence/settlement authority.
+
+For the complete runnable decision, verification and blocked-execution workflow, see [Action governance walkthrough](examples/action-governance.md). Digest consistency is not authenticated provenance. See [decision receipts](decision-receipts.md).

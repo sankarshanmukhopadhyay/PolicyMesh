@@ -11,17 +11,20 @@ If PolicyMesh is new to you, use this path:
 3. [PolicyMesh for personal-agent governance](concepts/personal-agent-governance.md)
 4. [Worked examples](../examples/README.md)
 5. [Consuming PolicyMesh](consuming-policymesh.md)
-4. [Architecture](architecture.md)
-5. [Authority boundaries](concepts/authority-boundaries.md)
-6. [Policy lifecycle](concepts/policy-lifecycle.md)
-7. [Evidence bundles](assurance/evidence-bundles.md)
+6. [Executable action-governance walkthrough](examples/action-governance.md)
+7. [Action semantics and migration](concepts/action-evaluation.md)
+8. [Architecture](architecture.md)
+9. [Authority boundaries](concepts/authority-boundaries.md)
+10. [Policy lifecycle](concepts/policy-lifecycle.md)
+11. [Evidence bundles](assurance/evidence-bundles.md)
 
 Once that model is clear, continue into advanced operating surfaces:
 
 - [Federation](concepts/federation.md)
 - [Deployment profiles](operations/deployment-profiles.md)
 - [Registry interoperability](interoperability/registry.md)
-- [PolicyMesh and DTG](interoperability/dtg.md)
+- [PolicyMesh and DTG/VTI](interoperability/dtg.md)
+- [Synthetic VTI local gate](interoperability/vti-local-gate.md)
 - [Agentic-system interoperability](interoperability/agentic-systems.md)
 
 ## Governance and status
@@ -30,4 +33,4 @@ Once that model is clear, continue into advanced operating surfaces:
 - [Governance](governance/governance.md)
 - [Security](governance/security.md)
 - [Project roadmap summary](ROADMAP.md)
-- [Release notes](release-notes/v0.19.0.md)
+- [Release notes](release-notes/v0.20.0.md)
