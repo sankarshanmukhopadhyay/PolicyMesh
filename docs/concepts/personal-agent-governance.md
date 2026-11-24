@@ -12,11 +12,12 @@ flowchart TB
     A[Personal AI agent] -->|proposed action| D[PolicyMesh action decision]
     P --> D
     E[External evidence / registry / service terms] --> D
-    D -->|PERMIT| X[Execute API / MCP tool]
+    D -->|permit| F[Current authority and exact request checks]
+    F --> X[Execute API / MCP tool]
     D -->|DEFER| H[Obtain approval or missing evidence]
     D -->|DENY| S[Stop or seek another permissible option]
     H -->|new evidence| D
-    D --> R
+    D --> R[Action decision receipt]
 ```
 
 PolicyMesh does not need to be the AI runtime, identity wallet, delegation protocol, registry, payment service or domain API. Those systems remain authoritative for their own facts. PolicyMesh consumes verified outputs and evaluates locally applicable rules.

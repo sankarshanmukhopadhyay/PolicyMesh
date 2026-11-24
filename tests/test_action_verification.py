@@ -40,3 +40,12 @@ def test_historical_receipt_integrity_only():
     receipt = rehash(receipt, historical=True)
     assert verify_action_receipt(receipt)
     assert verify_action_decision(receipt, *args).overall == "incomplete"
+
+
+def test_receipt_rejects_unknown_rule_evidence():
+    import pytest
+    from links.action_decisions import ActionDecisionReceipt
+    receipt = evaluate_action(*inputs()).model_dump(mode="json")
+    receipt["evaluations"][0]["unverified_authority"] = True
+    with pytest.raises(ValueError):
+        ActionDecisionReceipt.model_validate(receipt)

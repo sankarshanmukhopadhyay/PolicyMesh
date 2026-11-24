@@ -3,9 +3,10 @@ from pathlib import Path
 import pytest
 
 DEMO = runpy.run_path(str(Path(__file__).resolve().parents[1] / "examples/vti_local_gate.py"))
-REQUEST = {"request_id":"r","action":"synthetic-operation","actor":"A","operation_digest":"mock-A"}
-AUTHORITY = {"native_status":"eligible","fresh":True,"actor":"A","operation_digest":"mock-A"}
-EVIDENCE = {"approved_digest":"mock-A","local_allowed":True}
+REQUEST = {"request_id":"r","action":"synthetic-operation","actor":"A","resource":"example-A"}
+DIGEST = DEMO["local_operation_digest"](REQUEST)
+AUTHORITY = {"native_status":"eligible","fresh":True,"actor":"A","operation_digest":DIGEST}
+EVIDENCE = {"approved_digest":DIGEST,"local_allowed":True}
 
 @pytest.mark.parametrize("req,auth,ev,decision", [
     ({},{},{},"permit"),
@@ -13,7 +14,7 @@ EVIDENCE = {"approved_digest":"mock-A","local_allowed":True}
     ({},{"native_status":"indeterminate"},{},"deny"),
     ({},{"fresh":False},{},"deny"),
     ({"actor":"B"},{},{},"deny"),
-    ({"operation_digest":"mock-B"},{},{},"deny"),
+    ({"resource":"example-B"},{},{},"deny"),
     ({},{},{"approved_digest":None},"defer"),
     ({},{},{"approved_digest":"mock-B"},"defer"),
     ({},{},{"local_allowed":False},"deny"),
@@ -29,3 +30,11 @@ def test_absent_native_authority():
     receipt, _, eligible = DEMO["assess"](REQUEST,{},EVIDENCE)
     assert receipt.decision == "deny"
     assert not eligible
+
+
+def test_changed_action_and_forged_binding():
+    receipt, _, eligible = DEMO["assess"]({**REQUEST,"action":"other-operation"}, AUTHORITY, EVIDENCE)
+    assert receipt.decision == "deny"
+    assert not eligible
+    with pytest.raises(ValueError):
+        DEMO["assess"]({**REQUEST,"operation_digest":DIGEST}, AUTHORITY, EVIDENCE)

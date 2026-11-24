@@ -77,6 +77,8 @@ class ActionPolicy(BaseModel):
 
 
 class RuleEvaluation(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
     rule_id: str
     description: str
     result: Literal["pass", "fail"]

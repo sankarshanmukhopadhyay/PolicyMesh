@@ -1,6 +1,6 @@
 # Changelog
 
-## v0.20.0 — Fail-closed action governance and verifiable decision evidence
+## v0.20.0: Action Governance, Decision Assurance and DTG/VTI Alignment
 
 - Correct missing/null and incompatible operand evaluation; reject empty policies and malformed requests.
 - Add semantics-marked receipts, retained-input verification and CLI/SDK conformance evidence.

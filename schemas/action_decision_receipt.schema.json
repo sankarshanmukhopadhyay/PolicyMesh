@@ -82,7 +82,63 @@
     "evaluations": {
       "type": "array",
       "items": {
-        "type": "object"
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "rule_id",
+          "description",
+          "result",
+          "operator",
+          "on_fail",
+          "reason_code"
+        ],
+        "properties": {
+          "rule_id": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "result": {
+            "enum": [
+              "pass",
+              "fail"
+            ]
+          },
+          "actual": {},
+          "expected": {},
+          "operator": {
+            "enum": [
+              "eq",
+              "neq",
+              "lt",
+              "lte",
+              "gt",
+              "gte",
+              "in",
+              "not_in",
+              "exists"
+            ]
+          },
+          "on_fail": {
+            "enum": [
+              "deny",
+              "defer"
+            ]
+          },
+          "reason_code": {
+            "type": "string"
+          },
+          "failure_kind": {
+            "enum": [
+              null,
+              "missing_operand",
+              "null_operand",
+              "invalid_operand",
+              "constraint_failed"
+            ]
+          }
+        }
       }
     },
     "evaluation_semantics": {
