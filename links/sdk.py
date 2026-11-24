@@ -27,7 +27,7 @@ from .checkpoint_exchange import (
     write_comparison_report,
 )
 
-__version__ = "0.19.0"
+__version__ = "0.20.0"
 
 __all__ = [
     "LinksClient",

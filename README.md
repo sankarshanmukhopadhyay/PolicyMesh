@@ -21,7 +21,7 @@ Install the project and run the fully offline Travel & Hospitality reference exa
 ```bash
 python -m venv .venv
 source .venv/bin/activate
-pip install -e . pytest
+pip install -e ".[dev]"
 python examples/travel-hospitality/run.py all
 ```
 
@@ -32,6 +32,7 @@ Then validate the complete repository:
 ```bash
 pytest
 python scripts/validate_repository.py
+python scripts/action_conformance.py
 links --help
 ```
 
@@ -114,7 +115,7 @@ Machine-readable control and evidence mappings are in [`assurance/`](assurance/)
 
 ## Project status
 
-PolicyMesh v0.19.0 is an **implementation draft under active validation**. It is suitable for experimentation, interoperability testing and small-federation pilots. It does **not** assert production certification, independent assurance, universal policy authority or the legitimacy of an external mandate. See [`PROJECT-STATUS.yaml`](PROJECT-STATUS.yaml).
+PolicyMesh v0.20.0 is an **implementation draft under active validation**. It is suitable for experimentation, interoperability testing and small-federation pilots. It does **not** assert production certification, independent assurance, universal policy authority or the legitimacy of an external mandate. See [`PROJECT-STATUS.yaml`](PROJECT-STATUS.yaml).
 
 ## Documentation
 
@@ -128,6 +129,9 @@ Start with the [documentation home](docs/index.md), then use:
 - [Healthcare Appointment & Consent](docs/examples/healthcare-agent.md)
 - [Insurance Claim Agent](docs/examples/insurance-claim-agent.md)
 - [Consuming PolicyMesh](docs/consuming-policymesh.md)
+- [Action evaluation semantics and migration](docs/concepts/action-evaluation.md)
+- [Executable adoption walkthrough](docs/examples/action-governance.md)
+- [Decision receipts](docs/decision-receipts.md)
 - [Architecture](docs/architecture.md)
 - [Policy lifecycle](docs/concepts/policy-lifecycle.md)
 - [Authority boundaries](docs/concepts/authority-boundaries.md)

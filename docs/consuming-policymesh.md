@@ -31,7 +31,7 @@ receipt = evaluate_action(
     authority_context=validated_authority_context,
 )
 
-if receipt.decision == "permit":
+if receipt.decision == "permit":  # only with current trusted inputs and exact action binding
     execute_business_action()
 elif receipt.decision == "defer":
     obtain_additional_authority_or_evidence()
@@ -60,3 +60,7 @@ The initial application-action evaluator is intentionally library/CLI-first. Exp
 ## Integration rule
 
 Do not send raw assertions to PolicyMesh and assume they became trustworthy. Validate identity, registry, credential, mandate or other upstream evidence according to the system that owns those semantics, then pass the verified result into the PolicyMesh decision boundary.
+
+## Verification and enforcement
+
+Use `verify_action_decision(receipt, policy, request, evidence, authority_context)` to reproduce a retained decision. Treat a failed or incomplete verification as non-executable. CLI evaluate exit zero means the command completed, not that the decision permits execution. Inspect the receipt decision. A historical permit is never fresh authority; validate current external authority and re-evaluate at the execution boundary. The [runnable walkthrough](examples/action-governance.md) demonstrates these distinctions with a simulated side effect.

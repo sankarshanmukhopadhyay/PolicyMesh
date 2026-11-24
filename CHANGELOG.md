@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.20.0 — Fail-closed action governance and verifiable decision evidence
+
+- Correct missing/null and incompatible operand evaluation; reject empty policies and malformed requests.
+- Add semantics-marked receipts, retained-input verification and CLI/SDK conformance evidence.
+- Add migration and executable adoption guidance. This is an intentional authorization behavior change; update strict receipt-schema consumers.
+
 ## v0.19.0 — Personal-agent governance and worked-example portfolio
 
 - add fully runnable Personal Shopping, Healthcare Appointment & Consent, and Insurance Claim agent examples using the generic Action Decision contract;
@@ -10,7 +16,7 @@
 - advance package, SDK and service-reported version to v0.19.0.
 
 
-## Unreleased
+## v0.19.0 development history (travel and adoption foundation)
 
 ### Added
 - add a generic `links action evaluate` decision surface with `permit` / `deny` / `defer` semantics and integrity-verifiable Action Decision Receipts;
