@@ -13,6 +13,8 @@ from .action_decisions import (
     ActionDecisionReceipt,
     evaluate_action,
     verify_action_receipt,
+    ActionVerification,
+    verify_action_decision,
 )
 from .checkpoint_exchange import (
     CheckpointComparisonReport,
@@ -33,6 +35,8 @@ __all__ = [
     "ActionDecisionReceipt",
     "evaluate_action",
     "verify_action_receipt",
+    "ActionVerification",
+    "verify_action_decision",
     "build_manifest",
     "check_compatibility",
     "load_manifest",

@@ -56,3 +56,7 @@ This checks both:
 - [`examples/receipts/policy_pull.reject.example.json`](../examples/receipts/policy_pull.reject.example.json)
 
 These examples are designed to help operators and downstream tooling distinguish between a policy that is admissible now, a policy that is valid but not yet active, and a policy that fails local trust requirements.
+
+## Application action receipts (v0.20.0)
+
+`links action verify-receipt RECEIPT.json` checks digest consistency only. Anyone able to replace the receipt can recompute its digest. `links action verify-decision RECEIPT.json POLICY.json REQUEST.json EVIDENCE.json AUTHORITY.json` checks retained input binding and reproduces the decision under its recorded timestamp and supported semantics. Supply `{}` explicitly for an originally empty evidence or authority object. A missing input is not equivalent to an empty retained object. The Python SDK exposes `verify_action_decision`. `verified` means local reproduction, not issuer authentication, fresh authority, or permission to execute. Historical unmarked receipts remain digest-checkable but reproduction is incomplete. Receipt contents can expose sensitive attributes; protect access and retention.

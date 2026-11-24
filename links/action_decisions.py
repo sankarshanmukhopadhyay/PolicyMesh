@@ -276,6 +276,8 @@ def evaluate_action(
 
 
 def verify_action_receipt(receipt: ActionDecisionReceipt) -> bool:
+    if receipt.decided_at.tzinfo is None or receipt.decided_at.utcoffset() is None:
+        return False
     seed = receipt.model_dump(mode="json")
     claimed = seed.pop("receipt_id")
     if receipt.evaluation_semantics is None:
@@ -306,3 +308,54 @@ def write_action_receipt(path: Path, receipt: ActionDecisionReceipt) -> Path:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(receipt.model_dump_json(indent=2) + "\n", encoding="utf-8")
     return path
+
+
+VerificationState = Literal["pass", "fail", "not_checked"]
+
+
+class ActionVerification(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    format: Literal["policymesh.action_verification.v1"] = "policymesh.action_verification.v1"
+    receipt_integrity: VerificationState
+    input_binding: VerificationState
+    decision_reproduction: VerificationState
+    issuer_authentication: Literal["not_checked"] = "not_checked"
+    authority_validation: Literal["not_checked"] = "not_checked"
+    overall: Literal["verified", "failed", "incomplete"]
+    reason_codes: List[str]
+
+
+def verify_action_decision(
+    receipt: ActionDecisionReceipt,
+    policy: Optional[ActionPolicy] = None,
+    request: Optional[Dict[str, Any]] = None,
+    evidence: Optional[Dict[str, Any]] = None,
+    authority_context: Optional[Dict[str, Any]] = None,
+) -> ActionVerification:
+    """Reproduce a v2 decision against retained inputs, not external authority."""
+    def report(integrity, binding, reproduction, overall, *reasons):
+        return ActionVerification(receipt_integrity=integrity, input_binding=binding,
+                                  decision_reproduction=reproduction, overall=overall,
+                                  reason_codes=list(reasons))
+    if not verify_action_receipt(receipt):
+        return report("fail", "not_checked", "not_checked", "failed", "receipt_digest_mismatch")
+    if receipt.evaluation_semantics != ACTION_SEMANTICS:
+        return report("pass", "not_checked", "not_checked", "incomplete", "unsupported_historical_semantics")
+    inputs = (policy, request, evidence, authority_context)
+    names = ("policy", "request", "evidence", "authority_context")
+    missing = ["missing_" + name for name, value in zip(names, inputs) if value is None]
+    if missing:
+        return report("pass", "not_checked", "not_checked", "incomplete", *missing)
+    try:
+        reproduced = evaluate_action(policy, request, evidence, authority_context, now=receipt.decided_at)
+    except (ValueError, TypeError, AttributeError, OverflowError):
+        return report("pass", "fail", "not_checked", "failed", "invalid_retained_inputs")
+    fields = ("policy_id", "policy_version", "policy_hash", "request_digest",
+              "evidence_digest", "authority_context_digest")
+    mismatches = [field + "_mismatch" for field in fields
+                  if getattr(receipt, field) != getattr(reproduced, field)]
+    if mismatches:
+        return report("pass", "fail", "not_checked", "failed", *mismatches)
+    if receipt.receipt_id != reproduced.receipt_id:
+        return report("pass", "pass", "fail", "failed", "decision_reproduction_mismatch")
+    return report("pass", "pass", "pass", "verified", "local_decision_reproduced")

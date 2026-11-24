@@ -1,0 +1,86 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Action verification result",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "format",
+    "receipt_integrity",
+    "input_binding",
+    "decision_reproduction",
+    "issuer_authentication",
+    "authority_validation",
+    "overall",
+    "reason_codes"
+  ],
+  "properties": {
+    "format": {
+      "const": "policymesh.action_verification.v1"
+    },
+    "receipt_integrity": {
+      "enum": [
+        "pass",
+        "fail",
+        "not_checked"
+      ]
+    },
+    "input_binding": {
+      "enum": [
+        "pass",
+        "fail",
+        "not_checked"
+      ]
+    },
+    "decision_reproduction": {
+      "enum": [
+        "pass",
+        "fail",
+        "not_checked"
+      ]
+    },
+    "issuer_authentication": {
+      "const": "not_checked"
+    },
+    "authority_validation": {
+      "const": "not_checked"
+    },
+    "overall": {
+      "enum": [
+        "verified",
+        "failed",
+        "incomplete"
+      ]
+    },
+    "reason_codes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "overall": {
+            "const": "verified"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "receipt_integrity": {
+            "const": "pass"
+          },
+          "input_binding": {
+            "const": "pass"
+          },
+          "decision_reproduction": {
+            "const": "pass"
+          }
+        }
+      }
+    }
+  ]
+}
