@@ -15,3 +15,9 @@ controls:
   - id: PM-EVD-001
     title: Portable evidence integrity
     requirement: Evidence bundle artifacts are digest-addressed and independently verifiable.
+  - id: PM-ACT-001
+    title: Fail-closed action evaluation
+    requirement: Missing or incompatible required operands cannot satisfy an action rule.
+  - id: PM-RCP-001
+    title: Reproducible action decision
+    requirement: Local verification distinguishes digest consistency, input binding and reproduction from external authority.

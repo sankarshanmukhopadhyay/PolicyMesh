@@ -19,6 +19,9 @@ jobs:
         run: |
           python -c "import httpx2; from starlette.testclient import TestClient; print(\"Starlette TestClient dependency contract OK\")"
       - run: pytest
+      - name: Action conformance evidence
+        if: always()
+        run: python scripts/action_conformance.py
       - run: python scripts/validate_repository.py
       - uses: actions/upload-artifact@v4
         if: always()

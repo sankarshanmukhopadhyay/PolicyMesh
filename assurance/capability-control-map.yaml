@@ -22,3 +22,8 @@ mappings:
     controls: [PM-EVD-001]
     tests: [tests/test_evidence_bundle.py]
     evidence: [manifest, evidence-digest]
+  - capability: action-governance
+    risks: [unsupported-permission, misleading-receipt-verification]
+    controls: [PM-ACT-001, PM-RCP-001]
+    tests: [tests/test_action_hardening.py, tests/test_action_verification.py, tests/test_action_conformance.py]
+    evidence: [action-conformance-report]
