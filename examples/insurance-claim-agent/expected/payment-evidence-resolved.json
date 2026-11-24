@@ -1,0 +1,7 @@
+{
+  "decision": "permit",
+  "policy": "claim-submission.action-policy.json",
+  "authority": "active-mandate.json",
+  "evidence": "base.json",
+  "required_reason": "all_applicable_rules_passed"
+}

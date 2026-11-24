@@ -1,0 +1,15 @@
+{
+  "request_id": "missing-commitment-type",
+  "principal": "maya",
+  "actor": "personal-shopping-agent-01",
+  "action": "purchase_item",
+  "merchant_id": "merchant-a",
+  "item": {
+    "category": "books",
+    "name": "Architecture of Trust"
+  },
+  "price": {
+    "amount": 1800,
+    "currency": "INR"
+  }
+}

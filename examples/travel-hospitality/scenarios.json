@@ -1,0 +1,110 @@
+{
+  "domain": "travel-hospitality",
+  "dtfc_revision": "1eda75842cf3b268361dc47ce8ade23b6a99c5cb",
+  "scenarios": [
+    {
+      "id": "permitted-booking",
+      "request": "requests/permitted-booking.json",
+      "expected": "expected/permitted-booking.json",
+      "decision": "permit",
+      "rationale": "All local booking constraints pass.",
+      "correlations": []
+    },
+    {
+      "id": "manager-approval-required",
+      "request": "requests/manager-approval-required.json",
+      "expected": "expected/manager-approval-required.json",
+      "decision": "defer",
+      "rationale": "Nightly rate crosses autonomous limit.",
+      "correlations": []
+    },
+    {
+      "id": "supplier-repriced",
+      "request": "requests/supplier-repriced.json",
+      "expected": "expected/supplier-repriced.json",
+      "decision": "defer",
+      "rationale": "Revised offer crosses autonomous limit.",
+      "correlations": [
+        {
+          "case_id": "DTF-015",
+          "case_version": "0.1.0",
+          "relationship": "illustrates",
+          "source": "https://github.com/qbf-consulting/digital-trust-failure-corpus/blob/1eda75842cf3b268361dc47ce8ade23b6a99c5cb/corpus/authority/DTF-015.json",
+          "limit": "Local predicate illustration only; canonical preconditions and falsification not fully assessed."
+        }
+      ]
+    },
+    {
+      "id": "non-refundable-rate",
+      "request": "requests/non-refundable-rate.json",
+      "expected": "expected/non-refundable-rate.json",
+      "decision": "deny",
+      "rationale": "Refundability requirement fails.",
+      "correlations": []
+    },
+    {
+      "id": "unapproved-hotel",
+      "request": "requests/unapproved-hotel.json",
+      "expected": "expected/unapproved-hotel.json",
+      "decision": "deny",
+      "rationale": "Supplier outside approved list.",
+      "correlations": [
+        {
+          "case_id": "DTF-002",
+          "case_version": "0.1.0",
+          "relationship": "illustrates",
+          "source": "https://github.com/qbf-consulting/digital-trust-failure-corpus/blob/1eda75842cf3b268361dc47ce8ade23b6a99c5cb/corpus/authority/DTF-002.json",
+          "limit": "Local predicate illustration only; canonical preconditions and falsification not fully assessed."
+        }
+      ]
+    },
+    {
+      "id": "revoked-mandate",
+      "request": "requests/revoked-mandate.json",
+      "expected": "expected/revoked-mandate.json",
+      "decision": "deny",
+      "rationale": "Presented mandate revoked.",
+      "correlations": [
+        {
+          "case_id": "DTF-016",
+          "case_version": "0.1.0",
+          "relationship": "illustrates",
+          "source": "https://github.com/qbf-consulting/digital-trust-failure-corpus/blob/1eda75842cf3b268361dc47ce8ade23b6a99c5cb/corpus/authority/DTF-016.json",
+          "limit": "Local predicate illustration only; canonical preconditions and falsification not fully assessed."
+        }
+      ]
+    },
+    {
+      "id": "paid-upgrade-out-of-scope",
+      "request": "requests/paid-upgrade-out-of-scope.json",
+      "expected": "expected/paid-upgrade-out-of-scope.json",
+      "decision": "deny",
+      "rationale": "Action outside delegation.",
+      "correlations": [
+        {
+          "case_id": "DTF-002",
+          "case_version": "0.1.0",
+          "relationship": "illustrates",
+          "source": "https://github.com/qbf-consulting/digital-trust-failure-corpus/blob/1eda75842cf3b268361dc47ce8ade23b6a99c5cb/corpus/authority/DTF-002.json",
+          "limit": "Local predicate illustration only; canonical preconditions and falsification not fully assessed."
+        }
+      ]
+    },
+    {
+      "id": "missing-refundability",
+      "request": "requests/missing-refundability.json",
+      "expected": "expected/missing-refundability.json",
+      "decision": "deny",
+      "rationale": "Offer omits required refundability.",
+      "correlations": [
+        {
+          "case_id": "DTF-010",
+          "case_version": "0.1.0",
+          "relationship": "illustrates",
+          "source": "https://github.com/qbf-consulting/digital-trust-failure-corpus/blob/1eda75842cf3b268361dc47ce8ade23b6a99c5cb/corpus/evidence/DTF-010.json",
+          "limit": "Local predicate illustration only; canonical preconditions and falsification not fully assessed."
+        }
+      ]
+    }
+  ]
+}

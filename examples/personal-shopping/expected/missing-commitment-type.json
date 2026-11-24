@@ -1,0 +1,6 @@
+{
+  "decision": "deny",
+  "policy": "purchase.action-policy.json",
+  "authority": "active-mandate.json",
+  "required_reason": "recurring_commitment_not_authorised"
+}

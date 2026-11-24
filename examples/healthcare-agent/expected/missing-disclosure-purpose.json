@@ -1,0 +1,7 @@
+{
+  "decision": "deny",
+  "policy": "disclosure.action-policy.json",
+  "evidence": "with-genetic-consent.json",
+  "authority": "active-mandate.json",
+  "required_reason": "purpose_not_authorised"
+}

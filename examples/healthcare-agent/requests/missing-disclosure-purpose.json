@@ -1,0 +1,10 @@
+{
+  "request_id": "missing-disclosure-purpose",
+  "principal": "arjun",
+  "actor": "health-agent-01",
+  "action": "share_health_data",
+  "disclosure": {
+    "data_class": "raw_genetic_data",
+    "recipient": "clinic-derm-01"
+  }
+}
