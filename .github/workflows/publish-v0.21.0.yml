@@ -1,0 +1,94 @@
+name: Publish v0.21.0
+on:
+  push:
+    branches: [main]
+    paths:
+      - docs/release-notes/v0.21.0.md
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: publish-v0.21.0
+  cancel-in-progress: false
+jobs:
+  qualify:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    outputs:
+      validate_run: ${{ steps.gate.outputs.validate_run }}
+      pages_run: ${{ steps.gate.outputs.pages_run }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Verify target and publication gates
+        id: gate
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import tomllib
+          from pathlib import Path
+          assert tomllib.loads(Path("pyproject.toml").read_text())["project"]["version"] == "0.21.0"
+          PY
+          for attempt in $(seq 1 60); do
+            runs=$(gh api "repos/$GITHUB_REPOSITORY/actions/runs?head_sha=$GITHUB_SHA&branch=main&per_page=100")
+            v=$(jq -c '[.workflow_runs[] | select(.name=="Validate" and .event=="push")][0] // {}' <<<"$runs")
+            p=$(jq -c '[.workflow_runs[] | select(.name=="Pages" and (.event=="push" or .event=="workflow_dispatch"))][0] // {}' <<<"$runs")
+            if [[ $(jq -r '.status' <<<"$v") == completed && $(jq -r '.conclusion' <<<"$v") != success ]]; then
+              echo "Validation did not pass"; exit 1
+            fi
+            if [[ $(jq -r '.status' <<<"$p") == completed && $(jq -r '.conclusion' <<<"$p") != success ]]; then
+              echo "Pages deployment did not pass"; exit 1
+            fi
+            if [[ $(jq -r '.conclusion' <<<"$v") == success && $(jq -r '.conclusion' <<<"$p") == success ]]; then
+              echo "validate_run=$(jq -r '.id' <<<"$v")" >> "$GITHUB_OUTPUT"
+              echo "pages_run=$(jq -r '.id' <<<"$p")" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+            sleep 10
+          done
+          echo "No qualifying validation and Pages runs for $GITHUB_SHA"; exit 1
+  publish:
+    needs: qualify
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      actions: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Retrieve source-linked validation evidence
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VALIDATE_RUN: ${{ needs.qualify.outputs.validate_run }}
+        run: |
+          set -euo pipefail
+          gh run download "$VALIDATE_RUN" --name validation-evidence --dir release-evidence
+          jq -e --arg sha "$GITHUB_SHA" '.passed == true and .source_commit == $sha and .implementation_version == "0.21.0"' release-evidence/action-conformance-results.json
+          jq -e '.passed == true' release-evidence/validation-results.json
+          test -s release-evidence/action-conformance.xml
+      - name: Publish exact qualified commit as latest
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VALIDATE_RUN: ${{ needs.qualify.outputs.validate_run }}
+          PAGES_RUN: ${{ needs.qualify.outputs.pages_run }}
+        run: |
+          set -euo pipefail
+          tag=v0.21.0
+          current=$(gh api "repos/$GITHUB_REPOSITORY/git/ref/heads/main" --jq .object.sha)
+          test "$current" = "$GITHUB_SHA"
+          if gh release view "$tag" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo "Release already exists; refusing to replace it."; exit 1
+          fi
+          if gh api "repos/$GITHUB_REPOSITORY/git/ref/tags/$tag" >/dev/null 2>&1; then
+            echo "Tag already exists; refusing to replace it."; exit 1
+          fi
+          sed "s|../examples/|https://github.com/$GITHUB_REPOSITORY/blob/$GITHUB_SHA/docs/examples/|g" docs/release-notes/v0.21.0.md > release-notes.md
+          printf '\n## Publication evidence\n\n- Source commit: `%s`\n- [Validation](https://github.com/%s/actions/runs/%s)\n- [Pages deployment](https://github.com/%s/actions/runs/%s)\n- Attached repository validation, action conformance JSON and JUnit results.\n' "$GITHUB_SHA" "$GITHUB_REPOSITORY" "$VALIDATE_RUN" "$GITHUB_REPOSITORY" "$PAGES_RUN" >> release-notes.md
+          gh release create "$tag" release-evidence/action-conformance-results.json release-evidence/action-conformance.xml release-evidence/validation-results.json --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" --title "PolicyMesh v0.21.0: Executable Governance Case Studies and Failure Analysis" --notes-file release-notes.md --latest
+          test "$(gh api "repos/$GITHUB_REPOSITORY/releases/latest" --jq .tag_name)" = "$tag"
