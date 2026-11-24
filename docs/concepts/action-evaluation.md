@@ -1,0 +1,7 @@
+# Action evaluation semantics
+
+The v0.20.0 evaluator requires a nonempty policy, unique rule identifiers and a request containing nonempty `request_id` and `action`. Inputs are finite JSON objects. Missing and null operands fail every operator; `exists` tests presence of a non-null value. Failure follows the rule's configured deny/defer disposition. Denial dominates deferral. Equality is type-aware (numbers may compare across integer and floating representations; booleans are not numbers). Membership requires an array of compatible non-null values; ordering requires finite numbers. String substring membership and lexicographic ordering are not supported. Invalid literal operands are rejected at policy validation; incompatible runtime operands fail the rule. Empty policy is rejected.
+
+New receipts identify evaluation semantics as `policymesh.action_evaluation.v2` and record rule failure categories. Historical receipts without that marker are digest-verifiable under the original serialization; they are not evidence that v2 evaluation was performed.
+
+This is a behavioral compatibility change. Review existing policies and remove reliance on omitted fields, nulls, string membership, implicit boolean/numeric equality and empty policies. Supply explicit evidence or configure defer where more evidence is needed. Re-evaluate historical permits under current trusted inputs before any new action. PolicyMesh does not authenticate those inputs or execute external actions.
