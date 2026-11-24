@@ -1,0 +1,126 @@
+{
+  "domain": "healthcare-agent",
+  "dtfc_revision": "1eda75842cf3b268361dc47ce8ade23b6a99c5cb",
+  "scenarios": [
+    {
+      "id": "appointment-permitted",
+      "request": "requests/appointment-permitted.json",
+      "expected": "expected/appointment-permitted.json",
+      "decision": "permit",
+      "rationale": "Local scheduling constraints pass.",
+      "correlations": []
+    },
+    {
+      "id": "full-record-prohibited",
+      "request": "requests/full-record-prohibited.json",
+      "expected": "expected/full-record-prohibited.json",
+      "decision": "deny",
+      "rationale": "Complete record prohibited.",
+      "correlations": [
+        {
+          "case_id": "DTF-002",
+          "case_version": "0.1.0",
+          "relationship": "illustrates",
+          "source": "https://github.com/qbf-consulting/digital-trust-failure-corpus/blob/1eda75842cf3b268361dc47ce8ade23b6a99c5cb/corpus/authority/DTF-002.json",
+          "limit": "Local predicate illustration only; canonical preconditions and falsification not fully assessed."
+        }
+      ]
+    },
+    {
+      "id": "genetic-data-after-consent",
+      "request": "requests/genetic-data-after-consent.json",
+      "expected": "expected/genetic-data-after-consent.json",
+      "decision": "permit",
+      "rationale": "Synthetic revised disclosure policy permits data class.",
+      "correlations": [
+        {
+          "case_id": "DTF-031",
+          "case_version": "0.1.0",
+          "relationship": "illustrates",
+          "source": "https://github.com/qbf-consulting/digital-trust-failure-corpus/blob/1eda75842cf3b268361dc47ce8ade23b6a99c5cb/corpus/lifecycle/DTF-031.json",
+          "limit": "Local predicate illustration only; canonical preconditions and falsification not fully assessed."
+        }
+      ]
+    },
+    {
+      "id": "genetic-data-consent-required",
+      "request": "requests/genetic-data-consent-required.json",
+      "expected": "expected/genetic-data-consent-required.json",
+      "decision": "defer",
+      "rationale": "Data class not autonomous.",
+      "correlations": []
+    },
+    {
+      "id": "limited-disclosure-permitted",
+      "request": "requests/limited-disclosure-permitted.json",
+      "expected": "expected/limited-disclosure-permitted.json",
+      "decision": "permit",
+      "rationale": "Local disclosure constraints pass.",
+      "correlations": []
+    },
+    {
+      "id": "provider-verification-required",
+      "request": "requests/provider-verification-required.json",
+      "expected": "expected/provider-verification-required.json",
+      "decision": "defer",
+      "rationale": "Provider absent from approved list.",
+      "correlations": [
+        {
+          "case_id": "DTF-010",
+          "case_version": "0.1.0",
+          "relationship": "illustrates",
+          "source": "https://github.com/qbf-consulting/digital-trust-failure-corpus/blob/1eda75842cf3b268361dc47ce8ade23b6a99c5cb/corpus/evidence/DTF-010.json",
+          "limit": "Local predicate illustration only; canonical preconditions and falsification not fully assessed."
+        }
+      ]
+    },
+    {
+      "id": "revoked-health-mandate",
+      "request": "requests/revoked-health-mandate.json",
+      "expected": "expected/revoked-health-mandate.json",
+      "decision": "deny",
+      "rationale": "Presented mandate revoked.",
+      "correlations": [
+        {
+          "case_id": "DTF-016",
+          "case_version": "0.1.0",
+          "relationship": "illustrates",
+          "source": "https://github.com/qbf-consulting/digital-trust-failure-corpus/blob/1eda75842cf3b268361dc47ce8ade23b6a99c5cb/corpus/authority/DTF-016.json",
+          "limit": "Local predicate illustration only; canonical preconditions and falsification not fully assessed."
+        }
+      ]
+    },
+    {
+      "id": "specialty-out-of-scope",
+      "request": "requests/specialty-out-of-scope.json",
+      "expected": "expected/specialty-out-of-scope.json",
+      "decision": "deny",
+      "rationale": "Specialty outside mandate.",
+      "correlations": [
+        {
+          "case_id": "DTF-002",
+          "case_version": "0.1.0",
+          "relationship": "illustrates",
+          "source": "https://github.com/qbf-consulting/digital-trust-failure-corpus/blob/1eda75842cf3b268361dc47ce8ade23b6a99c5cb/corpus/authority/DTF-002.json",
+          "limit": "Local predicate illustration only; canonical preconditions and falsification not fully assessed."
+        }
+      ]
+    },
+    {
+      "id": "missing-disclosure-purpose",
+      "request": "requests/missing-disclosure-purpose.json",
+      "expected": "expected/missing-disclosure-purpose.json",
+      "decision": "deny",
+      "rationale": "Absent purpose cannot authorize disclosure.",
+      "correlations": [
+        {
+          "case_id": "DTF-010",
+          "case_version": "0.1.0",
+          "relationship": "illustrates",
+          "source": "https://github.com/qbf-consulting/digital-trust-failure-corpus/blob/1eda75842cf3b268361dc47ce8ade23b6a99c5cb/corpus/evidence/DTF-010.json",
+          "limit": "Local predicate illustration only; canonical preconditions and falsification not fully assessed."
+        }
+      ]
+    }
+  ]
+}

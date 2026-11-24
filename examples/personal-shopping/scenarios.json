@@ -1,0 +1,102 @@
+{
+  "domain": "personal-shopping",
+  "dtfc_revision": "1eda75842cf3b268361dc47ce8ade23b6a99c5cb",
+  "scenarios": [
+    {
+      "id": "permitted-purchase",
+      "request": "requests/permitted-purchase.json",
+      "expected": "expected/permitted-purchase.json",
+      "decision": "permit",
+      "rationale": "Bounded one-time purchase.",
+      "correlations": []
+    },
+    {
+      "id": "approval-required",
+      "request": "requests/approval-required.json",
+      "expected": "expected/approval-required.json",
+      "decision": "defer",
+      "rationale": "Amount exceeds autonomous limit.",
+      "correlations": []
+    },
+    {
+      "id": "prohibited-category",
+      "request": "requests/prohibited-category.json",
+      "expected": "expected/prohibited-category.json",
+      "decision": "deny",
+      "rationale": "Category outside allowed list.",
+      "correlations": [
+        {
+          "case_id": "DTF-002",
+          "case_version": "0.1.0",
+          "relationship": "illustrates",
+          "source": "https://github.com/qbf-consulting/digital-trust-failure-corpus/blob/1eda75842cf3b268361dc47ce8ade23b6a99c5cb/corpus/authority/DTF-002.json",
+          "limit": "Local predicate illustration only; canonical preconditions and falsification not fully assessed."
+        }
+      ]
+    },
+    {
+      "id": "recurring-subscription",
+      "request": "requests/recurring-subscription.json",
+      "expected": "expected/recurring-subscription.json",
+      "decision": "deny",
+      "rationale": "Recurring commitment prohibited.",
+      "correlations": [
+        {
+          "case_id": "DTF-015",
+          "case_version": "0.1.0",
+          "relationship": "illustrates",
+          "source": "https://github.com/qbf-consulting/digital-trust-failure-corpus/blob/1eda75842cf3b268361dc47ce8ade23b6a99c5cb/corpus/authority/DTF-015.json",
+          "limit": "Local predicate illustration only; canonical preconditions and falsification not fully assessed."
+        }
+      ]
+    },
+    {
+      "id": "revoked-mandate",
+      "request": "requests/revoked-mandate.json",
+      "expected": "expected/revoked-mandate.json",
+      "decision": "deny",
+      "rationale": "Presented mandate revoked.",
+      "correlations": [
+        {
+          "case_id": "DTF-016",
+          "case_version": "0.1.0",
+          "relationship": "illustrates",
+          "source": "https://github.com/qbf-consulting/digital-trust-failure-corpus/blob/1eda75842cf3b268361dc47ce8ade23b6a99c5cb/corpus/authority/DTF-016.json",
+          "limit": "Local predicate illustration only; canonical preconditions and falsification not fully assessed."
+        }
+      ]
+    },
+    {
+      "id": "untrusted-merchant",
+      "request": "requests/untrusted-merchant.json",
+      "expected": "expected/untrusted-merchant.json",
+      "decision": "deny",
+      "rationale": "Merchant outside allowed list.",
+      "correlations": [
+        {
+          "case_id": "DTF-002",
+          "case_version": "0.1.0",
+          "relationship": "illustrates",
+          "source": "https://github.com/qbf-consulting/digital-trust-failure-corpus/blob/1eda75842cf3b268361dc47ce8ade23b6a99c5cb/corpus/authority/DTF-002.json",
+          "limit": "Local predicate illustration only; canonical preconditions and falsification not fully assessed."
+        }
+      ]
+    },
+    {
+      "id": "missing-commitment-type",
+      "request": "requests/missing-commitment-type.json",
+      "expected": "expected/missing-commitment-type.json",
+      "decision": "deny",
+      "rationale": "Absent commitment type cannot satisfy negative membership.",
+      "correlations": [
+        {
+          "case_id": "DTF-010",
+          "case_version": "0.1.0",
+          "relationship": "illustrates",
+          "source": "https://github.com/qbf-consulting/digital-trust-failure-corpus/blob/1eda75842cf3b268361dc47ce8ade23b6a99c5cb/corpus/evidence/DTF-010.json",
+          "limit": "Local predicate illustration only; canonical preconditions and falsification not fully assessed."
+        }
+      ]
+    }
+  ]
+}

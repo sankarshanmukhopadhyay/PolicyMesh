@@ -10,7 +10,7 @@ ROOT = Path(__file__).resolve().parents[2]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from links.action_decisions import ActionPolicy, evaluate_action, load_json, verify_action_receipt, write_action_receipt
+from links.action_decisions import ActionPolicy, evaluate_action, load_json, verify_action_receipt, verify_action_decision, write_action_receipt
 from links.norms import compile_norm_set, validate_norm_file, write_json
 
 EXAMPLE = Path(__file__).resolve().parent
@@ -46,7 +46,13 @@ def run_scenario(name: str) -> int:
     print(f"Receipt: {receipt_out.relative_to(ROOT)}")
     print(f"Receipt integrity: {'OK' if verify_action_receipt(receipt) else 'FAIL'}")
 
-    ok = receipt.decision == expected["decision"] and verify_action_receipt(receipt)
+    verification = verify_action_decision(receipt, policy, request, evidence, authority)
+    receipt_out.with_suffix(".verification.json").write_text(
+        verification.model_dump_json(indent=2) + "\n", encoding="utf-8")
+    print(f"Decision reproduction: {verification.overall}")
+    ok = (receipt.decision == expected["decision"] and verify_action_receipt(receipt)
+          and verification.overall == "verified"
+          and (not expected.get("required_reason") or expected["required_reason"] in receipt.reason_codes))
     print(f"Expected: {expected['decision'].upper()} — {'MATCH' if ok else 'MISMATCH'}")
     return 0 if ok else 1
 

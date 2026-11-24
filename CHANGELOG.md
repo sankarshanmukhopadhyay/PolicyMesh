@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.21.0: Executable Governance Case Studies and Failure Analysis
+
+- Expand four domain guides with actors, authority, transaction diagrams, policy propositions, potential harms and residual risks.
+- Index 31 offline scenarios, including four new missing-input and resolution cases, with illustrative pinned DTFC correlations.
+- Verify retained decision inputs in each runner and retain source-linked scenario regression evidence.
+- Preserve the v0.20.0 evaluator and receipt contracts; no live business transaction or upstream conformance claim.
+
 ## v0.20.0: Action Governance, Decision Assurance and DTG/VTI Alignment
 
 - Correct missing/null and incompatible operand evaluation; reject empty policies and malformed requests.

@@ -1,3 +1,9 @@
+---
+title: Minimal execution walkthrough
+parent: Governance case studies
+nav_order: 6
+---
+
 # Run a governed action from decision to evidence
 
 From the repository root, use Python 3.12 and install the project:

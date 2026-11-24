@@ -1,0 +1,5 @@
+{
+  "decision": "deny",
+  "authority": "active-mandate.json",
+  "required_reason": "refundable_rate_required"
+}

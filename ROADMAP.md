@@ -2,7 +2,7 @@
 
 This roadmap records capability state against executable evidence. A capability is marked shipped only when implementation, operator guidance and tests/evidence exist within the repository's declared scope.
 
-**Release baseline:** v0.20.0  
+**Release baseline:** v0.21.0  
 **Last updated:** 2026-11-24
 
 ## Status legend
@@ -168,6 +168,10 @@ JSON-LD is not required for the v0.18.0 interoperability contract and remains an
 ## Action governance (v0.20.0)
 
 Fail-closed evaluation, retained-input verification and executable conformance are included in the v0.20.0 baseline. Independent implementation conformance and authenticated external authority remain outside this scope.
+
+## Executable governance case studies (v0.21.0)
+
+Four domain journeys, scenario indexes, local failure and resolution fixtures, and pinned DTFC illustrations support policy design and adoption. External authority, real transaction execution and independent assurance remain outside the release claim.
 
 ## Next horizon
 
