@@ -23,7 +23,8 @@ Once that model is clear, continue into advanced operating surfaces:
 - [Federation](concepts/federation.md)
 - [Deployment profiles](operations/deployment-profiles.md)
 - [Registry interoperability](interoperability/registry.md)
-- [PolicyMesh and DTG](interoperability/dtg.md)
+- [PolicyMesh and DTG/VTI](interoperability/dtg.md)
+- [Synthetic VTI local gate](interoperability/vti-local-gate.md)
 - [Agentic-system interoperability](interoperability/agentic-systems.md)
 
 ## Governance and status

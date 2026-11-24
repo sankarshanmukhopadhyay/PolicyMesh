@@ -13,7 +13,7 @@ OUT.mkdir(parents=True, exist_ok=True)
 xml = OUT / "action-conformance.xml"
 xml.unlink(missing_ok=True)
 proc = subprocess.run([sys.executable, "-m", "pytest", "tests/test_action_conformance.py",
-                       "tests/test_action_hardening.py", "tests/test_action_verification.py",
+                       "tests/test_action_hardening.py", "tests/test_action_verification.py", "tests/test_vti_local_gate.py", "tests/test_action_adoption.py",
                        "--junitxml", str(xml)], cwd=ROOT)
 rows = []
 if xml.exists():

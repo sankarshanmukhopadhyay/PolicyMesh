@@ -69,7 +69,7 @@ flowchart TB
 
 The critical separation is: **authority is supplied by the governance context; PolicyMesh executes and evidences the resulting policy controls.**
 
-## Relationship to DTG work
+## Relationship to DTG and VTI
 
 PolicyMesh is an **adjacent executable-policy and assurance laboratory** for work across the Trust over IP Decentralized Trust Graph (DTG) domain. It is not a DTG protocol, governance authority, authorization specification, or official DTG implementation.
 
@@ -84,7 +84,7 @@ A useful separation is:
 
 This makes PolicyMesh useful for asking whether emerging governance semantics are sufficiently precise to **implement, enforce, evidence, revoke and pressure-test** without PolicyMesh silently acquiring upstream authority.
 
-See [PolicyMesh and the DTG work](docs/interoperability/dtg.md) for the complete relationship and non-authority boundaries.
+See [PolicyMesh and DTG/VTI](docs/interoperability/dtg.md) for the version-pinned relationship and authority boundaries, and the [synthetic local-gate walkthrough](docs/interoperability/vti-local-gate.md) for an offline example. PolicyMesh does not replace native VTI access control or policy mechanisms.
 
 ## Core capabilities
 

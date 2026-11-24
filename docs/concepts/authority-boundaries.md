@@ -12,3 +12,5 @@ For application-action evaluation, this means PolicyMesh may enforce that an act
 The same rule applies when PolicyMesh is integrated with Decentralized Trust Graph work. A Trust Task, ceremony receipt, credential, proof, registry record, or other DTG artifact does not acquire new authority merely because PolicyMesh can consume it. The originating specification or governance system retains authority over its own semantics; PolicyMesh is authoritative only for the policy decision made under its configured local rules.
 
 See [PolicyMesh and DTG](../interoperability/dtg.md).
+
+VTI explicitly separates native access-control grants, approval authority and acting delegation. A DTG VAC grants scoped authority in its subject's own name; it is not itself delegation on behalf of an issuer. PolicyMesh consumes normalized facts without verifying those propositions. Local permission cannot override native refusal, and reproduced decisions cannot establish semantic completion or fresh authority.

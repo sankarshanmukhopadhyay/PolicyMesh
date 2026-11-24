@@ -4,6 +4,7 @@
 
 - Correct missing/null and incompatible operand evaluation; reject empty policies and malformed requests.
 - Add semantics-marked receipts, retained-input verification and CLI/SDK conformance evidence.
+- Add version-pinned DTG/VTI alignment and synthetic local-gate regression tests (not live interoperability).
 - Add migration and executable adoption guidance. This is an intentional authorization behavior change; update strict receipt-schema consumers.
 
 ## v0.19.0 — Personal-agent governance and worked-example portfolio
